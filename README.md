@@ -43,3 +43,9 @@ DevLog
 ## 2020-08-27
 
 Nothing like starting almost at the end.
+
+Idea: one knob controls a paddle rotating around a center point, a dpad controls the position of the paddle's center point. You have to bounce a ball (which leaves a trail) around obstacles in the world. You can only see 50 square ball area though, so it's about exploring too.
+
+Get the signal to the people! Or... people are requesting something and you have to prevent a 404?
+
+Got the paddle drawing, rotating around the screen.
