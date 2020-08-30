@@ -1,5 +1,5 @@
 import ScienceHalt from "science-halt";
-import { accelerate, inertia, v2 } from "pocket-physics";
+import { accelerate, inertia, v2, translate } from "pocket-physics";
 
 import { schedule, tick } from "./time";
 import { Loop } from "./loop";
@@ -17,12 +17,19 @@ import {
   drawAsset,
   ViewportUnits,
   computeWindowResize,
+  vv2,
 } from "./viewport";
 import { useAsset, loadAssets } from "./asset-map";
 import { initDragListeners, dragStateSelector } from "./drag";
-import { drawPaddle, Paddle, movePaddleLeft, movePaddleRight } from "./paddle";
+import {
+  drawPaddle,
+  Paddle,
+  movePaddleLeft,
+  movePaddleRight,
+  getValidPaddleArea,
+} from "./paddle";
 import { useUIRoot, listen, useRootElement } from "./dom";
-console.log(TestPng);
+import { Ball, drawBall, moveAndMaybeBounceBall, setVelocity } from "./ball";
 
 async function boot() {
   await loadAssets();
@@ -39,7 +46,6 @@ async function boot() {
 
   // initialize touch: look at js13k-2019 for how to use (pointer-target, etc)
   // initDragListeners();
-
 
   // A system of an entity-component-system framework is simply a function that
   // is repeatedly called. We separate them into two types based on how often
@@ -58,21 +64,45 @@ async function boot() {
     );
   });
 
+  // TODO: make a component out of this?
   const screen = ces.selectFirstData("viewport")!;
   const paddle: Paddle = {
     pos: 0,
-    width: screen.vpWidth / 8 as ViewportUnits,
-    height: screen.vpWidth / 16 as ViewportUnits,
-  }
+    width: (screen.vpWidth / 8) as ViewportUnits,
+    height: (screen.vpWidth / 16) as ViewportUnits,
+  };
+
+  const ball: Ball = {
+    cpos: vv2(),
+    ppos: vv2(),
+    acel: vv2(),
+    width: (screen.vpWidth / 16) as ViewportUnits,
+    height: (screen.vpWidth / 16) as ViewportUnits,
+  };
+
+  const relativeViewArea = getValidPaddleArea(screen);
+  translate(
+    v2(relativeViewArea.width / 2, relativeViewArea.height / 2),
+    ball.cpos,
+    ball.ppos
+  );
+
+  ball.acel.x = 1 as ViewportUnits;
+  ball.acel.y = 1 as ViewportUnits;
 
   // Draw "system" updated at 60fps
   drawStepSystems.push(function (ces, interp) {
     drawPaddle(paddle);
+    drawBall(ball, interp);
   });
 
-  listen(window, 'keydown', (ev) => {
-    if (ev.key === 'ArrowLeft') movePaddleLeft(paddle);
-    else if (ev.key === 'ArrowRight') movePaddleRight(paddle);
+  updateStepSystems.push((ces, dt) => {
+    moveAndMaybeBounceBall(ball, paddle, screen, dt);
+  });
+
+  listen(window, "keydown", (ev) => {
+    if (ev.key === "ArrowLeft") movePaddleLeft(paddle);
+    else if (ev.key === "ArrowRight") movePaddleRight(paddle);
   });
 
   // fps entity
@@ -92,7 +122,8 @@ async function boot() {
     const maxLinesPerCanvas = 44;
     const textSize = screen.height / maxLinesPerCanvas;
     const lineHeight = 1.5;
-    screen.dprCanvas.ctx.font = `${textSize}/${lineHeight} monospace`;
+    // console.log('font', `${textSize}px/${lineHeight} monospace`)
+    screen.dprCanvas.ctx.font = `${textSize}px/${lineHeight} monospace`;
     const measure = screen.dprCanvas.ctx.measureText(text);
     const width = measure.width + 1;
     // fillText uses textBaseline as coordinates. "alphabetic" textBaseline is default,
@@ -108,7 +139,6 @@ async function boot() {
       screen.height - height
     );
   });
-
 
   const { stop } = Loop({
     drawTime: 1000 / DrawTimeHz,
@@ -154,4 +184,3 @@ function onFPS(fps: number) {
 }
 
 boot();
-

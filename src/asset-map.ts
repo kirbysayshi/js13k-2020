@@ -1,6 +1,6 @@
 import { loadImage } from "./load-image";
 
-import TestImage from "../assets/00 - Fool.png";
+// import TestImage from "../assets/00 - Fool.png";
 
 // type UnloadedAsset = {
 //   path: string;
@@ -8,7 +8,8 @@ import TestImage from "../assets/00 - Fool.png";
 // }
 
 const unloaded = [
-  { path: TestImage, name: "test" },
+  // { path: TestImage, name: "test" },
+  { path: '', name: "empty" },
   
 ] as const;
 
@@ -24,12 +25,13 @@ const loadedAssets: { [key: string]: LoadedAsset } = {};
 let loaded = false;
 
 export async function loadAssets() {
-  await Promise.all(
-    unloaded.map(async u => {
-      const img = await loadImage(u.path);
-      loadedAssets[u.name] = { path: u.path, name: u.name, img };
-    })
-  );
+  // await Promise.all(
+  //   unloaded.map(async u => {
+  //     if (!u.path) return;
+  //     const img = await loadImage(u.path);
+  //     loadedAssets[u.name] = { path: u.path, name: u.name, img };
+  //   })
+  // );
   loaded = true;
 }
 

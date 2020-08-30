@@ -20,6 +20,10 @@ export type ViewportUnitVector2 = {
   y: ViewportUnits;
 };
 
+export function vv2(x: number = 0, y: number = 0) {
+  return v2(x, y) as ViewportUnitVector2;
+}
+
 export type ViewportCmp = {
   k: "viewport";
   ratio: number;

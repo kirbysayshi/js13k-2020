@@ -37,6 +37,18 @@ LICENSE
 
 MIT
 
+Tasks
+-----
+
+- [x] Paddle Moving
+- [x] Ball Moving
+- [x] Paddle + Ball Colliding == BOUNCE (might need to redesign paddle to be phys)
+- [ ] Prevent ball tunneling when colliding
+- [ ] Ball -> Target colliding === LEVEL WIN
+- [ ] Ball + Environment Obstacle Colliding
+- [ ] Camera / World Movement
+
+
 DevLog
 ------
 
@@ -48,4 +60,15 @@ Idea: one knob controls a paddle rotating around a center point, a dpad controls
 
 Get the signal to the people! Or... people are requesting something and you have to prevent a 404?
 
-Got the paddle drawing, rotating around the screen.
+Got the paddle drawing, rotating around the screen in a manual way. Having the viewport already defined and using relative units from last time (js13k-2019) is nice. Spent way too much time forgetting that keyboard events will not fire on a DOM element without a tabindex set.
+
+## 2020-08-28
+
+Got a "ball" to move.
+
+## 2020-08-29
+
+Maybe found a bug in pocket-physics, like usual! Still such a mess. And then maybe didn't even need the specific method (`projectPointEdge`).
+
+Got the ball bouncing off the paddle though.
+
