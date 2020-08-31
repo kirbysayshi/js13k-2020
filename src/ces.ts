@@ -221,7 +221,11 @@ export class CES<ED extends EntityData> {
   data<T extends ED, K extends T["k"]>(id: AssuredEntityId<T>, kind: K) {
     const entity = this.es.get(id);
     if (!entity) throw new Error(`Entity(${id}) not found!`);
-    const data = entity.find(d => d.k === kind);
+    let data;
+    for (let i = 0; i < entity.length; i++) {
+      const d = entity[i];
+      if (d.k === kind) data = d;
+    }
     if (!data) throw new Error(`Data(${kind}) not found for Entity(${id})!`);
     return data as NarrowComponent<ED, K>;
   }

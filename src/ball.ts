@@ -1,11 +1,7 @@
 import {
   inertia,
   accelerate,
-  Integratable,
-  sub,
   v2,
-  normalize,
-  scale,
   PointEdgeProjection,
   projectPointEdge,
   segmentIntersection,
@@ -14,11 +10,12 @@ import {
   copy,
 } from "pocket-physics";
 import {
-  viewportSelector,
+
   toPixelUnits,
   ViewportUnits,
   ViewportUnitVector2,
   ViewportCmp,
+  toProjectedPixels,
 } from "./viewport";
 import { useCES } from "./components";
 import { Paddle, getOffsetForPaddlePosition } from "./paddle";
@@ -32,16 +29,9 @@ export type Ball = {
   height: ViewportUnits;
 };
 
-export function setVelocity(cmp: Integratable, mag: number) {
-  const dir = sub(v2(), cmp.cpos, cmp.ppos);
-  const norm = normalize(dir, dir);
-  const vel = scale(norm, norm, mag);
-  sub(cmp.ppos, cmp.cpos, vel);
-}
-
 export function drawBall(ball: Ball, interp: number) {
   const ces = useCES();
-  const vp = ces.selectFirstData(viewportSelector[0])!;
+  const vp = ces.selectFirstData('viewport')!;
   const ctx = vp.dprCanvas.ctx;
 
   const { cpos, ppos, width, height } = ball;
@@ -49,11 +39,11 @@ export function drawBall(ball: Ball, interp: number) {
   const halfWidth = (width / 2) as ViewportUnits;
   const halfHeight = (height / 2) as ViewportUnits;
 
-  const x = toPixelUnits(
-    (ppos.x + interp * (cpos.x - ppos.x)) as ViewportUnits
+  const x = toProjectedPixels(
+    (ppos.x + interp * (cpos.x - ppos.x)) as ViewportUnits, 'x'
   );
-  const y = toPixelUnits(
-    (ppos.y + interp * (cpos.y - ppos.y)) as ViewportUnits
+  const y = toProjectedPixels(
+    (ppos.y + interp * (cpos.y - ppos.y)) as ViewportUnits, 'y'
   );
 
   const pxWidth = toPixelUnits(width);

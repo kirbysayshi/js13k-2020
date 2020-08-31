@@ -1,7 +1,6 @@
-import { Vector2, Integratable } from "pocket-physics";
+import { Vector2, Integratable, scale, add } from "pocket-physics";
 import { useCES } from "./components";
 import {
-  viewportSelector,
   ViewportUnits,
   toViewportUnits,
   toPixelUnits,
@@ -9,20 +8,31 @@ import {
   ViewportUnitVector2,
   vv2,
 } from "./viewport";
+import { rotate2d } from "./phys-utils";
 
 export type Paddle = {
   // top, topright, right, rightbottom, bottom, bottomleft, left, lefttop
-  pos: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  // pos: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  rads: number;
   width: ViewportUnits;
   height: ViewportUnits;
+
+  int: Integratable;
 };
 
-const MAX_PADDLE_STATE = 7;
+// const MAX_PADDLE_STATE = 7;
 
-export function movePaddleLeft(p: Paddle) {
-  let next = (p.pos - 1) as Paddle["pos"];
-  if (next < 0) next = MAX_PADDLE_STATE;
-  p.pos = next;
+export function rotatePaddleLeft(p: Paddle) {
+  // normally + rads == counterclockwise rotation, but we're in direct screen mode so use -
+  p.rads -= 0.2;
+}
+
+export function rotatePaddleRight(p: Paddle) {
+  p.rads += 0.2;
+}
+
+export function movePaddle(p: Paddle, dir: ViewportUnitVector2) {
+  add(p.int.acel, p.int.acel, dir);
 }
 
 export function getValidPaddleArea(vp: ViewportCmp) {
@@ -31,31 +41,7 @@ export function getValidPaddleArea(vp: ViewportCmp) {
   return { width, height };
 }
 
-export function movePaddleRight(p: Paddle) {
-  p.pos = ((p.pos + 1) % (MAX_PADDLE_STATE + 1)) as Paddle["pos"];
-}
-
 type Edge = { p0: ViewportUnitVector2; p1: ViewportUnitVector2 };
-
-// Taken nearly verbatim from gl-matrix
-function rotate2d<V extends Vector2>(
-  out: V,
-  target: V,
-  origin: V,
-  rad: number
-) {
-  //Translate point to the origin
-  let p0 = target.x - origin.x,
-    p1 = target.y - origin.y,
-    sinC = Math.sin(rad),
-    cosC = Math.cos(rad);
-
-  //perform rotation and translate to correct position
-  out.x = p0 * cosC - p1 * sinC + origin.x;
-  out.y = p0 * sinC + p1 * cosC + origin.y;
-
-  return out;
-}
 
 // TODO: account for camera / world
 export function getOffsetForPaddlePosition(p: Paddle, vp: ViewportCmp) {
@@ -64,64 +50,34 @@ export function getOffsetForPaddlePosition(p: Paddle, vp: ViewportCmp) {
     vp
   );
 
-  let transformAngle = 0;
-  let transformX = 0 as ViewportUnits;
-  let transformY = 0 as ViewportUnits;
-  let p0 = vv2();
-  let p1 = vv2();
-
+  // TODO: center is offset from screen, +y is down...
   const halfPaddleWidth = (p.width / 2) as ViewportUnits;
   const halfPaddleHeight = (p.height / 2) as ViewportUnits;
+  // const center = vv2(validAreaWidth / 2, validAreaHeight / 2);
+  const center = p.int.cpos;
 
-  if (p.pos === 0) {
-    transformAngle = 0;
-    transformX = (validAreaWidth / 2) as ViewportUnits;
-    transformY = halfPaddleHeight as ViewportUnits;
-  } else if (p.pos === 1) {
-    transformAngle = Math.PI / 4;
-    transformX = (validAreaWidth - halfPaddleWidth) as ViewportUnits;
-    transformY = (0 + halfPaddleWidth) as ViewportUnits;
-  } else if (p.pos === 2) {
-    transformAngle = Math.PI / 2;
-    transformX = (validAreaWidth - halfPaddleHeight) as ViewportUnits;
-    transformY = (validAreaHeight / 2) as ViewportUnits;
-  } else if (p.pos === 3) {
-    transformAngle = Math.PI * (3 / 4);
-    transformX = (validAreaWidth - halfPaddleWidth) as ViewportUnits;
-    transformY = (validAreaHeight - halfPaddleHeight) as ViewportUnits;
-  } else if (p.pos === 4) {
-    transformAngle = Math.PI;
-    transformX = (validAreaWidth / 2) as ViewportUnits;
-    transformY = (validAreaHeight - halfPaddleHeight) as ViewportUnits;
-  } else if (p.pos === 5) {
-    transformAngle = Math.PI * (5 / 4);
-    transformX = (0 + halfPaddleWidth) as ViewportUnits;
-    transformY = (validAreaHeight - halfPaddleHeight) as ViewportUnits;
-  } else if (p.pos === 6) {
-    transformAngle = Math.PI * (3 / 2);
-    transformX = (0 + halfPaddleHeight) as ViewportUnits;
-    transformY = (validAreaHeight / 2) as ViewportUnits;
-  } else if (p.pos === 7) {
-    transformAngle = Math.PI * (7 / 4);
-    transformX = (halfPaddleWidth + 0) as ViewportUnits;
-    transformY = (0 + halfPaddleWidth) as ViewportUnits;
-  } else {
-    const _n: never = p.pos;
-  }
+  // All of these are in math coords: +y is up, rotation is counterclockwise
+  const dir = vv2(Math.cos(p.rads), Math.sin(p.rads));
+  const offset = scale(
+    vv2(),
+    dir,
+    Math.min(validAreaWidth / 2, validAreaHeight / 2)
+  );
+  const xform = add(vv2(), center, offset) as ViewportUnitVector2;
+  const p0 = vv2(xform.x, xform.y - halfPaddleWidth);
+  const p1 = vv2(xform.x, xform.y + halfPaddleWidth);
+  rotate2d(p0, p0, xform, p.rads);
+  rotate2d(p1, p1, xform, p.rads);
 
-  p0.x = (transformX - halfPaddleWidth) as ViewportUnits;
-  p0.y = transformY;
-  p1.x = (transformX + halfPaddleWidth) as ViewportUnits;
-  p1.y = transformY;
-
-  rotate2d(p0, p0, vv2(transformX, transformY), (Math.PI * 2) + transformAngle);
-  rotate2d(p1, p1, vv2(transformX, transformY), (Math.PI * 2) + transformAngle);
+  // TODO: +y in physics is up. in drawing, it's down. Be more explicit about a phys/Math computation vs drawing.
+  // TODO: screen coordinates vs physics coords.
 
   return {
-    x: transformX,
-    y: transformY,
-    // REMEMBER: this is ctx.transform angle (screen: radians + clockwise), not counterclockwise trig!
-    angle: transformAngle,
+    //
+    x: xform.x,
+    y: xform.y,
+    // math angle
+    angle: p.rads,
     halfWidth: halfPaddleWidth,
     halfHeight: halfPaddleHeight,
     // points of the paddle edge facing inwards
@@ -131,20 +87,25 @@ export function getOffsetForPaddlePosition(p: Paddle, vp: ViewportCmp) {
 }
 
 export function drawPaddle(p: Paddle) {
-  const vp = useCES().selectFirstData(viewportSelector[0])!;
+  const vp = useCES().selectFirstData('viewport')!;
   const ctx = vp.dprCanvas.ctx;
 
   // TODO: add camera offset
 
-  const { x, y, angle, halfHeight, halfWidth, p0, p1 } = getOffsetForPaddlePosition(
-    p,
-    vp
-  );
+  const {
+    x,
+    y,
+    angle,
+    halfHeight,
+    halfWidth,
+    p0,
+    p1,
+  } = getOffsetForPaddlePosition(p, vp);
 
   ctx.save();
   ctx.fillStyle = "rgba(255,255,255,1)";
   ctx.translate(toPixelUnits(x), toPixelUnits(y));
-  ctx.rotate(angle);
+  ctx.rotate(Math.PI / 2 + angle);
   ctx.fillRect(
     0 - toPixelUnits(halfWidth),
     0 - toPixelUnits(halfHeight),
@@ -153,7 +114,8 @@ export function drawPaddle(p: Paddle) {
   );
   ctx.restore();
 
-  drawEdge(ctx, { p0, p1 }, 1)
+  drawEdge(ctx, { p0, p1 }, 1);
+  drawIntegratable(ctx, p.int, 1);
 }
 
 function drawIntegratable(

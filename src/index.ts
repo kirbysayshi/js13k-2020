@@ -1,5 +1,6 @@
 import ScienceHalt from "science-halt";
-import { accelerate, inertia, v2, translate } from "pocket-physics";
+import { accelerate, inertia, v2, translate, solveDrag } from "pocket-physics";
+import { Key } from "ts-key-enum";
 
 import { schedule, tick } from "./time";
 import { Loop } from "./loop";
@@ -18,18 +19,25 @@ import {
   ViewportUnits,
   computeWindowResize,
   vv2,
+  moveViewportCamera,
+  drawObj,
+  toPixelUnits,
+  clearScreen,
 } from "./viewport";
 import { useAsset, loadAssets } from "./asset-map";
 import { initDragListeners, dragStateSelector } from "./drag";
 import {
   drawPaddle,
   Paddle,
-  movePaddleLeft,
-  movePaddleRight,
+  rotatePaddleLeft,
+  rotatePaddleRight,
   getValidPaddleArea,
+  movePaddle,
 } from "./paddle";
 import { useUIRoot, listen, useRootElement } from "./dom";
-import { Ball, drawBall, moveAndMaybeBounceBall, setVelocity } from "./ball";
+import { Ball, drawBall, moveAndMaybeBounceBall } from "./ball";
+import { setVelocity, rotate2d } from "./phys-utils";
+import { drawLevelTarget, LevelTarget, testWinCondition } from "./target";
 
 async function boot() {
   await loadAssets();
@@ -55,22 +63,29 @@ async function boot() {
 
   // clear the screen at 60fps
   drawStepSystems.push((ces) => {
-    const screen = ces.selectFirstData("viewport")!;
-    screen.dprCanvas.ctx.clearRect(
-      0,
-      0,
-      screen.dprCanvas.cvs.width,
-      screen.dprCanvas.cvs.height
-    );
+    clearScreen();
   });
 
   // TODO: make a component out of this?
   const screen = ces.selectFirstData("viewport")!;
+  const relativeViewArea = getValidPaddleArea(screen);
+
   const paddle: Paddle = {
-    pos: 0,
+    rads: 0,
     width: (screen.vpWidth / 8) as ViewportUnits,
     height: (screen.vpWidth / 16) as ViewportUnits,
+    int: {
+      acel: vv2(),
+      cpos: vv2(),
+      ppos: vv2(),
+    },
   };
+
+  translate(
+    vv2(relativeViewArea.width / 2, relativeViewArea.height / 2),
+    paddle.int.cpos,
+    paddle.int.ppos
+  );
 
   const ball: Ball = {
     cpos: vv2(),
@@ -80,29 +95,76 @@ async function boot() {
     height: (screen.vpWidth / 16) as ViewportUnits,
   };
 
-  const relativeViewArea = getValidPaddleArea(screen);
-  translate(
-    v2(relativeViewArea.width / 2, relativeViewArea.height / 2),
-    ball.cpos,
-    ball.ppos
-  );
+  const target: LevelTarget = {
+    int: { cpos: vv2(0, 0), ppos: vv2(0, 0), acel: vv2() },
+    dims: vv2(10, 10),
+  };
 
-  ball.acel.x = 1 as ViewportUnits;
-  ball.acel.y = 1 as ViewportUnits;
+  // translate(
+  //   v2(relativeViewArea.width / 2, relativeViewArea.height / 2),
+  //   ball.cpos,
+  //   ball.ppos
+  // );
+
+  ball.acel.x = 0.1 as ViewportUnits;
+  ball.acel.y = 0.1 as ViewportUnits;
 
   // Draw "system" updated at 60fps
   drawStepSystems.push(function (ces, interp) {
-    drawPaddle(paddle);
+    drawLevelTarget(target, interp);
+
+    // drawObj(screen.dprCanvas.ctx, { pos: target.int.cpos as ViewportUnitVector2, dim: target.dims });
+
+    // drawPaddle(paddle);
     drawBall(ball, interp);
   });
 
   updateStepSystems.push((ces, dt) => {
+
+    const { camera } = ces.selectFirstData("viewport")!;
+
+    if (keyInputs.ArrowRight) camera.target.x = camera.target.x + 1 as ViewportUnits;
+    if (keyInputs.ArrowLeft) camera.target.x = camera.target.x - 1 as ViewportUnits;
+    if (keyInputs.ArrowUp) camera.target.y = camera.target.y + 1 as ViewportUnits;
+    if (keyInputs.ArrowDown) camera.target.y = camera.target.y - 1 as ViewportUnits;
+
+    // if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle);
+    // if (keyInputs.ArrowRight) rotatePaddleRight(paddle);
+
+    // const paddleAcel = vv2(0.2, 0);
+    // const origin = vv2();
+    // let angle = 0;
+    // if (keyInputs.w && keyInputs.d) angle = -Math.PI / 4;
+    // else if (keyInputs.w && keyInputs.a) angle = -Math.PI * (3 / 4);
+    // else if (keyInputs.s && keyInputs.d) angle = Math.PI / 4;
+    // else if (keyInputs.s && keyInputs.a) angle = Math.PI * (3 / 4);
+    // else if (keyInputs.w) angle = -Math.PI / 2;
+    // else if (keyInputs.a) angle = Math.PI;
+    // else if (keyInputs.s) angle = Math.PI / 2;
+    // else if (keyInputs.d) angle = 0;
+    // if (angle !== 0 || keyInputs.d)
+    //   movePaddle(paddle, rotate2d(vv2(), paddleAcel, origin, angle));
+
+    // solveDrag(paddle.int, 0.8);
+
+    // accelerate(paddle.int, dt);
+    // inertia(paddle.int);
+
     moveAndMaybeBounceBall(ball, paddle, screen, dt);
+
+    // testWinCondition(target, ball);
+
+    // moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
   });
 
+  const keyInputs: { [K in Key | "w" | "a" | "s" | "d"]?: boolean } = {};
+
   listen(window, "keydown", (ev) => {
-    if (ev.key === "ArrowLeft") movePaddleLeft(paddle);
-    else if (ev.key === "ArrowRight") movePaddleRight(paddle);
+    keyInputs[ev.key as keyof typeof keyInputs] = true;
+  });
+
+  listen(window, "keyup", (ev) => {
+    keyInputs[ev.key as keyof typeof keyInputs] = false;
   });
 
   // fps entity
