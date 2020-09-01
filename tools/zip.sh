@@ -21,6 +21,7 @@ NODE_SCRIPT=$(cat <<-END
   const replaced = txt
     .replace(/"v-movement"/g, "\"mv\"")
     .replace(/"draw-console"/g, "\"dc\"")
+    .replace(/"viewport"/g, "\"vp\"")
 
   fs.writeFileSync("dist/bundle.js", replaced);
 END
