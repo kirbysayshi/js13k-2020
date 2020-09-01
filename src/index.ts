@@ -5,7 +5,6 @@ import { Key } from "ts-key-enum";
 import { schedule, tick } from "./time";
 import { Loop } from "./loop";
 
-import TestPng from "../assets/00 - Fool.png";
 import {
   useCES,
   DrawStepSystem,
@@ -20,9 +19,11 @@ import {
   computeWindowResize,
   vv2,
   moveViewportCamera,
-  drawObj,
   toPixelUnits,
   clearScreen,
+  toProjectedPixels,
+  toViewportUnits,
+  restoreNativeCanvasDrawing,
 } from "./viewport";
 import { useAsset, loadAssets } from "./asset-map";
 import { initDragListeners, dragStateSelector } from "./drag";
@@ -81,12 +82,6 @@ async function boot() {
     },
   };
 
-  translate(
-    vv2(relativeViewArea.width / 2, relativeViewArea.height / 2),
-    paddle.int.cpos,
-    paddle.int.ppos
-  );
-
   const ball: Ball = {
     cpos: vv2(),
     ppos: vv2(),
@@ -96,15 +91,9 @@ async function boot() {
   };
 
   const target: LevelTarget = {
-    int: { cpos: vv2(0, 0), ppos: vv2(0, 0), acel: vv2() },
+    int: { cpos: vv2(-10, -10), ppos: vv2(-10, -10), acel: vv2() },
     dims: vv2(10, 10),
   };
-
-  // translate(
-  //   v2(relativeViewArea.width / 2, relativeViewArea.height / 2),
-  //   ball.cpos,
-  //   ball.ppos
-  // );
 
   ball.acel.x = 0.1 as ViewportUnits;
   ball.acel.y = 0.1 as ViewportUnits;
@@ -112,49 +101,38 @@ async function boot() {
   // Draw "system" updated at 60fps
   drawStepSystems.push(function (ces, interp) {
     drawLevelTarget(target, interp);
-
-    // drawObj(screen.dprCanvas.ctx, { pos: target.int.cpos as ViewportUnitVector2, dim: target.dims });
-
-    // drawPaddle(paddle);
+    drawPaddle(paddle);
     drawBall(ball, interp);
   });
 
   updateStepSystems.push((ces, dt) => {
+    if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle);
+    if (keyInputs.ArrowRight) rotatePaddleRight(paddle);
 
-    const { camera } = ces.selectFirstData("viewport")!;
+    const paddleAcel = vv2(0.2, 0);
+    const origin = vv2();
+    let angle = 0;
+    if (keyInputs.w && keyInputs.d) angle = Math.PI / 4;
+    else if (keyInputs.w && keyInputs.a) angle = Math.PI * (3 / 4);
+    else if (keyInputs.s && keyInputs.d) angle = -Math.PI / 4;
+    else if (keyInputs.s && keyInputs.a) angle = -Math.PI * (3 / 4);
+    else if (keyInputs.w) angle = Math.PI / 2;
+    else if (keyInputs.a) angle = Math.PI;
+    else if (keyInputs.s) angle = -Math.PI / 2;
+    else if (keyInputs.d) angle = 0;
+    if (angle !== 0 || keyInputs.d)
+      movePaddle(paddle, rotate2d(vv2(), paddleAcel, origin, angle));
 
-    if (keyInputs.ArrowRight) camera.target.x = camera.target.x + 1 as ViewportUnits;
-    if (keyInputs.ArrowLeft) camera.target.x = camera.target.x - 1 as ViewportUnits;
-    if (keyInputs.ArrowUp) camera.target.y = camera.target.y + 1 as ViewportUnits;
-    if (keyInputs.ArrowDown) camera.target.y = camera.target.y - 1 as ViewportUnits;
+    solveDrag(paddle.int, 0.8);
 
-    // if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle);
-    // if (keyInputs.ArrowRight) rotatePaddleRight(paddle);
-
-    // const paddleAcel = vv2(0.2, 0);
-    // const origin = vv2();
-    // let angle = 0;
-    // if (keyInputs.w && keyInputs.d) angle = -Math.PI / 4;
-    // else if (keyInputs.w && keyInputs.a) angle = -Math.PI * (3 / 4);
-    // else if (keyInputs.s && keyInputs.d) angle = Math.PI / 4;
-    // else if (keyInputs.s && keyInputs.a) angle = Math.PI * (3 / 4);
-    // else if (keyInputs.w) angle = -Math.PI / 2;
-    // else if (keyInputs.a) angle = Math.PI;
-    // else if (keyInputs.s) angle = Math.PI / 2;
-    // else if (keyInputs.d) angle = 0;
-    // if (angle !== 0 || keyInputs.d)
-    //   movePaddle(paddle, rotate2d(vv2(), paddleAcel, origin, angle));
-
-    // solveDrag(paddle.int, 0.8);
-
-    // accelerate(paddle.int, dt);
-    // inertia(paddle.int);
+    accelerate(paddle.int, dt);
+    inertia(paddle.int);
 
     moveAndMaybeBounceBall(ball, paddle, screen, dt);
 
-    // testWinCondition(target, ball);
+    testWinCondition(target, ball);
 
-    // moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
+    moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
   });
 
   const keyInputs: { [K in Key | "w" | "a" | "s" | "d"]?: boolean } = {};
@@ -175,31 +153,44 @@ async function boot() {
     const screen = ces.selectFirstData("viewport")!;
     const fpsData = ces.selectFirstData("fps")!;
     const text = fpsData.v.toFixed(2);
+
     // How many lines of text do we want to be able to display on canvas?
     // Ok, use that as the font size. This assumes the canvas size _ratio_ is fixed but
     // the actual pixel dimensions are not.
-    // TODO: The canvas size is currently a fixed ratio, but different physical sizes
-    // depending on the screen in order to have crisp pixels regardless. This means all
-    // layout must be relative units. This might be a huge problem / difficulty...
     const maxLinesPerCanvas = 44;
     const textSize = screen.height / maxLinesPerCanvas;
     const lineHeight = 1.5;
-    // console.log('font', `${textSize}px/${lineHeight} monospace`)
-    screen.dprCanvas.ctx.font = `${textSize}px/${lineHeight} monospace`;
-    const measure = screen.dprCanvas.ctx.measureText(text);
-    const width = measure.width + 1;
+    const { ctx } = screen.dprCanvas;
+
+    ctx.save();
+    ctx.fillStyle = "rgba(255,255,0,1)";
+    ctx.font = `${textSize}px/${lineHeight} monospace`;
+
     // fillText uses textBaseline as coordinates. "alphabetic" textBaseline is default,
     // so we attempt to compensate by subtracting the text size.
     // For example, drawing "g" at 0,0 will result in only the decender showing on the
     // canvas! We could change the baseline, but then text blocks / paragraphs would be
     // hard to read.
-    const height = textSize * lineHeight - textSize;
-    screen.dprCanvas.ctx.fillStyle = "rgba(255,255,0,1)";
-    screen.dprCanvas.ctx.fillText(
-      text,
-      screen.width - width,
-      screen.height - height
-    );
+    const measure = ctx.measureText(text);
+    const width = measure.width + 1;
+    const height =
+      "actualBoundingBoxAscent" in measure
+        ? measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent
+        : textSize * lineHeight - textSize;
+
+    // Undo the scale / translation of the camera canvas since we want to draw independent of camera
+    // 0,0 is now upper right, y+ is downwards
+    restoreNativeCanvasDrawing(screen);
+
+    // Draw bottom right
+    // ctx.fillText(text,
+    //   toPixelUnits(screen.vpWidth) - width,
+    //   toPixelUnits(screen.vpHeight) - height,
+    // );
+
+    ctx.fillText(text, toPixelUnits(screen.vpWidth) - width, 0 + height);
+
+    ctx.restore();
   });
 
   const { stop } = Loop({

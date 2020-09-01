@@ -46,18 +46,10 @@ export type ViewportCmp = {
   height: Pixels;
   vpWidth: ViewportUnits<100>;
   vpHeight: ViewportUnits;
-  // shake: AssuredEntityId<MovementCmp>;
-  // shakeConstraint: AssuredEntityId<SpringConstraintCmp>;
   dprCanvas: DPRCanvas;
 
   camera: Camera;
 };
-
-// export type ViewportDef = [ViewportCmp, SpringConstraintCmp];
-// export const viewportSelector: EntityDefSelector<ViewportDef> = [
-//   "viewport",
-//   "spring-constraint"
-// ] as const;
 
 function toPixelVec(out: Vector2, v: ViewportUnitVector2) {
   const ces = useCES();
@@ -71,21 +63,6 @@ function toPixelVec(out: Vector2, v: ViewportUnitVector2) {
   out.y = Math.floor(out.y);
 
   return out as { x: Pixels; y: Pixels };
-}
-
-export function drawObj(
-  ctx: CanvasRenderingContext2D,
-  rect: { pos: ViewportUnitVector2; dim: ViewportUnitVector2 },
-) {
-  // if (culled(obj.pos, world.camera)) return;
-  ctx.save();
-  ctx.fillRect(
-    toProjectedPixels(rect.pos.x, 'x'),
-    toProjectedPixels(rect.pos.y, 'y'),
-    toPixelUnits(rect.dim.x),
-    toPixelUnits(rect.dim.y)
-  );
-  ctx.restore();
 }
 
 // Ignore the camera's position when computing pixel values (for relative use only)
@@ -131,16 +108,22 @@ export function moveViewportCamera(toPos: ViewportUnitVector2) {
   copy(vp.camera.target, toPos);
 }
 
+export function restoreNativeCanvasDrawing(vp: ViewportCmp) {
+  const { ctx } = vp.dprCanvas;
+  const { camera } = vp;
+  ctx.scale(1, -1);
+  ctx.translate(
+    -toPixelUnits(camera.frustrum.x),
+    -toPixelUnits(camera.frustrum.y)
+  );
+}
+
 export function clearScreen() {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
   const { ctx } = vp.dprCanvas;
   ctx.save();
-  ctx.translate(
-    -toPixelUnits(vp.camera.frustrum.x),
-    toPixelUnits(vp.camera.frustrum.y)
-  );
-  ctx.scale(1, -1);
+  restoreNativeCanvasDrawing(vp);
   ctx.clearRect(0, 0, vp.dprCanvas.cvs.width, vp.dprCanvas.cvs.height);
   ctx.restore();
 }

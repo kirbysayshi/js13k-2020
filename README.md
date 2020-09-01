@@ -45,12 +45,13 @@ Tasks
 - [x] Paddle + Ball Colliding == BOUNCE (might need to redesign paddle to be phys)
 - [x] Paddle World Movement
 - [x] Paddle World Movement Drag (too hard ot line up otherwise)
-- [ ] Prevent ball from accelerating when colliding...
 - [x] Ball -> Target colliding === WIN
-- [ ] Prevent ball tunneling when colliding
-- [ ] Ball + Environment Obstacle Colliding
 - [x] Camera Movement
-- [ ] Convert paddle to new camera system
+- [x] Convert paddle to new camera system
+- [ ] Ball -> Target Collidin === Win Once (/ reset)
+- [ ] Ball + Environment Obstacle Colliding
+- [ ] Prevent ball from accelerating when colliding...
+- [ ] Prevent ball tunneling when colliding
 
 
 DevLog
@@ -83,3 +84,7 @@ Paddle is moving via wasd, rotating via left/right. Bouncing has a tunneling iss
 There is a lot of GC happening in firefox. Not sure why, actually. Maybe I just needed to restart Firefox...
 
 Spent forever figuring out a "camera". The player needs to be able to explore independent of the actual bounds of the canvas. Solution: invert the y axis in the canvas via `scale`, track a camera position value, and translate the canvas to the camera center. This means that 0, 0 when drawn is equivalent to 50, 50 in viewport units. It was also unclear if there could be just _one_ function that converted a viewport unit into pixels: it had to be two. One for position-less values (aka a width of a box) and another for camera-aware values (converting to absolute positions on the canvas). Adding to the confusion was the leftover screen shake system from js13k-2019. I removed it.
+
+## 2020-08-31
+
+Converted all rendering to use a basic camera projection! We're back at day 2 or so, but now the player can move around the world freely. Even got text working too.
