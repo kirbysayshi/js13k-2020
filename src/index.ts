@@ -136,11 +136,11 @@ async function boot() {
         text.split("\n").forEach((line) => {
           const measure = ctx.measureText(line);
           const width = measure.width + 1;
-          const height =
-            "actualBoundingBoxAscent" in measure
-              ? measure.actualBoundingBoxAscent +
-                measure.actualBoundingBoxDescent
-              : textSize * lineHeight - textSize;
+          // prop quote to disable terser :(
+          const height = measure["actualBoundingBoxAscent"]
+            ? measure["actualBoundingBoxAscent"] +
+              measure["actualBoundingBoxDescent"]
+            : textSize * lineHeight - textSize;
           y += height;
           ctx.fillText(
             line,
@@ -236,6 +236,9 @@ async function boot() {
     (game as Mutable<typeof game>).ticks += 1;
   });
 
+  // These keys must be quoted to force terser to keep these keys as is. It
+  // doesn't know they come from the DOM Keyboard API. Prettier wants to remove
+  // the quotes, so disable it.
   const keyInputs: {
     [K in
       | Extract<Key, Key.ArrowLeft | Key.ArrowRight>
@@ -244,11 +247,17 @@ async function boot() {
       | "s"
       | "d"]: boolean;
   } = {
+    // prettier-ignore
     'w': false,
+    // prettier-ignore
     'a': false,
+    // prettier-ignore
     's': false,
+    // prettier-ignore
     'd': false,
+    // prettier-ignore
     'ArrowLeft': false,
+    // prettier-ignore
     'ArrowRight': false,
   };
 
@@ -288,10 +297,10 @@ async function boot() {
     // hard to read.
     const measure = ctx.measureText(text);
     const width = measure.width + 1;
-    const height =
-      "actualBoundingBoxAscent" in measure
-        ? measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent
-        : textSize * lineHeight - textSize;
+    // prop quote to disable terser :(
+    const height = measure["actualBoundingBoxAscent"]
+      ? measure["actualBoundingBoxAscent"] + measure["actualBoundingBoxDescent"]
+      : textSize * lineHeight - textSize;
 
     // Undo the scale / translation of the camera canvas since we want to draw independent of camera
     // 0,0 is now upper right, y+ is downwards
