@@ -119,7 +119,6 @@ async function boot() {
       }
 
       case "win": {
-
         // TODO: extract this into a "drawTextLines()" function
         const vp = ces.selectFirstData("viewport")!;
         const { ctx } = vp.dprCanvas;
@@ -180,31 +179,21 @@ async function boot() {
 
         const { target, paddle, ball } = game.levelObjects;
 
-        // Copy these out using Quoted Property access to tell terser to not
-        // mangle. Terser doesn't know these values come directly from the
-        // event.key DOM API.
-        const ArrowLeft = keyInputs['ArrowLeft'];
-        const ArrowRight = keyInputs['ArrowRight'];
-        const KeyW = keyInputs['w'];
-        const KeyA = keyInputs['a'];
-        const KeyS = keyInputs['s'];
-        const KeyD = keyInputs['d'];
-
-        if (ArrowLeft) rotatePaddleLeft(paddle!);
-        if (ArrowRight) rotatePaddleRight(paddle!);
+        if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle!);
+        if (keyInputs.ArrowRight) rotatePaddleRight(paddle!);
 
         const paddleAcel = vv2(0.2, 0);
         const origin = vv2();
         let angle = 0;
-        if (KeyW && KeyD) angle = Math.PI / 4;
-        else if (KeyW && KeyA) angle = Math.PI * (3 / 4);
-        else if (KeyS && KeyD) angle = -Math.PI / 4;
-        else if (KeyS && KeyA) angle = -Math.PI * (3 / 4);
-        else if (KeyW) angle = Math.PI / 2;
-        else if (KeyA) angle = Math.PI;
-        else if (KeyS) angle = -Math.PI / 2;
-        else if (KeyD) angle = 0;
-        if (angle !== 0 || KeyD)
+        if (keyInputs.w && keyInputs.d) angle = Math.PI / 4;
+        else if (keyInputs.w && keyInputs.a) angle = Math.PI * (3 / 4);
+        else if (keyInputs.s && keyInputs.d) angle = -Math.PI / 4;
+        else if (keyInputs.s && keyInputs.a) angle = -Math.PI * (3 / 4);
+        else if (keyInputs.w) angle = Math.PI / 2;
+        else if (keyInputs.a) angle = Math.PI;
+        else if (keyInputs.s) angle = -Math.PI / 2;
+        else if (keyInputs.d) angle = 0;
+        if (angle !== 0 || keyInputs.d)
           movePaddle(paddle!, rotate2d(vv2(), paddleAcel, origin, angle));
 
         if (testWinCondition(target!, ball!)) {
@@ -247,7 +236,21 @@ async function boot() {
     (game as Mutable<typeof game>).ticks += 1;
   });
 
-  const keyInputs: { [K in Key | "w" | "a" | "s" | "d"]?: boolean } = {};
+  const keyInputs: {
+    [K in
+      | Extract<Key, Key.ArrowLeft | Key.ArrowRight>
+      | "w"
+      | "a"
+      | "s"
+      | "d"]: boolean;
+  } = {
+    'w': false,
+    'a': false,
+    's': false,
+    'd': false,
+    'ArrowLeft': false,
+    'ArrowRight': false,
+  };
 
   listen(window, "keydown", (ev) => {
     keyInputs[ev.key as keyof typeof keyInputs] = true;
