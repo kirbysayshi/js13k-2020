@@ -39,6 +39,39 @@ import { useUIRoot, listen, useRootElement } from "./dom";
 import { Ball, drawBall, moveAndMaybeBounceBall } from "./ball";
 import { setVelocity, rotate2d } from "./phys-utils";
 import { drawLevelTarget, LevelTarget, testWinCondition } from "./target";
+import { level1 } from "./level1";
+
+type GameStates = "boot" | "level" | "win" | "nextlevel";
+
+const game: {
+  // ticks spent in this state
+  readonly ticks: number;
+  readonly prev: null | GameStates;
+  readonly state: GameStates;
+  readonly level: number;
+  readonly levelObjects: {
+    paddle: Paddle | null;
+    ball: Ball | null;
+    target: LevelTarget | null;
+  };
+} = {
+  ticks: 0,
+  prev: null,
+  state: "boot",
+  level: 0,
+  levelObjects: {
+    paddle: null,
+    ball: null,
+    target: null,
+  },
+};
+
+function toState(next: typeof game["state"]) {
+  const g: Mutable<typeof game> = game;
+  g.prev = g.state;
+  g.state = next;
+  g.ticks = 0;
+}
 
 async function boot() {
   await loadAssets();
@@ -67,72 +100,139 @@ async function boot() {
     clearScreen();
   });
 
-  // TODO: make a component out of this?
   const screen = ces.selectFirstData("viewport")!;
-  const relativeViewArea = getValidPaddleArea(screen);
-
-  const paddle: Paddle = {
-    rads: 0,
-    width: (screen.vpWidth / 8) as ViewportUnits,
-    height: (screen.vpWidth / 16) as ViewportUnits,
-    int: {
-      acel: vv2(),
-      cpos: vv2(),
-      ppos: vv2(),
-    },
-  };
-
-  const ball: Ball = {
-    cpos: vv2(),
-    ppos: vv2(),
-    acel: vv2(),
-    width: (screen.vpWidth / 16) as ViewportUnits,
-    height: (screen.vpWidth / 16) as ViewportUnits,
-  };
-
-  const target: LevelTarget = {
-    int: { cpos: vv2(-10, -10), ppos: vv2(-10, -10), acel: vv2() },
-    dims: vv2(10, 10),
-  };
-
-  ball.acel.x = 0.1 as ViewportUnits;
-  ball.acel.y = 0.1 as ViewportUnits;
 
   // Draw "system" updated at 60fps
   drawStepSystems.push(function (ces, interp) {
-    drawLevelTarget(target, interp);
-    drawPaddle(paddle);
-    drawBall(ball, interp);
+    switch (game.state) {
+      case "boot": {
+        break;
+      }
+      case "level": {
+        const { target, paddle, ball } = game.levelObjects;
+        if (!target || !paddle || !ball) return;
+        drawLevelTarget(target!, interp);
+        drawPaddle(paddle!);
+        drawBall(ball!, interp);
+
+        break;
+      }
+
+      case "win": {
+        const vp = ces.selectFirstData("viewport")!;
+        const { ctx } = vp.dprCanvas;
+        ctx.save();
+        const maxLinesPerCanvas = 5;
+        const textSize = vp.height / maxLinesPerCanvas;
+        const lineHeight = 1.5;
+        ctx.font = `${textSize}px/${lineHeight} monospace`;
+        const text = "YOU\nWIN";
+
+        restoreNativeCanvasDrawing(vp);
+        ctx.fillStyle = "black";
+
+        let y = 0;
+        text.split("\n").forEach((line) => {
+          const measure = ctx.measureText(line);
+          const width = measure.width + 1;
+          const height =
+            "actualBoundingBoxAscent" in measure
+              ? measure.actualBoundingBoxAscent +
+                measure.actualBoundingBoxDescent
+              : textSize * lineHeight - textSize;
+          y += height;
+          ctx.fillText(
+            line,
+            toPixelUnits((vp.vpWidth / 2) as ViewportUnits) - width / 2,
+            y
+          );
+        });
+
+        ctx.restore();
+        break;
+      }
+
+      case "nextlevel": {
+        break;
+      }
+
+      default: {
+        const _n: never = game.state;
+      }
+    }
   });
 
   updateStepSystems.push((ces, dt) => {
-    if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle);
-    if (keyInputs.ArrowRight) rotatePaddleRight(paddle);
+    switch (game.state) {
+      case "boot": {
+        console.log("boot");
+        // TODO: tap / push a button to start
 
-    const paddleAcel = vv2(0.2, 0);
-    const origin = vv2();
-    let angle = 0;
-    if (keyInputs.w && keyInputs.d) angle = Math.PI / 4;
-    else if (keyInputs.w && keyInputs.a) angle = Math.PI * (3 / 4);
-    else if (keyInputs.s && keyInputs.d) angle = -Math.PI / 4;
-    else if (keyInputs.s && keyInputs.a) angle = -Math.PI * (3 / 4);
-    else if (keyInputs.w) angle = Math.PI / 2;
-    else if (keyInputs.a) angle = Math.PI;
-    else if (keyInputs.s) angle = -Math.PI / 2;
-    else if (keyInputs.d) angle = 0;
-    if (angle !== 0 || keyInputs.d)
-      movePaddle(paddle, rotate2d(vv2(), paddleAcel, origin, angle));
+        return toState("nextlevel");
+      }
+      case "level": {
+        if (game.ticks === 0) {
+          // initialize on first tick
+          (game as Mutable<typeof game>).levelObjects = level1();
+        }
 
-    solveDrag(paddle.int, 0.8);
+        const { target, paddle, ball } = game.levelObjects;
 
-    accelerate(paddle.int, dt);
-    inertia(paddle.int);
+        if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle!);
+        if (keyInputs.ArrowRight) rotatePaddleRight(paddle!);
 
-    moveAndMaybeBounceBall(ball, paddle, screen, dt);
+        const paddleAcel = vv2(0.2, 0);
+        const origin = vv2();
+        let angle = 0;
+        if (keyInputs.w && keyInputs.d) angle = Math.PI / 4;
+        else if (keyInputs.w && keyInputs.a) angle = Math.PI * (3 / 4);
+        else if (keyInputs.s && keyInputs.d) angle = -Math.PI / 4;
+        else if (keyInputs.s && keyInputs.a) angle = -Math.PI * (3 / 4);
+        else if (keyInputs.w) angle = Math.PI / 2;
+        else if (keyInputs.a) angle = Math.PI;
+        else if (keyInputs.s) angle = -Math.PI / 2;
+        else if (keyInputs.d) angle = 0;
+        if (angle !== 0 || keyInputs.d)
+          movePaddle(paddle!, rotate2d(vv2(), paddleAcel, origin, angle));
 
-    testWinCondition(target, ball);
+        if (testWinCondition(target!, ball!)) {
+          return toState("win");
+        }
+        break;
+      }
 
-    moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
+      case "win": {
+        if (game.ticks === 0) {
+          schedule(() => {
+            return toState("nextlevel");
+          }, 5000);
+        }
+        break;
+      }
+
+      case "nextlevel": {
+        const g: Mutable<typeof game> = game;
+        g.level += 1;
+        return toState("level");
+      }
+
+      default: {
+        const _n: never = game.state;
+      }
+    }
+
+    const { target, paddle, ball } = game.levelObjects;
+    if (target && paddle && ball) {
+      solveDrag(paddle.int, 0.8);
+
+      accelerate(paddle.int, dt);
+      inertia(paddle.int);
+
+      moveAndMaybeBounceBall(ball, paddle, screen, dt);
+      moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
+    }
+
+    (game as Mutable<typeof game>).ticks += 1;
   });
 
   const keyInputs: { [K in Key | "w" | "a" | "s" | "d"]?: boolean } = {};

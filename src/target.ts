@@ -51,7 +51,5 @@ export function testWinCondition(target: LevelTarget, ball: Ball) {
     }
   );
 
-  if (result) {
-    alert('you won!')
-  }
+  return !!result;
 }

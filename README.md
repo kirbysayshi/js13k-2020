@@ -48,11 +48,13 @@ Tasks
 - [x] Ball -> Target colliding === WIN
 - [x] Camera Movement
 - [x] Convert paddle to new camera system
-- [ ] Ball -> Target Collidin === Win Once (/ reset)
+- [x] Ball -> Target Collidin === Win Once (/ reset)
 - [ ] Ball + Environment Obstacle Colliding
 - [ ] Prevent ball from accelerating when colliding...
 - [ ] Prevent ball tunneling when colliding
-
+- [ ] Arrow / Marker to show which direction the ball/signal and target/destination is in
+- [ ] Touch Knob controls for mobile
+- [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it.
 
 DevLog
 ------
@@ -88,3 +90,7 @@ Spent forever figuring out a "camera". The player needs to be able to explore in
 ## 2020-08-31
 
 Converted all rendering to use a basic camera projection! We're back at day 2 or so, but now the player can move around the world freely. Even got text working too.
+
+## 2020-09-01
+
+The game starts, plays level 1, then shows a WIN screen, then resets!
