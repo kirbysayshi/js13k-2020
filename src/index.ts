@@ -39,9 +39,10 @@ import { useUIRoot, listen, useRootElement } from "./dom";
 import { Ball, drawBall, moveAndMaybeBounceBall } from "./ball";
 import { setVelocity, rotate2d } from "./phys-utils";
 import { drawLevelTarget, LevelTarget, testWinCondition } from "./target";
-import { level1 } from "./level1";
+import { level01 } from "./level01";
+import { level02 } from './level02';
 
-type GameStates = "boot" | "level" | "win" | "nextlevel";
+type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
 
 const game: {
   // ticks spent in this state
@@ -58,7 +59,7 @@ const game: {
   ticks: 0,
   prev: null,
   state: "boot",
-  level: 0,
+  level: -1,
   levelObjects: {
     paddle: null,
     ball: null,
@@ -157,6 +158,11 @@ async function boot() {
         break;
       }
 
+      case "thanks": {
+        console.log('thanks!');
+        break;
+      }
+
       default: {
         const _n: never = game.state;
       }
@@ -174,7 +180,19 @@ async function boot() {
       case "level": {
         if (game.ticks === 0) {
           // initialize on first tick
-          (game as Mutable<typeof game>).levelObjects = level1();
+
+          const levels = [
+            level01,
+            level02
+          ];
+
+          const level = levels[game.level];
+
+          if (!level) {
+            return toState('thanks');
+          }
+
+          (game as Mutable<typeof game>).levelObjects = level();
         }
 
         const { target, paddle, ball } = game.levelObjects;
@@ -214,7 +232,15 @@ async function boot() {
       case "nextlevel": {
         const g: Mutable<typeof game> = game;
         g.level += 1;
+        g.levelObjects.ball = null;
+        g.levelObjects.paddle = null;
+        g.levelObjects.target = null;
         return toState("level");
+      }
+
+      case "thanks": {
+        // animation to tally up scores?
+        break;
       }
 
       default: {

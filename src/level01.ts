@@ -3,9 +3,10 @@ import { ViewportUnits, vv2 } from "./viewport";
 import { Ball } from "./ball";
 import { LevelTarget } from "./target";
 import { useCES } from "./components";
+import { translate } from "pocket-physics";
 
 
-export function level1 () {
+export function level01 () {
   const ces = useCES();
   const screen = ces.selectFirstData("viewport")!;
 
@@ -29,9 +30,11 @@ export function level1 () {
   };
 
   const target: LevelTarget = {
-    int: { cpos: vv2(-10, -10), ppos: vv2(-10, -10), acel: vv2() },
+    int: { cpos: vv2(), ppos: vv2(), acel: vv2() },
     dims: vv2(10, 10),
   };
+
+  translate(vv2(-10,-10), target.int.cpos, target.int.ppos);
 
   ball.acel.x = 0.1 as ViewportUnits;
   ball.acel.y = 0.1 as ViewportUnits;
