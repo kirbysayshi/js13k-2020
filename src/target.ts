@@ -5,12 +5,13 @@ import {
   toPixelUnits,
   vv2,
   toProjectedPixels,
+  IntegratableVU,
 } from "./viewport";
 import { Ball } from "./ball";
 import { useCES } from "./components";
 
 export type LevelTarget = {
-  int: Integratable;
+  int: IntegratableVU;
   dims: ViewportUnitVector2;
 };
 

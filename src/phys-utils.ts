@@ -6,7 +6,8 @@ import {
   scale,
   Vector2,
   add,
-  set
+  set,
+  PointEdgeProjection
 } from "pocket-physics";
 
 export function setVelocity(cmp: Integratable, mag: number) {
@@ -34,4 +35,12 @@ export function rotate2d<V extends Vector2>(
   out.y = p0 * sinC + p1 * cosC + origin.y;
 
   return out;
+}
+
+export function makePointEdgeProjectionResult(): PointEdgeProjection {
+  return { distance: 0, similarity: 0, u: 0, projectedPoint: v2(), edgeNormal: v2() }
+}
+
+export function vd(v: Vector2) {
+  return `(${v.x}, ${v.y})`;
 }
