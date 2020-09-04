@@ -48,13 +48,23 @@ Tasks
 - [x] Ball -> Target colliding === WIN
 - [x] Camera Movement
 - [x] Convert paddle to new camera system
-- [x] Ball -> Target Collidin === Win Once (/ reset)
+- [x] Ball -> Target Colliding === Win Once (/ reset)
+- [x] Level 2
+- [x] End Game state
+- [x] Print out level name or number
+- [ ] Arrow / Marker to show which direction the ball/signal and target/destination is in
+- [ ] Background grid or texture to better communicate movement
 - [ ] Ball + Environment Obstacle Colliding
+- [ ] Color palette: paddle, ball, target, markers, text
+- [ ] Shorten radius of paddle?
 - [ ] Prevent ball from accelerating when colliding...
 - [ ] Prevent ball tunneling when colliding
-- [ ] Arrow / Marker to show which direction the ball/signal and target/destination is in
+- [ ] clear canvas below the "safe" upper box
 - [ ] Touch Knob controls for mobile
+- [ ] "Play Again" button on end screen?
+- [ ] A lose condition? Or just best time
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it.
+- [ ] End Game Screen with total times
 
 DevLog
 ------
@@ -94,3 +104,13 @@ Converted all rendering to use a basic camera projection! We're back at day 2 or
 ## 2020-09-01
 
 The game starts, plays level 1, then shows a WIN screen, then resets!
+
+After deploying, discovered that Terser was mangling both the keyboard codes (ArrowLeft, w, etc) and unknown APIs like TextMetrics `actualBoundingBoxAscent`. Work around is to quote the props. Also tried contributing this back to Terser: https://github.com/terser/terser/pull/811.
+
+## 2020-09-03
+
+Upgraded Terser after my contribution was accepted!
+
+There is now a level 2, even though it's barely different than level 1.
+
+Added some refactored text drawing and a timer per level. Started on ball/target markers: have off-screen detection working!
