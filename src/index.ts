@@ -11,6 +11,8 @@ import {
   UpdateStepSystem,
   DrawTimeHz,
   UpdateTimeHz,
+  DrawTimeDelta,
+  UpdateTimeDelta,
 } from "./components";
 import {
   ViewportUnitVector2,
@@ -24,55 +26,25 @@ import {
   toProjectedPixels,
   toViewportUnits,
   restoreNativeCanvasDrawing,
+  drawTextLines,
 } from "./viewport";
 import { useAsset, loadAssets } from "./asset-map";
 import { initDragListeners, dragStateSelector } from "./drag";
 import {
   drawPaddle,
-  Paddle,
   rotatePaddleLeft,
   rotatePaddleRight,
   getValidPaddleArea,
   movePaddle,
 } from "./paddle";
 import { useUIRoot, listen, useRootElement } from "./dom";
-import { Ball, drawBall, moveAndMaybeBounceBall } from "./ball";
+import { drawBall, moveAndMaybeBounceBall } from "./ball";
 import { setVelocity, rotate2d } from "./phys-utils";
-import { drawLevelTarget, LevelTarget, testWinCondition } from "./target";
+import { drawLevelTarget, testWinCondition } from "./target";
 import { level01 } from "./level01";
 import { level02 } from './level02';
-
-type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
-
-const game: {
-  // ticks spent in this state
-  readonly ticks: number;
-  readonly prev: null | GameStates;
-  readonly state: GameStates;
-  readonly level: number;
-  readonly levelObjects: {
-    paddle: Paddle | null;
-    ball: Ball | null;
-    target: LevelTarget | null;
-  };
-} = {
-  ticks: 0,
-  prev: null,
-  state: "boot",
-  level: -1,
-  levelObjects: {
-    paddle: null,
-    ball: null,
-    target: null,
-  },
-};
-
-function toState(next: typeof game["state"]) {
-  const g: Mutable<typeof game> = game;
-  g.prev = g.state;
-  g.state = next;
-  g.ticks = 0;
-}
+import { game, toState } from "./game-data";
+import { drawLevelUI } from "./level-ui";
 
 async function boot() {
   await loadAssets();
@@ -115,42 +87,13 @@ async function boot() {
         drawLevelTarget(target!, interp);
         drawPaddle(paddle!);
         drawBall(ball!, interp);
-
+        drawLevelUI(game, interp);
         break;
       }
 
       case "win": {
-        // TODO: extract this into a "drawTextLines()" function
         const vp = ces.selectFirstData("viewport")!;
-        const { ctx } = vp.dprCanvas;
-        ctx.save();
-        const maxLinesPerCanvas = 5;
-        const textSize = vp.height / maxLinesPerCanvas;
-        const lineHeight = 1.5;
-        ctx.font = `${textSize}px/${lineHeight} monospace`;
-        const text = "YOU\nWIN";
-
-        restoreNativeCanvasDrawing(vp);
-        ctx.fillStyle = "black";
-
-        let y = 0;
-        text.split("\n").forEach((line) => {
-          const measure = ctx.measureText(line);
-          const width = measure.width + 1;
-          // prop quote to disable terser :(
-          const height = measure.actualBoundingBoxAscent
-            ? measure.actualBoundingBoxAscent +
-              measure.actualBoundingBoxDescent
-            : textSize * lineHeight - textSize;
-          y += height;
-          ctx.fillText(
-            line,
-            toPixelUnits((vp.vpWidth / 2) as ViewportUnits) - width / 2,
-            y
-          );
-        });
-
-        ctx.restore();
+        drawTextLines('YOU\nWIN', vv2(vp.vpWidth / 2, 0), 'center', 5, 'black');
         break;
       }
 
@@ -300,52 +243,13 @@ async function boot() {
 
   // Draw the FPS as text on the canvas
   drawStepSystems.push((ces) => {
-    const screen = ces.selectFirstData("viewport")!;
     const fpsData = ces.selectFirstData("fps")!;
-    const text = fpsData.v.toFixed(2);
-
-    // How many lines of text do we want to be able to display on canvas?
-    // Ok, use that as the font size. This assumes the canvas size _ratio_ is fixed but
-    // the actual pixel dimensions are not.
-    const maxLinesPerCanvas = 44;
-    const textSize = screen.height / maxLinesPerCanvas;
-    const lineHeight = 1.5;
-    const { ctx } = screen.dprCanvas;
-
-    ctx.save();
-    ctx.fillStyle = "rgba(255,255,0,1)";
-    ctx.font = `${textSize}px/${lineHeight} monospace`;
-
-    // fillText uses textBaseline as coordinates. "alphabetic" textBaseline is default,
-    // so we attempt to compensate by subtracting the text size.
-    // For example, drawing "g" at 0,0 will result in only the decender showing on the
-    // canvas! We could change the baseline, but then text blocks / paragraphs would be
-    // hard to read.
-    const measure = ctx.measureText(text);
-    const width = measure.width + 1;
-    // prop quote to disable terser :(
-    const height = measure.actualBoundingBoxAscent
-      ? measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent
-      : textSize * lineHeight - textSize;
-
-    // Undo the scale / translation of the camera canvas since we want to draw independent of camera
-    // 0,0 is now upper right, y+ is downwards
-    restoreNativeCanvasDrawing(screen);
-
-    // Draw bottom right
-    // ctx.fillText(text,
-    //   toPixelUnits(screen.vpWidth) - width,
-    //   toPixelUnits(screen.vpHeight) - height,
-    // );
-
-    ctx.fillText(text, toPixelUnits(screen.vpWidth) - width, 0 + height);
-
-    ctx.restore();
+    drawTextLines(fpsData.v.toFixed(2), vv2(100, 0), 'right', 44, 'yellow');
   });
 
   const { stop } = Loop({
-    drawTime: 1000 / DrawTimeHz,
-    updateTime: 1000 / UpdateTimeHz,
+    drawTime: DrawTimeDelta,
+    updateTime: UpdateTimeDelta,
     update: (dt) => {
       // Increment scheduled actions.
       tick(dt);

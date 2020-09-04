@@ -129,6 +129,8 @@ export function narrowAssuredEntity<
 
 export const DrawTimeHz = 60 as const;
 export const UpdateTimeHz = 30 as const;
+export const DrawTimeDelta = 16.6666666 as const; // 1000 / DrawTimeHz;
+export const UpdateTimeDelta = 33.3333333 as const; // 1000 / UpdateTimeHz;
 
 // A system of an entity-component-system framework is simply a function that
 // is repeatedly called. We separate them into two types based on how often

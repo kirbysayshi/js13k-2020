@@ -128,6 +128,49 @@ export function clearScreen() {
   ctx.restore();
 }
 
+export function drawTextLines(
+  text: string,
+  start: ViewportUnitVector2,
+  alignment: "center" | "left" | "right",
+  maxLinesPerCanvas: number,
+  color: 'yellow' | 'black'
+) {
+  const ces = useCES();
+  const vp = ces.selectFirstData("viewport")!;
+  const { ctx } = vp.dprCanvas;
+  ctx.save();
+  const textSize = vp.height / maxLinesPerCanvas;
+  const lineHeight = 1.5;
+  ctx.font = `${textSize}px/${lineHeight} monospace`;
+
+  restoreNativeCanvasDrawing(vp);
+  ctx.fillStyle = color;
+
+  let y = toPixelUnits(start.y);
+  text.split("\n").forEach((line) => {
+    const measure = ctx.measureText(line);
+    const width = measure.width + 1;
+    // prop quote to disable terser :(
+    const height = measure.actualBoundingBoxAscent
+      ? measure.actualBoundingBoxAscent +
+        measure.actualBoundingBoxDescent
+      : textSize * lineHeight - textSize as Pixels;
+    y = y + height as Pixels;
+    ctx.fillText(
+      line,
+      alignment === 'center'
+        ? toPixelUnits(start.x) - width / 2
+        : alignment === 'left'
+          ? toPixelUnits(start.x)
+          : toPixelUnits(start.x) - width,
+      y
+    );
+  });
+
+  ctx.restore();
+}
+
+
 // TODO: account for flipped Y
 export function drawAsset(
   asset: HTMLImageElement,

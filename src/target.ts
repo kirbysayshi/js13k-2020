@@ -17,7 +17,6 @@ export type LevelTarget = {
 export function drawLevelTarget(target: LevelTarget, interp: number) {
   const vp = useCES().selectFirstData('viewport')!;
   const ctx = vp.dprCanvas.ctx;
-  // Camera?
   const { x, y } = target.int.cpos as ViewportUnitVector2;
   const halfWidth = (target.dims.x / 2) as ViewportUnits;
   const halfHeight = (target.dims.y / 2) as ViewportUnits;
