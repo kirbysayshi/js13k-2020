@@ -138,9 +138,9 @@ async function boot() {
           const measure = ctx.measureText(line);
           const width = measure.width + 1;
           // prop quote to disable terser :(
-          const height = measure["actualBoundingBoxAscent"]
-            ? measure["actualBoundingBoxAscent"] +
-              measure["actualBoundingBoxDescent"]
+          const height = measure.actualBoundingBoxAscent
+            ? measure.actualBoundingBoxAscent +
+              measure.actualBoundingBoxDescent
             : textSize * lineHeight - textSize;
           y += height;
           ctx.fillText(
@@ -324,8 +324,8 @@ async function boot() {
     const measure = ctx.measureText(text);
     const width = measure.width + 1;
     // prop quote to disable terser :(
-    const height = measure["actualBoundingBoxAscent"]
-      ? measure["actualBoundingBoxAscent"] + measure["actualBoundingBoxDescent"]
+    const height = measure.actualBoundingBoxAscent
+      ? measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent
       : textSize * lineHeight - textSize;
 
     // Undo the scale / translation of the camera canvas since we want to draw independent of camera
