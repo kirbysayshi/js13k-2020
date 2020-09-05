@@ -185,19 +185,8 @@ function drawPointer(
   const ctx = vp.dprCanvas.ctx;
   ctx.save();
 
-  // Draw marker
-  ctx.fillStyle = color;
-  ctx.arc(
-    toProjectedPixels(point.x, "x"),
-    toProjectedPixels(point.y, "y"),
-    toPixelUnits(10 as ViewportUnits),
-    0,
-    Math.PI * 2
-  );
-  ctx.fill();
-
   // Draw label
-  drawTextLinesInWorld(label, point, pin, 44, "black");
+  drawTextLinesInWorld(label, point, pin, 44, "black", 'yellow');
 
   ctx.restore();
 }

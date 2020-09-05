@@ -52,12 +52,15 @@ Tasks
 - [x] Level 2
 - [x] End Game state
 - [x] Print out level name or number
-- [ ] Arrow / Marker to show which direction the ball/signal and target/destination is in
+- [x] Arrow / Marker to show which direction the ball/signal and target/destination is in
+- [x] Arrow / Marker is just text label, maybe with a background rectangle color
 - [ ] Background grid or texture to better communicate movement
 - [ ] Ball + Environment Obstacle Colliding
+
 - [ ] Directional Accelerator collider: hit it and get sent flying positively?
-- [ ] Color palette: paddle, ball, target, markers, text
+- [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [ ] Shorten radius of paddle?
+- [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
 - [ ] Prevent ball from accelerating when colliding...
 - [ ] Prevent ball tunneling when colliding
 - [ ] clear canvas below the "safe" upper box

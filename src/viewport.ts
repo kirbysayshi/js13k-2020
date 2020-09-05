@@ -80,7 +80,7 @@ export function toPixelUnits(n: ViewportUnits) {
 
   // This causes jittering...
   // const px = Math.floor((n / vp.vpWidth) * cvs.width);
-  const px =(n / vp.vpWidth) * cvs.width;
+  const px = (n / vp.vpWidth) * cvs.width;
   return px as Pixels;
 }
 
@@ -142,17 +142,16 @@ export function drawTextLinesInViewport(
   maxLinesPerCanvas: number,
   color: "yellow" | "black"
 ) {
-
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
   const { camera } = vp;
 
   // translate "relative" viewport position to world coordinates
   const corrected = vv2();
-  corrected.x = camera.target.x - camera.frustrum.x as ViewportUnits;
-  corrected.y = camera.target.y + camera.frustrum.y as ViewportUnits;
+  corrected.x = (camera.target.x - camera.frustrum.x) as ViewportUnits;
+  corrected.y = (camera.target.y + camera.frustrum.y) as ViewportUnits;
   add(corrected, corrected, start);
-  
+
   drawTextLinesInWorld(text, corrected, alignment, maxLinesPerCanvas, color);
 }
 
@@ -161,11 +160,12 @@ export function drawTextLinesInWorld(
   start: ViewportUnitVector2,
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
-  color: "yellow" | "black"
+  color: "yellow" | "black",
+  bgcolor: "transparent" | string = "transparent"
 ) {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
-  const {camera} = vp;
+  const { camera } = vp;
   const { ctx } = vp.dprCanvas;
   ctx.save();
   const textSize = vp.height / maxLinesPerCanvas;
@@ -173,12 +173,10 @@ export function drawTextLinesInWorld(
   ctx.font = `${textSize}px/${lineHeight} monospace`;
 
   // Flip back to +y down to make text correct orientation
-  ctx.scale(1, -1)
-  ctx.fillStyle = color;
+  ctx.scale(1, -1);
 
-  const toReverseYProjected = (n: ViewportUnits) => toPixelUnits(
-    (n + (camera.target.y)) as ViewportUnits
-  );
+  const toReverseYProjected = (n: ViewportUnits) =>
+    toPixelUnits((n + camera.target.y) as ViewportUnits);
 
   let y = toReverseYProjected(-start.y as ViewportUnits);
   text.split("\n").forEach((line) => {
@@ -188,15 +186,22 @@ export function drawTextLinesInWorld(
       ? measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent
       : ((textSize * lineHeight - textSize) as Pixels);
     y = (y + height) as Pixels;
-    ctx.fillText(
-      line,
+
+    const x =
       alignment === "center"
-        ? toProjectedPixels(start.x, 'x') - width / 2
+        ? toProjectedPixels(start.x, "x") - width / 2
         : alignment === "left"
-        ? toProjectedPixels(start.x, 'x')
-        : toProjectedPixels(start.x, 'x') - width,
-      y
-    );
+        ? toProjectedPixels(start.x, "x")
+        : toProjectedPixels(start.x, "x") - width;
+
+    // TODO: add a padding?
+    if (bgcolor !== "transparent") {
+      ctx.fillStyle = bgcolor;
+      ctx.fillRect(x, y, width, -height);
+    }
+
+    ctx.fillStyle = color;
+    ctx.fillText(line, x, y);
   });
 
   ctx.restore();
