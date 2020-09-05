@@ -55,10 +55,12 @@ Tasks
 - [x] Arrow / Marker to show which direction the ball/signal and target/destination is in
 - [x] Arrow / Marker is just text label, maybe with a background rectangle color
 - [x] Background grid or texture to better communicate movement
-- [ ] Ball + Environment Obstacle Colliding
+- [x] Ball + Environment Obstacle Colliding
 - [ ] Directional Accelerator collider: hit it and get sent flying positively?
+- [ ] Should there be a velocity boost for the paddle movement?
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [ ] Shorten radius of paddle?
+- [ ] Should the paddle be able to collide with edges? Or maybe just some edges?
 - [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
 - [ ] Prevent ball from accelerating when colliding...
 - [ ] Prevent ball tunneling when colliding
@@ -123,3 +125,9 @@ Added some refactored text drawing and a timer per level. Started on ball/target
 Not as much time to work today. But got the arrow markers at least positioned and writing text correctly. No shape yet. The majority of the time was actually spent reworking how text is drawn, moving it from being viewport-relative to world-relative.
 
 There is a slight judder when rendering (especially the YOU WIN text) that I think is due to floating-point precision. I'm flooring the values before drawing, but they're bouncing between pixel boundaries even when static... if you don't floor, then the juddering stops. Keep it like that then!
+
+## 2020-09-05
+
+Drew a background grid so you can actually tell that the camera / paddle is moving, and not the target / signal. Eventually I'll make this a generated starfield or something.
+
+There are level obstacles (Edges)! And the bouncing is looking great (and handles bullets), too! I'll need to use this same method for the paddle.

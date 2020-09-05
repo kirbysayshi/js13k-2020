@@ -1,6 +1,7 @@
 import { Paddle } from "./paddle";
 import { Ball } from "./ball";
 import { LevelTarget } from "./target";
+import { Edge } from "./edge";
 
 type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
 
@@ -14,6 +15,7 @@ export type GameData = {
     paddle: Paddle | null;
     ball: Ball | null;
     target: LevelTarget | null;
+    edges: Edge[] | null;
   };
 };
 
@@ -22,10 +24,12 @@ export const game: GameData = {
   prev: null,
   state: "boot",
   level: -1,
+  // level: 1, // start at level 3
   levelObjects: {
     paddle: null,
     ball: null,
     target: null,
+    edges: null,
   },
 };
 

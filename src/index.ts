@@ -47,6 +47,8 @@ import { level02 } from './level02';
 import { game, toState } from "./game-data";
 import { drawLevelUI } from "./level-ui";
 import { drawBGForCamera } from "./bg";
+import { level03 } from "./level03";
+import { drawEdges, processEdges } from "./edge";
 
 async function boot() {
   await loadAssets();
@@ -84,12 +86,13 @@ async function boot() {
         break;
       }
       case "level": {
-        const { target, paddle, ball } = game.levelObjects;
+        const { target, paddle, ball, edges } = game.levelObjects;
         if (!target || !paddle || !ball) return;
         drawBGForCamera();
         drawLevelTarget(target!, interp);
         drawPaddle(paddle!);
         drawBall(ball!, interp);
+        if (edges) drawEdges(edges);
         drawLevelUI(game, interp);
         break;
       }
@@ -129,7 +132,8 @@ async function boot() {
 
           const levels = [
             level01,
-            level02
+            level02,
+            level03,
           ];
 
           const level = levels[game.level];
@@ -194,7 +198,7 @@ async function boot() {
       }
     }
 
-    const { target, paddle, ball } = game.levelObjects;
+    const { target, paddle, ball, edges } = game.levelObjects;
     if (target && paddle && ball) {
       solveDrag(paddle.int, 0.8);
 
@@ -202,6 +206,7 @@ async function boot() {
       inertia(paddle.int);
 
       moveAndMaybeBounceBall(ball, paddle, screen, dt);
+      if (edges) processEdges(edges, ball)
       moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
     }
 

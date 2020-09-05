@@ -4,9 +4,10 @@ import { Ball } from "./ball";
 import { LevelTarget } from "./target";
 import { useCES } from "./components";
 import { translate } from "pocket-physics";
+import { Edge } from "./edge";
 
 
-export function level02 () {
+export function level03 () {
   const ces = useCES();
   const screen = ces.selectFirstData("viewport")!;
 
@@ -34,12 +35,21 @@ export function level02 () {
     dims: vv2(10, 10),
   };
 
-  translate(vv2(-30,-10), target.int.cpos, target.int.ppos);
+  translate(vv2(-10,-10), target.int.cpos, target.int.ppos);
 
-  ball.acel.x = 0.1 as ViewportUnits;
-  ball.acel.y = 0.1 as ViewportUnits;
+  ball.acel.x = 0.5 as ViewportUnits;
+  ball.acel.y = 0.5 as ViewportUnits;
+
+  // Add some obstacles
+
+  const edges: Edge[] = [
+    // vertical line, normal dir is important!
+    { e0:  vv2(30, -10), e1: vv2(30, 40) },
+    { e0:  vv2(20, 50), e1: vv2(-20, 50) }
+  ]
 
   return {
-    ball, paddle, target, edges: null
+    ball, paddle, target, edges
   }
 }
+

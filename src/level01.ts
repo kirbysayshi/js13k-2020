@@ -40,6 +40,6 @@ export function level01 () {
   ball.acel.y = 0.1 as ViewportUnits;
 
   return {
-    ball, paddle, target,
+    ball, paddle, target, edges: null
   }
 }
