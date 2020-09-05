@@ -55,6 +55,7 @@ Tasks
 - [ ] Arrow / Marker to show which direction the ball/signal and target/destination is in
 - [ ] Background grid or texture to better communicate movement
 - [ ] Ball + Environment Obstacle Colliding
+- [ ] Directional Accelerator collider: hit it and get sent flying positively?
 - [ ] Color palette: paddle, ball, target, markers, text
 - [ ] Shorten radius of paddle?
 - [ ] Prevent ball from accelerating when colliding...
@@ -114,3 +115,9 @@ Upgraded Terser after my contribution was accepted!
 There is now a level 2, even though it's barely different than level 1.
 
 Added some refactored text drawing and a timer per level. Started on ball/target markers: have off-screen detection working!
+
+## 2020-09-04
+
+Not as much time to work today. But got the arrow markers at least positioned and writing text correctly. No shape yet. The majority of the time was actually spent reworking how text is drawn, moving it from being viewport-relative to world-relative.
+
+There is a slight judder when rendering (especially the YOU WIN text) that I think is due to floating-point precision. I'm flooring the values before drawing, but they're bouncing between pixel boundaries even when static... if you don't floor, then the juddering stops. Keep it like that then!

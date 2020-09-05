@@ -26,7 +26,8 @@ import {
   toProjectedPixels,
   toViewportUnits,
   restoreNativeCanvasDrawing,
-  drawTextLines,
+  drawTextLinesInViewport,
+  drawTextLinesInWorld,
 } from "./viewport";
 import { useAsset, loadAssets } from "./asset-map";
 import { initDragListeners, dragStateSelector } from "./drag";
@@ -93,7 +94,7 @@ async function boot() {
 
       case "win": {
         const vp = ces.selectFirstData("viewport")!;
-        drawTextLines('YOU\nWIN', vv2(vp.vpWidth / 2, 0), 'center', 5, 'black');
+        drawTextLinesInViewport('YOU\nWIN', vv2(vp.vpWidth / 2, 0), 'center', 5, 'black');
         break;
       }
 
@@ -244,7 +245,7 @@ async function boot() {
   // Draw the FPS as text on the canvas
   drawStepSystems.push((ces) => {
     const fpsData = ces.selectFirstData("fps")!;
-    drawTextLines(fpsData.v.toFixed(2), vv2(100, 0), 'right', 44, 'yellow');
+    drawTextLinesInViewport(fpsData.v.toFixed(2), vv2(100, 0), 'right', 44, 'yellow');
   });
 
   const { stop } = Loop({

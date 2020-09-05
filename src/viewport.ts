@@ -14,6 +14,7 @@ import {
   sub,
   copy,
   scale,
+  add,
 } from "pocket-physics";
 import { AssuredEntityId } from "./ces";
 
@@ -36,7 +37,7 @@ export type IntegratableVU = {
   cpos: ViewportUnitVector2;
   ppos: ViewportUnitVector2;
   acel: ViewportUnitVector2;
-}
+};
 
 type Camera = {
   // if mode === center, helf width offset from center
@@ -57,7 +58,7 @@ export type ViewportCmp = {
   camera: Camera;
 };
 
-function toPixelVec(out: Vector2, v: ViewportUnitVector2) {
+function toPixelUnitsVec(out: Vector2, v: ViewportUnitVector2) {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
   const cvs = vp.dprCanvas;
@@ -77,19 +78,18 @@ export function toPixelUnits(n: ViewportUnits) {
   const vp = ces.selectFirstData("viewport")!;
   const cvs = vp.dprCanvas;
 
-  const px = Math.floor((n / vp.vpWidth) * cvs.width);
+  // This causes jittering...
+  // const px = Math.floor((n / vp.vpWidth) * cvs.width);
+  const px =(n / vp.vpWidth) * cvs.width;
   return px as Pixels;
 }
 
 // Account for the camera position when computing pixel values
-export function toProjectedPixels(
-  n: ViewportUnits,
-  axis: "x" | "y",
-) {
+export function toProjectedPixels(n: ViewportUnits, axis: "x" | "y") {
   // TODO: perhaps make this a method on camera instead to avoid so many lookups.
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
-  const {camera} = vp;
+  const { camera } = vp;
   return toPixelUnits(
     (n - (axis === "x" ? camera.target.x : camera.target.y)) as ViewportUnits
   );
@@ -134,48 +134,73 @@ export function clearScreen() {
   ctx.restore();
 }
 
-export function drawTextLines(
+// TODO: this is currently "absolutely" positioned only, and not camera aware. Make it camera aware. units=world|viewport?
+export function drawTextLinesInViewport(
   text: string,
   start: ViewportUnitVector2,
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
-  color: 'yellow' | 'black'
+  color: "yellow" | "black"
+) {
+
+  const ces = useCES();
+  const vp = ces.selectFirstData("viewport")!;
+  const { camera } = vp;
+
+  // translate "relative" viewport position to world coordinates
+  const corrected = vv2();
+  corrected.x = camera.target.x - camera.frustrum.x as ViewportUnits;
+  corrected.y = camera.target.y + camera.frustrum.y as ViewportUnits;
+  add(corrected, corrected, start);
+  
+  drawTextLinesInWorld(text, corrected, alignment, maxLinesPerCanvas, color);
+}
+
+export function drawTextLinesInWorld(
+  text: string,
+  start: ViewportUnitVector2,
+  alignment: "center" | "left" | "right",
+  maxLinesPerCanvas: number,
+  color: "yellow" | "black"
 ) {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
+  const {camera} = vp;
   const { ctx } = vp.dprCanvas;
   ctx.save();
   const textSize = vp.height / maxLinesPerCanvas;
   const lineHeight = 1.5;
   ctx.font = `${textSize}px/${lineHeight} monospace`;
 
-  restoreNativeCanvasDrawing(vp);
+  // Flip back to +y down to make text correct orientation
+  ctx.scale(1, -1)
   ctx.fillStyle = color;
 
-  let y = toPixelUnits(start.y);
+  const toReverseYProjected = (n: ViewportUnits) => toPixelUnits(
+    (n + (camera.target.y)) as ViewportUnits
+  );
+
+  let y = toReverseYProjected(-start.y as ViewportUnits);
   text.split("\n").forEach((line) => {
     const measure = ctx.measureText(line);
     const width = measure.width + 1;
-    // prop quote to disable terser :(
     const height = measure.actualBoundingBoxAscent
-      ? measure.actualBoundingBoxAscent +
-        measure.actualBoundingBoxDescent
-      : textSize * lineHeight - textSize as Pixels;
-    y = y + height as Pixels;
+      ? measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent
+      : ((textSize * lineHeight - textSize) as Pixels);
+    y = (y + height) as Pixels;
     ctx.fillText(
       line,
-      alignment === 'center'
-        ? toPixelUnits(start.x) - width / 2
-        : alignment === 'left'
-          ? toPixelUnits(start.x)
-          : toPixelUnits(start.x) - width,
+      alignment === "center"
+        ? toProjectedPixels(start.x, 'x') - width / 2
+        : alignment === "left"
+        ? toProjectedPixels(start.x, 'x')
+        : toProjectedPixels(start.x, 'x') - width,
       y
     );
   });
 
   ctx.restore();
 }
-
 
 // TODO: account for flipped Y
 export function drawAsset(

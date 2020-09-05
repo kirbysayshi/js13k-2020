@@ -99,6 +99,8 @@ export function drawPaddle(p: Paddle) {
   );
   ctx.restore();
 
+  // console.log(`x ${x} translate ${toProjectedPixels(x, 'x')} rotate ${Math.PI / 2 + angle} fill ${0 - toPixelUnits(halfWidth)}`)
+
   drawEdge(ctx, { p0, p1 }, 1);
   drawIntegratable(ctx, p.int, 1);
 }
