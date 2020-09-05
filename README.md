@@ -54,9 +54,8 @@ Tasks
 - [x] Print out level name or number
 - [x] Arrow / Marker to show which direction the ball/signal and target/destination is in
 - [x] Arrow / Marker is just text label, maybe with a background rectangle color
-- [ ] Background grid or texture to better communicate movement
+- [x] Background grid or texture to better communicate movement
 - [ ] Ball + Environment Obstacle Colliding
-
 - [ ] Directional Accelerator collider: hit it and get sent flying positively?
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [ ] Shorten radius of paddle?

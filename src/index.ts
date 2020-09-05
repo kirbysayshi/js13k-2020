@@ -46,6 +46,7 @@ import { level01 } from "./level01";
 import { level02 } from './level02';
 import { game, toState } from "./game-data";
 import { drawLevelUI } from "./level-ui";
+import { drawBGForCamera } from "./bg";
 
 async function boot() {
   await loadAssets();
@@ -85,6 +86,7 @@ async function boot() {
       case "level": {
         const { target, paddle, ball } = game.levelObjects;
         if (!target || !paddle || !ball) return;
+        drawBGForCamera();
         drawLevelTarget(target!, interp);
         drawPaddle(paddle!);
         drawBall(ball!, interp);
