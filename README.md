@@ -62,13 +62,14 @@ Tasks
 - [ ] Shorten radius of paddle?
 - [ ] Should the paddle be able to collide with edges? Or maybe just some edges?
 - [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
+- [ ] Draw projection of ball direction + velocity (ray)
 - [ ] Prevent ball from accelerating when colliding...
-- [ ] Prevent ball tunneling when colliding
+- [ ] Prevent ball tunneling when colliding with paddle
 - [ ] clear canvas below the "safe" upper box
 - [ ] Touch Knob controls for mobile
 - [ ] "Play Again" button on end screen?
 - [ ] A lose condition? Or just best time
-- [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it.
+- [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
 - [ ] End Game Screen with total times
 
 DevLog

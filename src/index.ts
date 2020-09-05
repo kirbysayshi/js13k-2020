@@ -1,63 +1,45 @@
+import { accelerate, inertia, solveDrag } from "pocket-physics";
 import ScienceHalt from "science-halt";
-import { accelerate, inertia, v2, translate, solveDrag } from "pocket-physics";
-import { Key } from "ts-key-enum";
-
-import { schedule, tick } from "./time";
-import { Loop } from "./loop";
-
+import { loadAssets } from "./asset-map";
+import { drawBall, moveAndMaybeBounceBall } from "./ball";
+import { drawBGForCamera } from "./bg";
 import {
-  useCES,
   DrawStepSystem,
-  UpdateStepSystem,
-  DrawTimeHz,
-  UpdateTimeHz,
   DrawTimeDelta,
+  UpdateStepSystem,
   UpdateTimeDelta,
+  useCES,
 } from "./components";
-import {
-  ViewportUnitVector2,
-  drawAsset,
-  ViewportUnits,
-  computeWindowResize,
-  vv2,
-  moveViewportCamera,
-  toPixelUnits,
-  clearScreen,
-  toProjectedPixels,
-  toViewportUnits,
-  restoreNativeCanvasDrawing,
-  drawTextLinesInViewport,
-  drawTextLinesInWorld,
-} from "./viewport";
-import { useAsset, loadAssets } from "./asset-map";
-import { initDragListeners, dragStateSelector } from "./drag";
+import { drawEdges, processEdges } from "./edge";
+import { game, toState } from "./game-data";
+import { useKeyInputs } from "./keys";
+import { drawLevelUI } from "./level-ui";
+import { level01 } from "./level01";
+import { level02 } from "./level02";
+import { level03 } from "./level03";
+import { Loop } from "./loop";
 import {
   drawPaddle,
+  movePaddle,
   rotatePaddleLeft,
   rotatePaddleRight,
-  getValidPaddleArea,
-  movePaddle,
 } from "./paddle";
-import { useUIRoot, listen, useRootElement } from "./dom";
-import { drawBall, moveAndMaybeBounceBall } from "./ball";
-import { setVelocity, rotate2d } from "./phys-utils";
+import { rotate2d } from "./phys-utils";
 import { drawLevelTarget, testWinCondition } from "./target";
-import { level01 } from "./level01";
-import { level02 } from './level02';
-import { game, toState } from "./game-data";
-import { drawLevelUI } from "./level-ui";
-import { drawBGForCamera } from "./bg";
-import { level03 } from "./level03";
-import { drawEdges, processEdges } from "./edge";
+import { schedule, tick } from "./time";
+import {
+  clearScreen,
+  computeWindowResize,
+  drawTextLinesInViewport,
+  moveViewportCamera,
+  ViewportUnitVector2,
+  vv2,
+} from "./viewport";
+import { drawFps, onFPS } from "./fps";
 
 async function boot() {
   await loadAssets();
 
-  // A component=entity-system(s) is a pattern for managing the lifecycles and
-  // structures of differently structured data. It can be thought of as a
-  // document database. Each entity (document) has a numeric id. Specific
-  // fields and combinations of fields across the entire Store can be queried
-  // by `select`ing those fields, as seen below.
   const ces = useCES();
 
   // create the initial viewport and sizing
@@ -99,7 +81,13 @@ async function boot() {
 
       case "win": {
         const vp = ces.selectFirstData("viewport")!;
-        drawTextLinesInViewport('YOU\nWIN', vv2(vp.vpWidth / 2, 0), 'center', 5, 'black');
+        drawTextLinesInViewport(
+          "YOU\nWIN",
+          vv2(vp.vpWidth / 2, 0),
+          "center",
+          5,
+          "black"
+        );
         break;
       }
 
@@ -108,7 +96,7 @@ async function boot() {
       }
 
       case "thanks": {
-        console.log('thanks!');
+        console.log("thanks!");
         break;
       }
 
@@ -130,16 +118,12 @@ async function boot() {
         if (game.ticks === 0) {
           // initialize on first tick
 
-          const levels = [
-            level01,
-            level02,
-            level03,
-          ];
+          const levels = [level01, level02, level03];
 
           const level = levels[game.level];
 
           if (!level) {
-            return toState('thanks');
+            return toState("thanks");
           }
 
           (game as Mutable<typeof game>).levelObjects = level();
@@ -147,6 +131,7 @@ async function boot() {
 
         const { target, paddle, ball } = game.levelObjects;
 
+        const keyInputs = useKeyInputs();
         if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle!);
         if (keyInputs.ArrowRight) rotatePaddleRight(paddle!);
 
@@ -206,54 +191,14 @@ async function boot() {
       inertia(paddle.int);
 
       moveAndMaybeBounceBall(ball, paddle, screen, dt);
-      if (edges) processEdges(edges, ball)
+      if (edges) processEdges(edges, ball);
       moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
     }
 
     (game as Mutable<typeof game>).ticks += 1;
   });
 
-  // These keys must be quoted to force terser to keep these keys as is. It
-  // doesn't know they come from the DOM Keyboard API. Prettier wants to remove
-  // the quotes, so disable it.
-  const keyInputs: {
-    [K in
-      | Extract<Key, Key.ArrowLeft | Key.ArrowRight>
-      | "w"
-      | "a"
-      | "s"
-      | "d"]: boolean;
-  } = {
-    // prettier-ignore
-    'w': false,
-    // prettier-ignore
-    'a': false,
-    // prettier-ignore
-    's': false,
-    // prettier-ignore
-    'd': false,
-    // prettier-ignore
-    'ArrowLeft': false,
-    // prettier-ignore
-    'ArrowRight': false,
-  };
-
-  listen(window, "keydown", (ev) => {
-    keyInputs[ev.key as keyof typeof keyInputs] = true;
-  });
-
-  listen(window, "keyup", (ev) => {
-    keyInputs[ev.key as keyof typeof keyInputs] = false;
-  });
-
-  // fps entity
-  ces.entity([{ k: "fps", v: 60 }]);
-
-  // Draw the FPS as text on the canvas
-  drawStepSystems.push((ces) => {
-    const fpsData = ces.selectFirstData("fps")!;
-    drawTextLinesInViewport(fpsData.v.toFixed(2), vv2(100, 0), 'right', 44, 'yellow');
-  });
+  drawStepSystems.push(drawFps)
 
   const { stop } = Loop({
     drawTime: DrawTimeDelta,
@@ -290,12 +235,6 @@ function onPanic() {
   if (process.env.NODE_ENV !== "production") {
     console.log("panic!");
   }
-}
-
-function onFPS(fps: number) {
-  const ces = useCES();
-  const data = ces.selectFirstData("fps")!;
-  data.v = fps;
 }
 
 boot();
