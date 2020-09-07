@@ -11,7 +11,7 @@ import {
   useCES,
 } from "./components";
 import { drawEdges, processEdges } from "./edge";
-import { game, toState } from "./game-data";
+import { game, toState, ticksAsSeconds, formatSeconds } from "./game-data";
 import { useKeyInputs } from "./keys";
 import { drawLevelUI } from "./level-ui";
 import { level01 } from "./level01";
@@ -81,12 +81,15 @@ async function boot() {
 
       case "win": {
         const vp = ces.selectFirstData("viewport")!;
+        const levelTime = formatSeconds(
+          ticksAsSeconds(game.levelTicks[game.level])
+        );
         drawTextLinesInViewport(
-          "YOU\nWIN",
-          vv2(vp.vpWidth / 2, 0),
+          `Mission\nCompleted!\n${levelTime}s`,
+          vv2(vp.vpWidth / 2, -10),
           "center",
-          5,
-          "black"
+          15,
+          "yellow"
         );
         break;
       }
@@ -96,6 +99,23 @@ async function boot() {
       }
 
       case "thanks": {
+
+        const totalTicks = game.levelTicks.reduce((total, ticks) => {
+          total += ticks;
+          return total;
+        }, 0);
+
+        const seconds = formatSeconds(ticksAsSeconds(totalTicks));
+
+        const vp = ces.selectFirstData("viewport")!;
+        drawTextLinesInViewport(
+          `The SIGNAL\nmade it,\nthanks to you!\nTotal:\n${seconds}s`,
+          vv2(vp.vpWidth / 2, -10),
+          "center",
+          15,
+          "yellow"
+        );
+
         console.log("thanks!");
         break;
       }
@@ -150,6 +170,9 @@ async function boot() {
           movePaddle(paddle!, rotate2d(vv2(), paddleAcel, origin, angle));
 
         if (testWinCondition(target!, ball!)) {
+          // Stash level time now, since ticks are reset on state change.
+          const g: Mutable<typeof game> = game;
+          g.levelTicks[g.level] = g.ticks;
           return toState("win");
         }
         break;
@@ -198,7 +221,7 @@ async function boot() {
     (game as Mutable<typeof game>).ticks += 1;
   });
 
-  drawStepSystems.push(drawFps)
+  drawStepSystems.push(drawFps);
 
   const { stop } = Loop({
     drawTime: DrawTimeDelta,

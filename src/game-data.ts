@@ -2,6 +2,7 @@ import { Paddle } from "./paddle";
 import { Ball } from "./ball";
 import { LevelTarget } from "./target";
 import { Edge } from "./edge";
+import { UpdateTimeDelta } from "./components";
 
 type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
 
@@ -17,6 +18,7 @@ export type GameData = {
     target: LevelTarget | null;
     edges: Edge[] | null;
   };
+  readonly levelTicks: number[];
 };
 
 export const game: GameData = {
@@ -31,6 +33,7 @@ export const game: GameData = {
     target: null,
     edges: null,
   },
+  levelTicks: [],
 };
 
 export function toState(next: typeof game["state"]) {
@@ -38,4 +41,12 @@ export function toState(next: typeof game["state"]) {
   g.prev = g.state;
   g.state = next;
   g.ticks = 0;
+}
+
+export function ticksAsSeconds(ticks: number): number {
+  return ((ticks * UpdateTimeDelta) / 1000);
+}
+
+export function formatSeconds(s: number) {
+  return s.toFixed(3);
 }

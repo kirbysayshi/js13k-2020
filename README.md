@@ -56,9 +56,15 @@ Tasks
 - [x] Arrow / Marker is just text label, maybe with a background rectangle color
 - [x] Background grid or texture to better communicate movement
 - [x] Ball + Environment Obstacle Colliding
-- [ ] Directional Accelerator collider: hit it and get sent flying positively?
-- [ ] Should there be a velocity boost for the paddle movement?
+- [x] End Game Screen with total time
+- [ ] Title Screen / Summary
+- [ ] Generate star field instead of grid
+- [ ] Directional Accelerator collider: hit it and get sent flying positively? I think the camera will need to follow the ball for a time...
+- [ ] One-way edge: pass through (dotted line) but bounces once on the other side
+- [x] BUG: signal/target labels hide themselves on the bottom (too far down).
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
+- [ ] Should there be a velocity boost for the paddle movement?
+- [ ] End Game screen has list of all times per level (+par?)
 - [ ] Shorten radius of paddle?
 - [ ] Should the paddle be able to collide with edges? Or maybe just some edges?
 - [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
@@ -66,11 +72,11 @@ Tasks
 - [ ] Prevent ball from accelerating when colliding...
 - [ ] Prevent ball tunneling when colliding with paddle
 - [ ] clear canvas below the "safe" upper box
-- [ ] Touch Knob controls for mobile
+- [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [ ] "Play Again" button on end screen?
 - [ ] A lose condition? Or just best time
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
-- [ ] End Game Screen with total times
+
 
 DevLog
 ------
@@ -132,3 +138,13 @@ There is a slight judder when rendering (especially the YOU WIN text) that I thi
 Drew a background grid so you can actually tell that the camera / paddle is moving, and not the target / signal. Eventually I'll make this a generated starfield or something.
 
 There are level obstacles (Edges)! And the bouncing is looking great (and handles bullets), too! I'll need to use this same method for the paddle.
+
+Took time to attempt to choose some colors, and make some mockups in Figma. I am so bad at design.
+
+## 2020-09-06
+
+Spent more time in Figma, but might just use a two color solution since I'm so bad at colors. And probably use simple shapes for the target and signal.
+
+Text rendering is still fairly broken and inconsistent on canvas. Font are hard, for sure, but the bounding boxes are just off by 1 or two pixels too. I forgot that canvas font rendering at 0,0 is the baseline, not the top bounding box. So it's very hard to place text accurately.
+
+Added the end game summary screen. Needs more polish, but it's there! All mission/levels have a total time.

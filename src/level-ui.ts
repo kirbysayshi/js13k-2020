@@ -7,8 +7,9 @@ import {
   toProjectedPixels,
   ViewportUnits,
   drawTextLinesInWorld,
+  predictTextHeight,
 } from "./viewport";
-import { GameData } from "./game-data";
+import { GameData, ticksAsSeconds, formatSeconds } from "./game-data";
 import {
   v2,
   overlapAABBAABB,
@@ -22,7 +23,7 @@ import { makePointEdgeProjectionResult, vd } from "./phys-utils";
 export function drawLevelUI(game: GameData, interp: number) {
   const vp = useCES().selectFirstData("viewport")!;
 
-  const time = ((game.ticks * UpdateTimeDelta) / 1000).toFixed(3);
+  const time = formatSeconds(ticksAsSeconds(game.ticks));
   drawTextLinesInViewport(time, vv2(vp.vpWidth / 2, 0), "center", 44, "yellow");
 
   drawTextLinesInViewport(
@@ -160,9 +161,11 @@ function drawPointer(
     dist = right.distance;
     pin = "right";
   } else if (bottom.similarity > 0) {
+
+    const prediction = predictTextHeight(label, 44);
     point = vv2(
       Math.max(Math.min(bottom0.x, bottom.projectedPoint.x), bottom1.x),
-      bottom.projectedPoint.y
+      bottom.projectedPoint.y + prediction.predictedSingleLineHeight,
     );
     dist = bottom.distance;
     pin = "center";

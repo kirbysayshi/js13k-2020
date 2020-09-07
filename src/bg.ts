@@ -1,5 +1,5 @@
 import { useCES } from "./components";
-import { ViewportUnits, toProjectedPixels } from "./viewport";
+import { ViewportUnits, toProjectedPixels, toPixelUnits } from "./viewport";
 
 
 export function drawBGForCamera() {
@@ -18,7 +18,16 @@ export function drawBGForCamera() {
 
   const topmostHorizontal = Math.floor((camera.target.y + camera.frustrum.y) / cellWidth);
   const bottommostHorizontal = Math.floor((camera.target.y - camera.frustrum.y) / cellWidth);
-  
+
+  // draw black background
+  ctx.fillStyle = 'black';
+  ctx.fillRect(
+    toProjectedPixels(camera.target.x - camera.frustrum.x as ViewportUnits, 'x'),
+    toProjectedPixels(camera.target.y + camera.frustrum.y as ViewportUnits, 'y'),
+    toPixelUnits(camera.frustrum.x * 2 as ViewportUnits),
+    toPixelUnits(-camera.frustrum.y * 2 as ViewportUnits),
+  );
+
   ctx.strokeStyle = 'gray';
 
   // Draw vertical lines (X)
@@ -33,7 +42,7 @@ export function drawBGForCamera() {
   }
 
   // Draw horizontal lines (Y)
-  for (let i = bottommostHorizontal; i <= topmostHorizontal; i++) {
+  for (let i = bottommostHorizontal + 1; i <= topmostHorizontal; i++) {
     const y = toProjectedPixels(i * cellWidth as ViewportUnits, 'y');
     const x0 = toProjectedPixels(camera.target.x - camera.frustrum.x as ViewportUnits, 'x');
     const x1 = toProjectedPixels(camera.target.x + camera.frustrum.x as ViewportUnits, 'x');

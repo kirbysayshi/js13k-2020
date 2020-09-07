@@ -141,7 +141,7 @@ export function drawTextLinesInViewport(
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
   color: "yellow" | "black"
-) {
+): ViewportUnits {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
   const { camera } = vp;
@@ -152,7 +152,13 @@ export function drawTextLinesInViewport(
   corrected.y = (camera.target.y + camera.frustrum.y) as ViewportUnits;
   add(corrected, corrected, start);
 
-  drawTextLinesInWorld(text, corrected, alignment, maxLinesPerCanvas, color);
+  return drawTextLinesInWorld(
+    text,
+    corrected,
+    alignment,
+    maxLinesPerCanvas,
+    color
+  );
 }
 
 export function drawTextLinesInWorld(
@@ -162,15 +168,12 @@ export function drawTextLinesInWorld(
   maxLinesPerCanvas: number,
   color: "yellow" | "black",
   bgcolor: "transparent" | string = "transparent"
-) {
+): ViewportUnits {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
   const { camera } = vp;
   const { ctx } = vp.dprCanvas;
   ctx.save();
-  const textSize = vp.height / maxLinesPerCanvas;
-  const lineHeight = 1.5;
-  ctx.font = `${textSize}px/${lineHeight} monospace`;
 
   // Flip back to +y down to make text correct orientation
   ctx.scale(1, -1);
@@ -178,14 +181,24 @@ export function drawTextLinesInWorld(
   const toReverseYProjected = (n: ViewportUnits) =>
     toPixelUnits((n + camera.target.y) as ViewportUnits);
 
+  const { predictedSingleLineHeight, font } = predictTextHeight(text, maxLinesPerCanvas);
+
+  let totalHeight = 0;
   let y = toReverseYProjected(-start.y as ViewportUnits);
-  text.split("\n").forEach((line) => {
+
+  
+  ctx.font = font;
+
+  text.split("\n").forEach((line, i) => {
     const measure = ctx.measureText(line);
     const width = measure.width + 1;
-    const height = measure.actualBoundingBoxAscent
-      ? measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent
-      : ((textSize * lineHeight - textSize) as Pixels);
-    y = (y + height) as Pixels;
+
+    const height: Pixels = toPixelUnits(predictedSingleLineHeight);
+
+    if (i === 0) {
+      // fillText draws 0,0 using the baseline, which means 0,0 will be off screen except for descenders. If this is the first line, push down by 1 line to make 0,0 on screen.
+      y = (y + height) as Pixels;
+    }
 
     const x =
       alignment === "center"
@@ -202,10 +215,56 @@ export function drawTextLinesInWorld(
 
     ctx.fillStyle = color;
     ctx.fillText(line, x, y);
+
+    y = (y + height) as Pixels;
+    totalHeight += height;
   });
 
   ctx.restore();
+
+  return toViewportUnits(totalHeight);
 }
+
+export function predictTextHeight(
+  text: string,
+  maxLinesPerCanvas: number
+) {
+  const ces = useCES();
+  const vp = ces.selectFirstData("viewport")!;
+  const { ctx } = vp.dprCanvas;
+  const textSize = vp.height / maxLinesPerCanvas;
+
+  ctx.save();
+
+  // This will need to be manually adjusted depending on the font.
+  const lineHeight = 1.2;
+  const font = `${textSize}px/${lineHeight} monospace`;
+  ctx.font = font
+
+  const lineMeasurements = ctx.measureText(text);
+
+  // These bounding boxes are just... flat out wrong. they're off by at least 1
+  // or 2 pixels depending on the font. It's better than using the raw fontSize,
+  // but still wrong!
+  const measuredHeight = lineMeasurements.actualBoundingBoxAscent
+    ? ((lineMeasurements.actualBoundingBoxAscent +
+        lineMeasurements.actualBoundingBoxDescent) as Pixels)
+    : (textSize as Pixels);
+
+  const heightWithLineHeight = (measuredHeight * lineHeight) as Pixels;
+
+  ctx.restore();
+
+  const lines = text.split('\n');
+  return {
+    font,
+    total: toViewportUnits(heightWithLineHeight * lines.length),
+    cssLineHeight: lineHeight,
+    predictedSingleLineHeight: toViewportUnits(heightWithLineHeight),
+  }
+}
+
+
 
 // TODO: account for flipped Y
 export function drawAsset(
