@@ -39,7 +39,15 @@ export function level01 () {
   ball.acel.x = 0.1 as ViewportUnits;
   ball.acel.y = 0.1 as ViewportUnits;
 
+  const accelerator = {
+    int: { cpos: vv2(), ppos: vv2(), acel: vv2() },
+    dims: vv2(10, 10),
+    enter: vv2(1, 1),
+  }
+
+  translate(vv2(10,10), accelerator.int.ppos, accelerator.int.cpos)
+
   return {
-    ball, paddle, target, edges: null
+    ball, paddle, target, edges: null, directionalAccelerators: [accelerator],
   }
 }

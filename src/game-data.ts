@@ -3,6 +3,7 @@ import { Ball } from "./ball";
 import { LevelTarget } from "./target";
 import { Edge } from "./edge";
 import { UpdateTimeDelta } from "./components";
+import { DirectionalAccelerator } from "./directional-accelerator";
 
 type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
 
@@ -17,6 +18,7 @@ export type GameData = {
     ball: Ball | null;
     target: LevelTarget | null;
     edges: Edge[] | null;
+    directionalAccelerators: DirectionalAccelerator[] | null;
   };
   readonly levelTicks: number[];
 };
@@ -32,6 +34,7 @@ export const game: GameData = {
     ball: null,
     target: null,
     edges: null,
+    directionalAccelerators: null,
   },
   levelTicks: [],
 };

@@ -59,7 +59,9 @@ Tasks
 - [x] End Game Screen with total time
 - [ ] Title Screen / Summary
 - [ ] Generate star field instead of grid
-- [ ] Directional Accelerator collider: hit it and get sent flying positively? I think the camera will need to follow the ball for a time...
+- [x] Directional Accelerator collider: hit it and get sent flying positively?
+- [ ] Directional Accelerator: I think the camera will need to follow the ball for a time...
+- [ ] Directional Accelerator: Only trigger once until clear
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
 - [x] BUG: signal/target labels hide themselves on the bottom (too far down).
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
@@ -148,3 +150,5 @@ Spent more time in Figma, but might just use a two color solution since I'm so b
 Text rendering is still fairly broken and inconsistent on canvas. Font are hard, for sure, but the bounding boxes are just off by 1 or two pixels too. I forgot that canvas font rendering at 0,0 is the baseline, not the top bounding box. So it's very hard to place text accurately.
 
 Added the end game summary screen. Needs more polish, but it's there! All mission/levels have a total time.
+
+## 2020-09-07

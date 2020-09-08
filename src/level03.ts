@@ -49,7 +49,7 @@ export function level03 () {
   ]
 
   return {
-    ball, paddle, target, edges
+    ball, paddle, target, edges, directionalAccelerators: null
   }
 }
 

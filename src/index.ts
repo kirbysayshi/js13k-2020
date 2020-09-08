@@ -36,6 +36,7 @@ import {
   vv2,
 } from "./viewport";
 import { drawFps, onFPS } from "./fps";
+import { maybeCollideWithAccelerators, drawAccelerators } from "./directional-accelerator";
 
 async function boot() {
   await loadAssets();
@@ -68,14 +69,18 @@ async function boot() {
         break;
       }
       case "level": {
-        const { target, paddle, ball, edges } = game.levelObjects;
+        const { target, paddle, ball, edges, directionalAccelerators } = game.levelObjects;
         if (!target || !paddle || !ball) return;
         drawBGForCamera();
         drawLevelTarget(target!, interp);
         drawPaddle(paddle!);
         drawBall(ball!, interp);
+        if (directionalAccelerators) drawAccelerators(directionalAccelerators);
         if (edges) drawEdges(edges);
         drawLevelUI(game, interp);
+
+        
+
         break;
       }
 
@@ -206,7 +211,7 @@ async function boot() {
       }
     }
 
-    const { target, paddle, ball, edges } = game.levelObjects;
+    const { target, paddle, ball, edges, directionalAccelerators } = game.levelObjects;
     if (target && paddle && ball) {
       solveDrag(paddle.int, 0.8);
 
@@ -214,6 +219,7 @@ async function boot() {
       inertia(paddle.int);
 
       moveAndMaybeBounceBall(ball, paddle, screen, dt);
+      if (directionalAccelerators) maybeCollideWithAccelerators(ball, directionalAccelerators);
       if (edges) processEdges(edges, ball);
       moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
     }

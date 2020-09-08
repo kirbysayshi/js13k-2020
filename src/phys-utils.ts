@@ -60,3 +60,8 @@ export function projectCposWithRadius(out: Vector2, p: Integratable, radius: num
   add(out, radiusSegment, p.cpos);
   return out;
 }
+
+
+export function angleOf(v: Vector2) {
+  return Math.atan2(v.y, v.x);
+}
