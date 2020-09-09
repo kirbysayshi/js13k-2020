@@ -45,8 +45,8 @@ function drawAccelerator(da: DirectionalAccelerator) {
   const offset = ((lineThickness * Math.SQRT2) / 2) as ViewportUnits;
 
   ctx.save();
-  ctx.fillStyle = "yellow";
-  ctx.strokeStyle = "yellow";
+  ctx.fillStyle = "rgba(255,255,132,1)";
+  ctx.strokeStyle = "rgba(255,255,132,1)";
 
   const direction = angleOf(da.enter);
 

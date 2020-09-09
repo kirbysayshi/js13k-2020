@@ -2,7 +2,7 @@ import { accelerate, inertia, solveDrag } from "pocket-physics";
 import ScienceHalt from "science-halt";
 import { loadAssets } from "./asset-map";
 import { drawBall, moveAndMaybeBounceBall } from "./ball";
-import { drawBGForCamera } from "./bg";
+import { drawBGForCamera, drawStarfield } from "./bg";
 import {
   DrawStepSystem,
   DrawTimeDelta,
@@ -72,6 +72,7 @@ async function boot() {
         const { target, paddle, ball, edges, directionalAccelerators } = game.levelObjects;
         if (!target || !paddle || !ball) return;
         drawBGForCamera();
+        drawStarfield();
         drawLevelTarget(target!, interp);
         drawPaddle(paddle!);
         drawBall(ball!, interp);
@@ -94,7 +95,7 @@ async function boot() {
           vv2(vp.vpWidth / 2, -10),
           "center",
           15,
-          "yellow"
+          "rgba(255,255,132,1)"
         );
         break;
       }
@@ -118,7 +119,7 @@ async function boot() {
           vv2(vp.vpWidth / 2, -10),
           "center",
           15,
-          "yellow"
+          "rgba(255,255,132,1)"
         );
 
         console.log("thanks!");

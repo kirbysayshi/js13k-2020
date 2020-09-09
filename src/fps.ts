@@ -13,7 +13,7 @@ export const drawFps: DrawStepSystem = (ces) => {
     vv2(100, 0),
     "right",
     44,
-    "yellow"
+    "rgba(255,255,132,1)"
   );
 };
 

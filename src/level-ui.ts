@@ -24,14 +24,14 @@ export function drawLevelUI(game: GameData, interp: number) {
   const vp = useCES().selectFirstData("viewport")!;
 
   const time = formatSeconds(ticksAsSeconds(game.ticks));
-  drawTextLinesInViewport(time, vv2(vp.vpWidth / 2, 0), "center", 44, "yellow");
+  drawTextLinesInViewport(time, vv2(vp.vpWidth / 2, 0), "center", 44, "rgba(255,255,132,1)");
 
   drawTextLinesInViewport(
     `Level ${game.level + 1} of ??`,
     vv2(0, 0),
     "left",
     44,
-    "yellow"
+    "rgba(255,255,132,1)"
   );
 
   if (game.levelObjects.target)
@@ -47,7 +47,7 @@ export function drawLevelUI(game: GameData, interp: number) {
       game.levelObjects.ball.cpos,
       // TODO: make this into a persistent vv2!
       vv2(game.levelObjects.ball.width, game.levelObjects.ball.height),
-      "yellow",
+      "rgba(255,255,132,1)",
       "SIGNAL"
     );
 }
@@ -55,7 +55,7 @@ export function drawLevelUI(game: GameData, interp: number) {
 function drawPointer(
   target: ViewportUnitVector2,
   wh: ViewportUnitVector2,
-  color: "yellow" | "blue",
+  color: "rgba(255,255,132,1)" | "blue",
   label: string
 ) {
   // given a world point and label, draw an arrow / triangle that follows the
@@ -189,7 +189,7 @@ function drawPointer(
   ctx.save();
 
   // Draw label
-  drawTextLinesInWorld(label, point, pin, 44, "black", 'yellow');
+  drawTextLinesInWorld(label, point, pin, 44, "rgba(40,40,40,1)", 'rgba(255,255,132,1)');
 
   ctx.restore();
 }

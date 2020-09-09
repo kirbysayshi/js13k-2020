@@ -57,8 +57,9 @@ Tasks
 - [x] Background grid or texture to better communicate movement
 - [x] Ball + Environment Obstacle Colliding
 - [x] End Game Screen with total time
+- [ ] BUG: accelerator drawing y is reversed with camera
 - [ ] Title Screen / Summary
-- [ ] Generate star field instead of grid
+- [x] Generate star field instead of grid
 - [x] Directional Accelerator collider: hit it and get sent flying positively?
 - [ ] Directional Accelerator: I think the camera will need to follow the ball for a time...
 - [ ] Directional Accelerator: Only trigger once until clear
@@ -66,15 +67,26 @@ Tasks
 - [x] BUG: signal/target labels hide themselves on the bottom (too far down).
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [ ] Should there be a velocity boost for the paddle movement?
+- [ ] Either a kill zone boundary sphere to keep ball in play, hard edges, or velocity boost for paddle to catch stray balls
+- [ ] Level 01
+- [ ] Level 02
+- [ ] Level 03
+- [ ] Level 04
+- [ ] Level 05
+- [ ] Level 06
+- [ ] Level 07
+- [ ] Level 08
+- [ ] Level 09
+- [ ] Level 10
 - [ ] End Game screen has list of all times per level (+par?)
-- [ ] Shorten radius of paddle?
-- [ ] Should the paddle be able to collide with edges? Or maybe just some edges?
-- [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
+- [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [ ] Draw projection of ball direction + velocity (ray)
 - [ ] Prevent ball from accelerating when colliding...
 - [ ] Prevent ball tunneling when colliding with paddle
+- [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
+- [ ] Shorten radius of paddle?
+- [ ] Should the paddle be able to collide with edges? Or maybe just some edges?
 - [ ] clear canvas below the "safe" upper box
-- [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [ ] "Play Again" button on end screen?
 - [ ] A lose condition? Or just best time
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
@@ -152,3 +164,11 @@ Text rendering is still fairly broken and inconsistent on canvas. Font are hard,
 Added the end game summary screen. Needs more polish, but it's there! All mission/levels have a total time.
 
 ## 2020-09-07
+
+Directional accelerator is working! Tricky to draw and measure. Collision was relatively straightforward once I realized that all I needed was an entryway line segment as a detector.
+
+## 2020-09-08
+
+Started generating a starfield. Probably a better way to optimize so I'm not overdrawing as much... Also discovered a bug with how accelerators are drawn (maybe not taking camera into account?). oops!
+
+Drawing a tiled background efficiently is slightly more conditional work than I anticipated.

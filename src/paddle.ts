@@ -151,7 +151,7 @@ function drawEdge(ctx: CanvasRenderingContext2D, edge: Edge, interp: number) {
 
   ctx.save();
   ctx.beginPath();
-  ctx.strokeStyle = "black";
+  ctx.strokeStyle = "rgba(40,40,40,1)";
   ctx.lineWidth = toPixelUnits(0.5 as ViewportUnits);
   ctx.moveTo(toProjectedPixels(edge.p0.x, 'x'), toProjectedPixels(edge.p0.y, 'y'));
   ctx.lineTo(toProjectedPixels(edge.p1.x, 'x'), toProjectedPixels(edge.p1.y, 'y'));

@@ -140,7 +140,7 @@ export function drawTextLinesInViewport(
   start: ViewportUnitVector2,
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
-  color: "yellow" | "black"
+  color: "rgba(255,255,132,1)" | "rgba(40,40,40,1)"
 ): ViewportUnits {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
@@ -166,7 +166,7 @@ export function drawTextLinesInWorld(
   start: ViewportUnitVector2,
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
-  color: "yellow" | "black",
+  color: "rgba(255,255,132,1)" | "rgba(40,40,40,1)",
   bgcolor: "transparent" | string = "transparent"
 ): ViewportUnits {
   const ces = useCES();
