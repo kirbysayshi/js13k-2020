@@ -34,7 +34,7 @@ export function movePaddle(p: Paddle, dir: ViewportUnitVector2) {
 
 export function getValidPaddleArea(vp: ViewportCmp) {
   const width = vp.vpWidth;
-  const height = Math.min(vp.vpWidth, vp.vpHeight) as ViewportUnits;
+  const height = Math.min(vp.vpWidth * 0.75, vp.vpHeight * 0.75) as ViewportUnits;
   return { width, height };
 }
 

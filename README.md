@@ -61,6 +61,7 @@ Tasks
 - [ ] Title Screen / Summary
 - [x] Generate star field instead of grid
 - [x] Directional Accelerator collider: hit it and get sent flying positively?
+- [ ] Disable pushing the signal from behind?
 - [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
 - [ ] Directional Accelerator: Only trigger once until clear
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
@@ -91,8 +92,8 @@ Tasks
 - [ ] Level 09
 - [ ] Level 10
 - [ ] End Game screen has list of all times per level (+par?)
-- [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [ ] Draw projection of ball direction + velocity (ray)
+- [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [ ] Prevent ball from accelerating when colliding...
 - [ ] Prevent ball tunneling when colliding with paddle
 - [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
@@ -193,5 +194,7 @@ Fixed the accelrator rendering bug. Now clearing canvas beyond camera.
 Keyboard events need to use `event.code`, which I didn't realize was different than `keyCode`: physical keyboard layout instead of key. Very nice!
 
 Added a boost mode to movement, unmetered so far.
+
+Spent a lot of time trying to prevent tunneling and changing paddle collisions to use aabb velocity solving. It's actually non-trivial to handle the paddle colliding with the ball (opposite velocity) vs the paddle pushing the ball (dampening velocity).
 
 Three nights remain.

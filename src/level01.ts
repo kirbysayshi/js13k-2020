@@ -12,7 +12,7 @@ export function level01 () {
 
   const paddle: Paddle = {
     rads: 0,
-    width: (screen.vpWidth / 8) as ViewportUnits,
+    width: (screen.vpWidth / 4) as ViewportUnits,
     height: (screen.vpWidth / 16) as ViewportUnits,
     int: {
       acel: vv2(),

@@ -73,9 +73,9 @@ async function boot() {
         const { target, paddle, ball, edges, directionalAccelerators } = game.levelObjects;
         if (!target || !paddle || !ball) return;
         drawStarfield();
-        drawLevelTarget(target!, interp);
-        drawPaddle(paddle!);
-        drawBall(ball!, interp);
+        drawLevelTarget(target, interp);
+        drawPaddle(paddle);
+        drawBall(ball, interp);
         if (directionalAccelerators) drawAccelerators(directionalAccelerators);
         if (edges) drawEdges(edges);
         drawLevelUI(game, interp);
