@@ -24,7 +24,13 @@ export function drawLevelUI(game: GameData, interp: number) {
   const vp = useCES().selectFirstData("viewport")!;
 
   const time = formatSeconds(ticksAsSeconds(game.ticks));
-  drawTextLinesInViewport(time, vv2(vp.vpWidth / 2, 0), "center", 44, "rgba(255,255,132,1)");
+  drawTextLinesInViewport(
+    time,
+    vv2(vp.vpWidth / 2, 0),
+    "center",
+    44,
+    "rgba(255,255,132,1)"
+  );
 
   drawTextLinesInViewport(
     `Level ${game.level + 1} of ??`,
@@ -130,16 +136,24 @@ function drawPointer(
   let dist;
   let pin: "right" | "left" | "center";
 
+  const prediction = predictTextHeight(label, 44);
+
   if (top.similarity > 0 && right.similarity > 0) {
     point = vv2(right.projectedPoint.x, top.projectedPoint.y);
     dist = distance(point, target);
     pin = "right";
   } else if (right.similarity > 0 && bottom.similarity > 0) {
-    point = vv2(right.projectedPoint.x, bottom.projectedPoint.y);
+    point = vv2(
+      right.projectedPoint.x,
+      bottom.projectedPoint.y + prediction.predictedSingleLineHeight
+    );
     dist = distance(point, target);
     pin = "right";
   } else if (bottom.similarity > 0 && left.similarity > 0) {
-    point = vv2(left.projectedPoint.x, bottom.projectedPoint.y);
+    point = vv2(
+      left.projectedPoint.x,
+      bottom.projectedPoint.y + prediction.predictedSingleLineHeight
+    );
     dist = distance(point, target);
     pin = "left";
   } else if (left.similarity > 0 && top.similarity > 0) {
@@ -161,11 +175,9 @@ function drawPointer(
     dist = right.distance;
     pin = "right";
   } else if (bottom.similarity > 0) {
-
-    const prediction = predictTextHeight(label, 44);
     point = vv2(
       Math.max(Math.min(bottom0.x, bottom.projectedPoint.x), bottom1.x),
-      bottom.projectedPoint.y + prediction.predictedSingleLineHeight,
+      bottom.projectedPoint.y + prediction.predictedSingleLineHeight
     );
     dist = bottom.distance;
     pin = "center";
@@ -189,7 +201,14 @@ function drawPointer(
   ctx.save();
 
   // Draw label
-  drawTextLinesInWorld(label, point, pin, 44, "rgba(40,40,40,1)", 'rgba(255,255,132,1)');
+  drawTextLinesInWorld(
+    label,
+    point,
+    pin,
+    44,
+    "rgba(40,40,40,1)",
+    "rgba(255,255,132,1)"
+  );
 
   ctx.restore();
 }
