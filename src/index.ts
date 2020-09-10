@@ -220,12 +220,16 @@ async function boot() {
       solveDrag(paddle.int, 0.8);
 
       accelerate(paddle.int, dt);
-      inertia(paddle.int);
+      
 
       moveAndMaybeBounceBall(ball, paddle, screen, dt);
       if (directionalAccelerators) maybeCollideWithAccelerators(ball, directionalAccelerators);
       if (edges) processEdges(edges, ball);
+
+      inertia(paddle.int);
+
       moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
+
     }
 
     (game as Mutable<typeof game>).ticks += 1;

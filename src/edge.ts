@@ -59,7 +59,7 @@ export function processEdges(edges: Edge[], ball: Ball) {
   }
 }
 
-function maybeBounceOffEdge(
+export function maybeBounceOffEdge(
   int: IntegratableVU,
   radius: ViewportUnits,
   edge: Edge

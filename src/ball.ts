@@ -8,17 +8,27 @@ import {
   rewindToCollisionPoint,
   collideCircleEdge,
   copy,
+  collisionResponseAABB,
+  sub,
+  add,
+  magnitude,
 } from "pocket-physics";
 import {
-
   toPixelUnits,
   ViewportUnits,
   ViewportUnitVector2,
   ViewportCmp,
   toProjectedPixels,
+  vv2,
 } from "./viewport";
 import { useCES } from "./components";
 import { Paddle, getOffsetForPaddlePosition } from "./paddle";
+import { maybeBounceOffEdge } from "./edge";
+import {
+  projectCposWithRadius,
+  makePointEdgeProjectionResult,
+  setVelocity,
+} from "./phys-utils";
 
 export type Ball = {
   cpos: ViewportUnitVector2;
@@ -31,7 +41,7 @@ export type Ball = {
 
 export function drawBall(ball: Ball, interp: number) {
   const ces = useCES();
-  const vp = ces.selectFirstData('viewport')!;
+  const vp = ces.selectFirstData("viewport")!;
   const ctx = vp.dprCanvas.ctx;
 
   const { cpos, ppos, width, height } = ball;
@@ -40,10 +50,12 @@ export function drawBall(ball: Ball, interp: number) {
   const halfHeight = (height / 2) as ViewportUnits;
 
   const x = toProjectedPixels(
-    (ppos.x + interp * (cpos.x - ppos.x)) as ViewportUnits, 'x'
+    (ppos.x + interp * (cpos.x - ppos.x)) as ViewportUnits,
+    "x"
   );
   const y = toProjectedPixels(
-    (ppos.y + interp * (cpos.y - ppos.y)) as ViewportUnits, 'y'
+    (ppos.y + interp * (cpos.y - ppos.y)) as ViewportUnits,
+    "y"
   );
 
   const pxWidth = toPixelUnits(width);
@@ -60,6 +72,8 @@ export function drawBall(ball: Ball, interp: number) {
   ctx.restore();
 }
 
+// let collidedPrevFrame = false;
+
 export function moveAndMaybeBounceBall(
   ball: Ball,
   paddle: Paddle,
@@ -70,65 +84,102 @@ export function moveAndMaybeBounceBall(
 
   const { p0, p1 } = getOffsetForPaddlePosition(paddle, vp);
 
-  const endpoint1 = { cpos: p0, ppos: copy(v2(), p0), acel: v2() };
-  const endpoint2 = { cpos: p1, ppos: copy(v2(), p1), acel: v2() };
+  const edge = { e0: p0, e1: p1 };
+
+  const int = ball;
+  const radius = 2;
+
+  const intersectionPoint = vv2();
+  const projectedCpos = projectCposWithRadius(vv2(), int, radius);
+  const intersected = segmentIntersection(
+    projectedCpos,
+    int.ppos,
+    edge.e0,
+    edge.e1,
+    intersectionPoint
+  );
+
+  const projectedResult = makePointEdgeProjectionResult();
+  projectPointEdge(int.ppos, edge.e0, edge.e1, projectedResult);
+
+  // console.log(intersected, projectedResult.similarity)
+
+  if (intersected) {
+    const paddleCpos = intersectionPoint;
+    const paddleVelocity = sub(vv2(), paddle.int.cpos, paddle.int.ppos);
+    const paddlePpos = sub(vv2(), paddleCpos, paddleVelocity);
+
+    if (projectedResult.similarity > 0) {
+      rewindToCollisionPoint(
+        int,
+        radius,
+        { cpos: edge.e0, ppos: edge.e0, acel: vv2() },
+        { cpos: edge.e1, ppos: edge.e1, acel: vv2() }
+      );
+    }
+
+    const mass1 = 1;
+    const mass2 = 10000000;
+    const restitution1 = 0.1;
+    const sfriction = 0.9999;
+    const dfriction = 0.9999;
+
+    const velOut1 = vv2();
+    const velOut2 = vv2();
+
+    collisionResponseAABB(
+      int.cpos,
+      int.ppos,
+      mass1,
+      restitution1,
+      sfriction,
+      dfriction,
+      paddleCpos,
+      paddlePpos,
+      mass2,
+      restitution1,
+      sfriction,
+      dfriction,
+      projectedResult.edgeNormal,
+      velOut1,
+      velOut2
+    );
+
+    if (projectedResult.similarity > 0) {
+      // console.log("sim > 0: velOut1", velOut1, velOut2);
+      sub(int.ppos, int.cpos, velOut1);
+      //add(int.ppos, int.ppos, velOut2);
+    } else {
+      
+      // If the paddle is "pushing", then compound the velocity instead of subtracting it.
+
+      const vel = sub(vv2(), int.cpos, int.ppos);
+      // console.log("1 sim <= 0: velOut1", velOut1, velOut2);
+      // console.log("2 sim <= 0: vel", vel);
+      add(vel, vel, velOut1);
+      sub(int.ppos, int.cpos, vel);
+      // console.log("3 sim <= 0: next", sub(vv2(), int.cpos, int.ppos));
+      
+    //   add(int.ppos, int.cpos, velOut1);
+    //   // add(int.ppos, int.ppos, velOut2);
+    }
+
+    // Apply velocity to integratable only, since edges have a huge mass and are effectively fixed
+
+    // console.log('velOut1', velOut1, velOut2)
+  }
+
+  // Use same collision detection as edges?
+  // maybeBounceOffEdge(ball, 2 as ViewportUnits, { e0: p0, e1: p1 });
+
+  // const endpoint1 = { cpos: p0, ppos: copy(v2(), p0), acel: v2() };
+  // const endpoint2 = { cpos: p1, ppos: copy(v2(), p1), acel: v2() };
 
   // TODO: use a circle instead? Otherwise there's no way to know the collision happened...
 
   // This sometimes misses the paddle, of course, due to tunneling. Also might be speeding the ball up???
-  collideCircleEdge(ball, 2, 1, endpoint1, -1, endpoint2, -1, false, 1);
-
-  // Instead:
-  // segmentIntersection
-  // if tunneling
-  // projectPointEdge
-  // translate ball to projected point
-  // circleCircleCollision, delete temporary circle
-
-  // But how to cause different ball angles? Perhaps paddle needs to be circular motion instead of octagon...
-
-  // const projection: PointEdgeProjection = {
-  //   distance: Number.MIN_SAFE_INTEGER,
-  //   similarity: 0,
-  //   u: Number.MIN_SAFE_INTEGER,
-  //   projectedPoint: v2(),
-  //   edgeNormal: v2(),
-  // };
-
-  // // p1(0,0) -> p2(1,0) produces a normal pointing down
-  // projectPointEdge(ball.cpos, p0, p1, projection);
-
-  // const intersectionPoint = v2();
-  // const isTunneling = segmentIntersection(
-  //   ball.cpos,
-  //   ball.ppos,
-  //   p0,
-  //   p1,
-  //   intersectionPoint
-  // );
-
-  // console.log(
-  //   "tunneling?",
-  //   isTunneling,
-  //   "sim",
-  //   projection.similarity,
-  //   "within u",
-  //   projection.u >= 0 && projection.u <= 1
-  // );
-
-  // const within = projection.u >= 0 && projection.u <= 1;
-
-  // if (
-  //   (projection.similarity >= 0 && within && projection.distance < 1) ||
-  //   (within && isTunneling)
-  // ) {
-  //   // collision!
-  //   console.log("collision!");
-  // }
+  // collideCircleEdge(ball, 2, 1, endpoint1, -1, endpoint2, -1, false, 1);
 
   inertia(ball);
-
-  // if (rewound) {
-    collideCircleEdge(ball, 1, 1, endpoint1, -1, endpoint2, -1, true, 1);
-  // }
+  // collideCircleEdge(ball, 1, 1, endpoint1, -1, endpoint2, -1, true, 1);
 }
