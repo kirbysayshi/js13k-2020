@@ -58,17 +58,21 @@ Tasks
 - [x] Ball + Environment Obstacle Colliding
 - [x] End Game Screen with total time
 - [x] BUG: accelerator drawing y is reversed with camera
-- [ ] BUG: Doesn't even load on mobile?
-
-- [ ] Title Screen / Summary
 - [x] Generate star field instead of grid
 - [x] Directional Accelerator collider: hit it and get sent flying positively?
-- [ ] Disable pushing the signal from behind?
+- [x] Allow pushing the signal and bouncing it with backside of paddle.
+- [x] BUG: signal/target labels hide themselves on the bottom (too far down).
+- [x] Should there be a velocity boost for the paddle movement?
+- [x] Either a kill zone boundary sphere to keep ball in play, hard edges, or velocity boost for paddle to catch stray balls
+- [x] clear canvas below the "safe" upper box
+- [x] Prevent ball from accelerating when colliding...
+- [x] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
+- [ ] BUG: Doesn't even load on mobile?
+- [ ] Title Screen / Summary
 - [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
 - [ ] BUG: directional accelerator does not reset velocity vector (direction)
 - [ ] Directional Accelerator: Only trigger once until clear
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
-- [x] BUG: signal/target labels hide themselves on the bottom (too far down).
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [ ] Signal: themed
 - [ ] Target: themed
@@ -78,9 +82,7 @@ Tasks
 - [ ] Edges: themed
 - [ ] Mission Completed screen: themed
 - [ ] End Game Screen: themed
-- [x] Should there be a velocity boost for the paddle movement?
-- [ ] Either a kill zone boundary sphere to keep ball in play, hard edges, or velocity boost for paddle to catch stray balls
-- [x] clear canvas below the "safe" upper box
+- [ ] Background window: themed
 - [ ] Max Velocity for signal
 - [ ] Paddle Boost should be a metered resource
 - [ ] Demo level for Al/Phoebe to use as template
@@ -97,9 +99,7 @@ Tasks
 - [ ] End Game screen has list of all times per level (+par?)
 - [ ] Draw projection of ball direction + velocity (ray)
 - [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
-- [ ] Prevent ball from accelerating when colliding...
-- [ ] Prevent ball tunneling when colliding with paddle
-- [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
+- [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner
 - [ ] "Play Again" button on end screen?

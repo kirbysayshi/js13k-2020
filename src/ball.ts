@@ -121,10 +121,10 @@ export function moveAndMaybeBounceBall(
   if (
     projectedResult.u >= 0 &&
     projectedResult.u <= 1 &&
-    projectedResult.distance <= totalRadius &&
-    projectedResult.similarity > 0
+    projectedResult.distance <= totalRadius
+    // &&
+    // projectedResult.similarity > 0
   ) {
-
     // console.log('collision', projectedResult.distance, totalRadius)
     // console.log('ball v', sub(vv2(), ball.cpos, ball.ppos));
     // console.log('paddle v', paddleVelocity);
@@ -161,10 +161,14 @@ export function moveAndMaybeBounceBall(
 
     // console.log('ball v after, b4 inertia', sub(vv2(), ball.cpos, ball.ppos))
 
-    // and move the ball away
+    // and move the ball away. invert depending on the side of the paddle that it hit.
     const resolveDist = Math.abs(totalRadius - projectedResult.distance);
-    const resolve = scale(vv2(), projectedResult.edgeNormal, resolveDist);
-    translate(resolve, int.cpos, int.ppos)
+    const resolve = scale(
+      vv2(),
+      projectedResult.edgeNormal,
+      projectedResult.similarity > 0 ? resolveDist : -resolveDist
+    );
+    translate(resolve, int.cpos, int.ppos);
     // console.log('resolve', resolve);
   }
 
