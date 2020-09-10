@@ -12,6 +12,11 @@ import {
   sub,
   add,
   magnitude,
+  collideCircleCircle,
+  overlapCircleCircle,
+  overlapAABBAABB,
+  translate,
+  scale,
 } from "pocket-physics";
 import {
   toPixelUnits,
@@ -49,6 +54,9 @@ export function drawBall(ball: Ball, interp: number) {
   const halfWidth = (width / 2) as ViewportUnits;
   const halfHeight = (height / 2) as ViewportUnits;
 
+  // Why does this look so bad without this???
+  interp = 1;
+
   const x = toProjectedPixels(
     (ppos.x + interp * (cpos.x - ppos.x)) as ViewportUnits,
     "x"
@@ -82,47 +90,50 @@ export function moveAndMaybeBounceBall(
 ) {
   accelerate(ball, dt);
 
-  const { p0, p1 } = getOffsetForPaddlePosition(paddle, vp);
+  const { p0, p1, halfHeight } = getOffsetForPaddlePosition(paddle, vp);
 
   const edge = { e0: p0, e1: p1 };
 
   const int = ball;
   const radius = 2;
 
-  const intersectionPoint = vv2();
-  const projectedCpos = projectCposWithRadius(vv2(), int, radius);
-  const intersected = segmentIntersection(
-    projectedCpos,
-    int.ppos,
-    edge.e0,
-    edge.e1,
-    intersectionPoint
-  );
+  const paddleRadius = halfHeight;
+
+  // const intersectionPoint = vv2();
+  // const projectedCpos = projectCposWithRadius(vv2(), int, radius);
+  // const intersected = segmentIntersection(
+  //   projectedCpos,
+  //   int.ppos,
+  //   edge.e0,
+  //   edge.e1,
+  //   intersectionPoint
+  // );
 
   const projectedResult = makePointEdgeProjectionResult();
-  projectPointEdge(int.ppos, edge.e0, edge.e1, projectedResult);
+  projectPointEdge(int.cpos, edge.e0, edge.e1, projectedResult);
 
-  // console.log(intersected, projectedResult.similarity)
+  const paddleCpos = copy(vv2(), projectedResult.projectedPoint);
+  const paddleVelocity = sub(vv2(), paddle.int.cpos, paddle.int.ppos);
+  const paddlePpos = sub(vv2(), paddleCpos, paddleVelocity);
 
-  if (intersected) {
-    const paddleCpos = intersectionPoint;
-    const paddleVelocity = sub(vv2(), paddle.int.cpos, paddle.int.ppos);
-    const paddlePpos = sub(vv2(), paddleCpos, paddleVelocity);
+  const totalRadius = radius + paddleRadius;
 
-    if (projectedResult.similarity > 0) {
-      rewindToCollisionPoint(
-        int,
-        radius,
-        { cpos: edge.e0, ppos: edge.e0, acel: vv2() },
-        { cpos: edge.e1, ppos: edge.e1, acel: vv2() }
-      );
-    }
+  if (
+    projectedResult.u >= 0 &&
+    projectedResult.u <= 1 &&
+    projectedResult.distance <= totalRadius &&
+    projectedResult.similarity > 0
+  ) {
+
+    // console.log('collision', projectedResult.distance, totalRadius)
+    // console.log('ball v', sub(vv2(), ball.cpos, ball.ppos));
+    // console.log('paddle v', paddleVelocity);
 
     const mass1 = 1;
     const mass2 = 10000000;
-    const restitution1 = 0.1;
-    const sfriction = 0.9999;
-    const dfriction = 0.9999;
+    const restitution1 = 0.5;
+    const sfriction = 0.87;
+    const dfriction = 0.87;
 
     const velOut1 = vv2();
     const velOut2 = vv2();
@@ -145,41 +156,17 @@ export function moveAndMaybeBounceBall(
       velOut2
     );
 
-    if (projectedResult.similarity > 0) {
-      // console.log("sim > 0: velOut1", velOut1, velOut2);
-      sub(int.ppos, int.cpos, velOut1);
-      //add(int.ppos, int.ppos, velOut2);
-    } else {
-      
-      // If the paddle is "pushing", then compound the velocity instead of subtracting it.
+    // only apply to paddle
+    sub(int.ppos, int.cpos, velOut1);
 
-      const vel = sub(vv2(), int.cpos, int.ppos);
-      // console.log("1 sim <= 0: velOut1", velOut1, velOut2);
-      // console.log("2 sim <= 0: vel", vel);
-      add(vel, vel, velOut1);
-      sub(int.ppos, int.cpos, vel);
-      // console.log("3 sim <= 0: next", sub(vv2(), int.cpos, int.ppos));
-      
-    //   add(int.ppos, int.cpos, velOut1);
-    //   // add(int.ppos, int.ppos, velOut2);
-    }
+    // console.log('ball v after, b4 inertia', sub(vv2(), ball.cpos, ball.ppos))
 
-    // Apply velocity to integratable only, since edges have a huge mass and are effectively fixed
-
-    // console.log('velOut1', velOut1, velOut2)
+    // and move the ball away
+    const resolveDist = Math.abs(totalRadius - projectedResult.distance);
+    const resolve = scale(vv2(), projectedResult.edgeNormal, resolveDist);
+    translate(resolve, int.cpos, int.ppos)
+    // console.log('resolve', resolve);
   }
 
-  // Use same collision detection as edges?
-  // maybeBounceOffEdge(ball, 2 as ViewportUnits, { e0: p0, e1: p1 });
-
-  // const endpoint1 = { cpos: p0, ppos: copy(v2(), p0), acel: v2() };
-  // const endpoint2 = { cpos: p1, ppos: copy(v2(), p1), acel: v2() };
-
-  // TODO: use a circle instead? Otherwise there's no way to know the collision happened...
-
-  // This sometimes misses the paddle, of course, due to tunneling. Also might be speeding the ball up???
-  // collideCircleEdge(ball, 2, 1, endpoint1, -1, endpoint2, -1, false, 1);
-
   inertia(ball);
-  // collideCircleEdge(ball, 1, 1, endpoint1, -1, endpoint2, -1, true, 1);
 }

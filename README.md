@@ -58,11 +58,14 @@ Tasks
 - [x] Ball + Environment Obstacle Colliding
 - [x] End Game Screen with total time
 - [x] BUG: accelerator drawing y is reversed with camera
+- [ ] BUG: Doesn't even load on mobile?
+
 - [ ] Title Screen / Summary
 - [x] Generate star field instead of grid
 - [x] Directional Accelerator collider: hit it and get sent flying positively?
 - [ ] Disable pushing the signal from behind?
 - [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
+- [ ] BUG: directional accelerator does not reset velocity vector (direction)
 - [ ] Directional Accelerator: Only trigger once until clear
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
 - [x] BUG: signal/target labels hide themselves on the bottom (too far down).
@@ -195,6 +198,8 @@ Keyboard events need to use `event.code`, which I didn't realize was different t
 
 Added a boost mode to movement, unmetered so far.
 
-Spent a lot of time trying to prevent tunneling and changing paddle collisions to use aabb velocity solving. It's actually non-trivial to handle the paddle colliding with the ball (opposite velocity) vs the paddle pushing the ball (dampening velocity).
+Spent a lot of time trying to prevent tunneling and changing paddle collisions to use aabb velocity solving. It's actually non-trivial to handle the paddle colliding with the ball (opposite velocity) vs the paddle pushing the ball (dampening velocity). One option is to treat the paddle as passthrough unless the ball is coming at it. Another is to use circle-circle collision... Stuck with "AABB" for now, since it allows for control over applying the velocity and has friction: but I'm modeling the detection and resolution as a circle-circle. It's too late.
 
 Three nights remain.
+
+## 2020-09-10
