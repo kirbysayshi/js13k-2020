@@ -61,11 +61,19 @@ Tasks
 - [ ] Title Screen / Summary
 - [x] Generate star field instead of grid
 - [x] Directional Accelerator collider: hit it and get sent flying positively?
-- [ ] Directional Accelerator: I think the camera will need to follow the ball for a time...
+- [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
 - [ ] Directional Accelerator: Only trigger once until clear
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
 - [x] BUG: signal/target labels hide themselves on the bottom (too far down).
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
+- [ ] Signal: themed
+- [ ] Target: themed
+- [ ] Paddle: themed
+- [ ] Paddle Crosshairs: themed
+- [ ] Font: themed
+- [ ] Edges: themed
+- [ ] Mission Completed screen: themed
+- [ ] End Game Screen: themed
 - [x] Should there be a velocity boost for the paddle movement?
 - [ ] Either a kill zone boundary sphere to keep ball in play, hard edges, or velocity boost for paddle to catch stray balls
 - [x] clear canvas below the "safe" upper box
@@ -91,6 +99,7 @@ Tasks
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner
 - [ ] "Play Again" button on end screen?
+- [ ] Tweet your total time
 - [ ] A lose condition? Or just best time
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
 - [ ] Should the paddle be able to collide with edges? Or maybe just some edges?
