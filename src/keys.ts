@@ -1,41 +1,41 @@
-
-  // These keys must be quoted to force terser to keep these keys as is. It
-  // doesn't know they come from the DOM Keyboard API. Prettier wants to remove
+// These keys must be quoted to force terser to keep these keys as is. It
+// doesn't know they come from the DOM Keyboard API. Prettier wants to remove
 
 import { Key } from "ts-key-enum";
 import { listen } from "./dom";
 
-  // the quotes, so disable it.
-  const keyInputs: {
-    [K in
-      | Extract<Key, Key.ArrowLeft | Key.ArrowRight>
-      | "w"
-      | "a"
-      | "s"
-      | "d"]: boolean;
-  } = {
-    // prettier-ignore
-    'w': false,
-    // prettier-ignore
-    'a': false,
-    // prettier-ignore
-    's': false,
-    // prettier-ignore
-    'd': false,
-    // prettier-ignore
-    'ArrowLeft': false,
-    // prettier-ignore
-    'ArrowRight': false,
-  };
+// Represent the physical key on the keyboard (position) instead of the character itself.
+// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
+type Codes = 'KeyW' | 'KeyA' | 'KeyS' | 'KeyD' | 'ArrowRight' | 'ArrowLeft' | 'ShiftLeft';
 
-  listen(window, "keydown", (ev) => {
-    keyInputs[ev.key as keyof typeof keyInputs] = true;
-  });
+// the quotes, so disable it.
+const keyInputs: {
+  [K in Codes]: boolean;
+} = {
+  // prettier-ignore
+  'KeyW': false,
+  // prettier-ignore
+  'KeyA': false,
+  // prettier-ignore
+  'KeyS': false,
+  // prettier-ignore
+  'KeyD': false,
+  // prettier-ignore
+  'ArrowLeft': false,
+  // prettier-ignore
+  'ArrowRight': false,
+  // prettier-ignore
+  'ShiftLeft': false,
+};
 
-  listen(window, "keyup", (ev) => {
-    keyInputs[ev.key as keyof typeof keyInputs] = false;
-  });
+listen(window, "keydown", (ev) => {
+  keyInputs[ev.code as Codes] = true;
+});
 
-  export function useKeyInputs() {
-    return keyInputs;
-  }
+listen(window, "keyup", (ev) => {
+  keyInputs[ev.code as Codes] = false;
+});
+
+export function useKeyInputs() {
+  return keyInputs;
+}

@@ -2,7 +2,7 @@ import { accelerate, inertia, solveDrag } from "pocket-physics";
 import ScienceHalt from "science-halt";
 import { loadAssets } from "./asset-map";
 import { drawBall, moveAndMaybeBounceBall } from "./ball";
-import { drawBGForCamera, drawStarfield } from "./bg";
+import { drawStarfield } from "./bg";
 import {
   DrawStepSystem,
   DrawTimeDelta,
@@ -72,7 +72,6 @@ async function boot() {
       case "level": {
         const { target, paddle, ball, edges, directionalAccelerators } = game.levelObjects;
         if (!target || !paddle || !ball) return;
-        drawBGForCamera();
         drawStarfield();
         drawLevelTarget(target!, interp);
         drawPaddle(paddle!);
@@ -164,18 +163,19 @@ async function boot() {
         if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle!);
         if (keyInputs.ArrowRight) rotatePaddleRight(paddle!);
 
-        const paddleAcel = vv2(0.2, 0);
+        // Shift is a boost
+        const paddleAcel = keyInputs.ShiftLeft ? vv2(1, 0) : vv2(0.2, 0);
         const origin = vv2();
         let angle = 0;
-        if (keyInputs.w && keyInputs.d) angle = Math.PI / 4;
-        else if (keyInputs.w && keyInputs.a) angle = Math.PI * (3 / 4);
-        else if (keyInputs.s && keyInputs.d) angle = -Math.PI / 4;
-        else if (keyInputs.s && keyInputs.a) angle = -Math.PI * (3 / 4);
-        else if (keyInputs.w) angle = Math.PI / 2;
-        else if (keyInputs.a) angle = Math.PI;
-        else if (keyInputs.s) angle = -Math.PI / 2;
-        else if (keyInputs.d) angle = 0;
-        if (angle !== 0 || keyInputs.d)
+        if (keyInputs.KeyW && keyInputs.KeyD) angle = Math.PI / 4;
+        else if (keyInputs.KeyW && keyInputs.KeyA) angle = Math.PI * (3 / 4);
+        else if (keyInputs.KeyS && keyInputs.KeyD) angle = -Math.PI / 4;
+        else if (keyInputs.KeyS && keyInputs.KeyA) angle = -Math.PI * (3 / 4);
+        else if (keyInputs.KeyW) angle = Math.PI / 2;
+        else if (keyInputs.KeyA) angle = Math.PI;
+        else if (keyInputs.KeyS) angle = -Math.PI / 2;
+        else if (keyInputs.KeyD) angle = 0;
+        if (angle !== 0 || keyInputs.KeyD)
           movePaddle(paddle!, rotate2d(vv2(), paddleAcel, origin, angle));
 
         if (testWinCondition(target!, ball!)) {

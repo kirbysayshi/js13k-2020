@@ -66,9 +66,11 @@ Tasks
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
 - [x] BUG: signal/target labels hide themselves on the bottom (too far down).
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
-- [ ] Should there be a velocity boost for the paddle movement?
+- [x] Should there be a velocity boost for the paddle movement?
 - [ ] Either a kill zone boundary sphere to keep ball in play, hard edges, or velocity boost for paddle to catch stray balls
 - [x] clear canvas below the "safe" upper box
+- [ ] Max Velocity for signal
+- [ ] Paddle Boost should be a metered resource
 - [ ] Demo level for Al/Phoebe to use as template
 - [ ] Level 01
 - [ ] Level 02
@@ -87,7 +89,6 @@ Tasks
 - [ ] Prevent ball tunneling when colliding with paddle
 - [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
 - [ ] Shorten radius of paddle?
-
 - [ ] BUG: labels are hidden when transitioning from edge to corner
 - [ ] "Play Again" button on end screen?
 - [ ] A lose condition? Or just best time
@@ -175,3 +176,13 @@ Directional accelerator is working! Tricky to draw and measure. Collision was re
 Started generating a starfield. Probably a better way to optimize so I'm not overdrawing as much... Also discovered a bug with how accelerators are drawn (maybe not taking camera into account?). oops!
 
 Drawing a tiled background efficiently is slightly more conditional work than I anticipated.
+
+## 2020-09-09
+
+Fixed the accelrator rendering bug. Now clearing canvas beyond camera.
+
+Keyboard events need to use `event.code`, which I didn't realize was different than `keyCode`: physical keyboard layout instead of key. Very nice!
+
+Added a boost mode to movement, unmetered so far.
+
+Three nights remain.

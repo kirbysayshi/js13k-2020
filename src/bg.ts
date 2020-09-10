@@ -4,11 +4,9 @@ import { DPRCanvas, makeDPRCanvas } from "./canvas";
 import { useRandom } from "./rng";
 import { useDebugMode } from "./query-string";
 
-export function drawBGForCamera() {
+function drawBGGrid() {
   // draw lines every 5 viewport units?
   // given the camera position, "find" lines within the camera bounds
-
-  if (!useDebugMode()) return;
 
   const {
     camera,
@@ -29,21 +27,6 @@ export function drawBGForCamera() {
   );
   const bottommostHorizontal = Math.floor(
     (camera.target.y - camera.frustrum.y) / cellWidth
-  );
-
-  // draw black background
-  ctx.fillStyle = "rgba(40,40,40,1)";
-  ctx.fillRect(
-    toProjectedPixels(
-      (camera.target.x - camera.frustrum.x) as ViewportUnits,
-      "x"
-    ),
-    toProjectedPixels(
-      (camera.target.y + camera.frustrum.y) as ViewportUnits,
-      "y"
-    ),
-    toPixelUnits((camera.frustrum.x * 2) as ViewportUnits),
-    toPixelUnits((-camera.frustrum.y * 2) as ViewportUnits)
   );
 
   ctx.strokeStyle = "gray";
@@ -286,4 +269,8 @@ export function drawStarfield() {
     toPixelUnits(genWidth),
     toPixelUnits(genHeight)
   );
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (useDebugMode()) drawBGGrid();
+  }
 }
