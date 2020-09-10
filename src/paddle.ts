@@ -10,6 +10,7 @@ import {
   toProjectedPixels,
 } from "./viewport";
 import { rotate2d } from "./phys-utils";
+import { useDebugMode } from "./query-string";
 
 export type Paddle = {
   rads: number;
@@ -75,7 +76,7 @@ export function getOffsetForPaddlePosition(p: Paddle, vp: ViewportCmp) {
 }
 
 export function drawPaddle(p: Paddle) {
-  const vp = useCES().selectFirstData('viewport')!;
+  const vp = useCES().selectFirstData("viewport")!;
   const ctx = vp.dprCanvas.ctx;
   const {
     x,
@@ -89,7 +90,7 @@ export function drawPaddle(p: Paddle) {
 
   ctx.save();
   ctx.fillStyle = "rgba(255,255,255,1)";
-  ctx.translate(toProjectedPixels(x, 'x'), toProjectedPixels(y, 'y'));
+  ctx.translate(toProjectedPixels(x, "x"), toProjectedPixels(y, "y"));
   ctx.rotate(Math.PI / 2 + angle);
   ctx.fillRect(
     0 - toPixelUnits(halfWidth),
@@ -99,10 +100,12 @@ export function drawPaddle(p: Paddle) {
   );
   ctx.restore();
 
-  // console.log(`x ${x} translate ${toProjectedPixels(x, 'x')} rotate ${Math.PI / 2 + angle} fill ${0 - toPixelUnits(halfWidth)}`)
-
-  drawEdge(ctx, { p0, p1 }, 1);
-  drawIntegratable(ctx, p.int, 1);
+  if (process.env.NODE_ENV !== "production") {
+    if (useDebugMode()) {
+      drawEdge(ctx, { p0, p1 }, 1);
+      drawIntegratable(ctx, p.int, 1);
+    }
+  }
 }
 
 function drawIntegratable(
@@ -114,10 +117,12 @@ function drawIntegratable(
   ctx.fillStyle = "blue";
   ctx.arc(
     toProjectedPixels(
-      (cmp.ppos.x + (cmp.cpos.x - cmp.ppos.x) * interp) as ViewportUnits, 'x'
+      (cmp.ppos.x + (cmp.cpos.x - cmp.ppos.x) * interp) as ViewportUnits,
+      "x"
     ),
     toProjectedPixels(
-      (cmp.ppos.y + (cmp.cpos.y - cmp.ppos.y) * interp) as ViewportUnits, 'y'
+      (cmp.ppos.y + (cmp.cpos.y - cmp.ppos.y) * interp) as ViewportUnits,
+      "y"
     ),
     toPixelUnits(1 as ViewportUnits),
     0,
@@ -135,8 +140,8 @@ function drawPoint(
   ctx.beginPath();
   ctx.fillStyle = "blue";
   ctx.arc(
-    toProjectedPixels(cmp.x, 'x'),
-    toProjectedPixels(cmp.y, 'y'),
+    toProjectedPixels(cmp.x, "x"),
+    toProjectedPixels(cmp.y, "y"),
     toPixelUnits(1 as ViewportUnits),
     0,
     Math.PI * 2
@@ -153,8 +158,14 @@ function drawEdge(ctx: CanvasRenderingContext2D, edge: Edge, interp: number) {
   ctx.beginPath();
   ctx.strokeStyle = "rgba(40,40,40,1)";
   ctx.lineWidth = toPixelUnits(0.5 as ViewportUnits);
-  ctx.moveTo(toProjectedPixels(edge.p0.x, 'x'), toProjectedPixels(edge.p0.y, 'y'));
-  ctx.lineTo(toProjectedPixels(edge.p1.x, 'x'), toProjectedPixels(edge.p1.y, 'y'));
+  ctx.moveTo(
+    toProjectedPixels(edge.p0.x, "x"),
+    toProjectedPixels(edge.p0.y, "y")
+  );
+  ctx.lineTo(
+    toProjectedPixels(edge.p1.x, "x"),
+    toProjectedPixels(edge.p1.y, "y")
+  );
   ctx.stroke();
   ctx.restore();
 }
