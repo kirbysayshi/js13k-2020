@@ -60,8 +60,8 @@ function drawAccelerator(da: DirectionalAccelerator) {
       // Draw the x.y of this component for debugging purposes.
       ctx.beginPath();
       ctx.arc(
-        toProjectedPixels(0 as ViewportUnits, "x"),
-        toProjectedPixels(0 as ViewportUnits, "y"),
+        toPixelUnits(0 as ViewportUnits),
+        toPixelUnits(0 as ViewportUnits),
         toPixelUnits(1 as ViewportUnits),
         0,
         Math.PI * 2,
@@ -107,8 +107,8 @@ function drawHalfChevron(
   for (let i = 0; i < numLines; i += 2) {
     ctx.save();
     ctx.translate(
-      toProjectedPixels(centerX as ViewportUnits, "x"),
-      toProjectedPixels((y + i * lineThickness) as ViewportUnits, "y")
+      toPixelUnits(centerX as ViewportUnits),
+      toPixelUnits((y + i * lineThickness) as ViewportUnits)
     );
     ctx.rotate(rotation);
 

@@ -57,7 +57,7 @@ Tasks
 - [x] Background grid or texture to better communicate movement
 - [x] Ball + Environment Obstacle Colliding
 - [x] End Game Screen with total time
-- [ ] BUG: accelerator drawing y is reversed with camera
+- [x] BUG: accelerator drawing y is reversed with camera
 - [ ] Title Screen / Summary
 - [x] Generate star field instead of grid
 - [x] Directional Accelerator collider: hit it and get sent flying positively?
