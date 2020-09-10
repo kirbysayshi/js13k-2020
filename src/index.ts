@@ -34,6 +34,7 @@ import {
   moveViewportCamera,
   ViewportUnitVector2,
   vv2,
+  fillBeyondCamera,
 } from "./viewport";
 import { drawFps, onFPS } from "./fps";
 import { maybeCollideWithAccelerators, drawAccelerators } from "./directional-accelerator";
@@ -130,6 +131,8 @@ async function boot() {
         const _n: never = game.state;
       }
     }
+
+    fillBeyondCamera();
   });
 
   updateStepSystems.push((ces, dt) => {

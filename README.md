@@ -68,6 +68,7 @@ Tasks
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [ ] Should there be a velocity boost for the paddle movement?
 - [ ] Either a kill zone boundary sphere to keep ball in play, hard edges, or velocity boost for paddle to catch stray balls
+- [x] clear canvas below the "safe" upper box
 - [ ] Demo level for Al/Phoebe to use as template
 - [ ] Level 01
 - [ ] Level 02
@@ -86,7 +87,8 @@ Tasks
 - [ ] Prevent ball tunneling when colliding with paddle
 - [ ] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
 - [ ] Shorten radius of paddle?
-- [ ] clear canvas below the "safe" upper box
+
+- [ ] BUG: labels are hidden when transitioning from edge to corner
 - [ ] "Play Again" button on end screen?
 - [ ] A lose condition? Or just best time
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?

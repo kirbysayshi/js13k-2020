@@ -134,6 +134,25 @@ export function clearScreen() {
   ctx.restore();
 }
 
+export function fillBeyondCamera(
+  color: "rgba(40,40,40,1)" = "rgba(40,40,40,1)"
+) {
+  const ces = useCES();
+  const vp = ces.selectFirstData("viewport")!;
+  const { ctx } = vp.dprCanvas;
+  ctx.fillStyle = color;
+
+  const remainingX = vp.camera.frustrum.x * 2 as ViewportUnits;
+  const remainingY = vp.vpHeight - (vp.camera.frustrum.y * 2) as ViewportUnits;
+
+  ctx.fillRect(
+    toProjectedPixels(vp.camera.target.x - vp.camera.frustrum.x as ViewportUnits, "x"),
+    toProjectedPixels(vp.camera.target.y - vp.camera.frustrum.y as ViewportUnits, "y"),
+    toPixelUnits(remainingX),
+    toPixelUnits(-remainingY as ViewportUnits)
+  );
+}
+
 // TODO: this is currently "absolutely" positioned only, and not camera aware. Make it camera aware. units=world|viewport?
 export function drawTextLinesInViewport(
   text: string,
@@ -181,12 +200,14 @@ export function drawTextLinesInWorld(
   const toReverseYProjected = (n: ViewportUnits) =>
     toPixelUnits((n + camera.target.y) as ViewportUnits);
 
-  const { predictedSingleLineHeight, font } = predictTextHeight(text, maxLinesPerCanvas);
+  const { predictedSingleLineHeight, font } = predictTextHeight(
+    text,
+    maxLinesPerCanvas
+  );
 
   let totalHeight = 0;
   let y = toReverseYProjected(-start.y as ViewportUnits);
 
-  
   ctx.font = font;
 
   text.split("\n").forEach((line, i) => {
@@ -225,10 +246,7 @@ export function drawTextLinesInWorld(
   return toViewportUnits(totalHeight);
 }
 
-export function predictTextHeight(
-  text: string,
-  maxLinesPerCanvas: number
-) {
+export function predictTextHeight(text: string, maxLinesPerCanvas: number) {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
   const { ctx } = vp.dprCanvas;
@@ -239,7 +257,7 @@ export function predictTextHeight(
   // This will need to be manually adjusted depending on the font.
   const lineHeight = 1.2;
   const font = `${textSize}px/${lineHeight} monospace`;
-  ctx.font = font
+  ctx.font = font;
 
   const lineMeasurements = ctx.measureText(text);
 
@@ -255,16 +273,14 @@ export function predictTextHeight(
 
   ctx.restore();
 
-  const lines = text.split('\n');
+  const lines = text.split("\n");
   return {
     font,
     total: toViewportUnits(heightWithLineHeight * lines.length),
     cssLineHeight: lineHeight,
     predictedSingleLineHeight: toViewportUnits(heightWithLineHeight),
-  }
+  };
 }
-
-
 
 // TODO: account for flipped Y
 export function drawAsset(
