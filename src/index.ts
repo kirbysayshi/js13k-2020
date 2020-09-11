@@ -39,6 +39,7 @@ import {
 import { drawFps, onFPS } from "./fps";
 import { maybeCollideWithAccelerators, drawAccelerators } from "./directional-accelerator";
 import { YellowRGBA } from "./theme";
+import { LevelDesc } from "./level-objects";
 
 async function boot() {
   await loadAssets();
@@ -71,18 +72,15 @@ async function boot() {
         break;
       }
       case "level": {
-        const { target, paddle, ball, edges, directionalAccelerators } = game.levelObjects;
-        if (!target || !paddle || !ball) return;
+        if (!game.levelObjects) break;
+        const { target, paddle, ball, edges, das } = game.levelObjects;
         drawStarfield();
         drawLevelTarget(target, interp);
         drawPaddle(paddle);
         drawBall(ball, interp);
-        if (directionalAccelerators) drawAccelerators(directionalAccelerators);
-        if (edges) drawEdges(edges);
+        drawAccelerators(das);
+        drawEdges(edges);
         drawLevelUI(game, interp);
-
-        
-
         break;
       }
 
@@ -158,6 +156,8 @@ async function boot() {
           (game as Mutable<typeof game>).levelObjects = level();
         }
 
+        if (!game.levelObjects) break;
+
         const { target, paddle, ball } = game.levelObjects;
 
         const keyInputs = useKeyInputs();
@@ -200,9 +200,7 @@ async function boot() {
       case "nextlevel": {
         const g: Mutable<typeof game> = game;
         g.level += 1;
-        g.levelObjects.ball = null;
-        g.levelObjects.paddle = null;
-        g.levelObjects.target = null;
+        g.levelObjects = null;
         return toState("level");
       }
 
@@ -216,21 +214,19 @@ async function boot() {
       }
     }
 
-    const { target, paddle, ball, edges, directionalAccelerators } = game.levelObjects;
+    if (!game.levelObjects) return;
+
+    // General level updates??? Systems???
+
+    const { target, paddle, ball, edges, das } = game.levelObjects;
     if (target && paddle && ball) {
       solveDrag(paddle.int, 0.8);
-
       accelerate(paddle.int, dt);
-      
-
       moveAndMaybeBounceBall(ball, paddle, screen, dt);
-      if (directionalAccelerators) maybeCollideWithAccelerators(ball, directionalAccelerators);
-      if (edges) processEdges(edges, ball);
-
+      maybeCollideWithAccelerators(ball, das);
+      processEdges(edges, ball);
       inertia(paddle.int);
-
       moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
-
     }
 
     (game as Mutable<typeof game>).ticks += 1;

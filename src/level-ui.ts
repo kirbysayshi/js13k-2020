@@ -41,7 +41,9 @@ export function drawLevelUI(game: GameData, interp: number) {
     YellowRGBA
   );
 
-  if (game.levelObjects.target)
+  if (!game.levelObjects) return;
+
+  
     drawPointer(
       game.levelObjects.target.int.cpos,
       game.levelObjects.target.dims,
@@ -49,7 +51,7 @@ export function drawLevelUI(game: GameData, interp: number) {
       "TARGET"
     );
 
-  if (game.levelObjects.ball)
+  
     drawPointer(
       game.levelObjects.ball.cpos,
       // TODO: make this into a persistent vv2!

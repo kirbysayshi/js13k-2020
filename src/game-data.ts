@@ -4,6 +4,7 @@ import { LevelTarget } from "./target";
 import { Edge } from "./edge";
 import { UpdateTimeDelta } from "./components";
 import { DirectionalAccelerator } from "./directional-accelerator";
+import { LevelDesc } from "./level-objects";
 
 type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
 
@@ -13,13 +14,7 @@ export type GameData = {
   readonly prev: null | GameStates;
   readonly state: GameStates;
   readonly level: number;
-  readonly levelObjects: {
-    paddle: Paddle | null;
-    ball: Ball | null;
-    target: LevelTarget | null;
-    edges: Edge[] | null;
-    directionalAccelerators: DirectionalAccelerator[] | null;
-  };
+  readonly levelObjects: LevelDesc | null;
   readonly levelTicks: number[];
 };
 
@@ -29,13 +24,7 @@ export const game: GameData = {
   state: "boot",
   level: -1,
   // level: 1, // start at level 3
-  levelObjects: {
-    paddle: null,
-    ball: null,
-    target: null,
-    edges: null,
-    directionalAccelerators: null,
-  },
+  levelObjects: null,
   levelTicks: [],
 };
 

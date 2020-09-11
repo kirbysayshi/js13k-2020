@@ -69,15 +69,19 @@ Tasks
 - [x] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
 - [x] Signal: themed
 - [x] BUG: directional accelerator does not reset velocity vector (direction)
-- [ ] Level Contract / Exports need to define ball/paddle/etc position not the paddle itself
+- [x] Level Contract / Exports need to define ball/paddle/etc position not the paddle itself
 - [ ] Draw projection of ball direction + velocity (ray)
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
 - [ ] Demo level for Al/Phoebe to use as template
 - [ ] Send to Al & Phoebe with basic instructions
 - [ ] BUG: Doesn't even load on mobile?
 - [ ] Title Screen / Summary
+- [ ] Right Shift should also trigger boost to allow multiple hands
+- [ ] BUG: signal can tunnel through paddle and get stuck in the middle...
+- [ ] DESIGN: how to give minor signal corrections at speed???
 - [ ] Directional Accelerator: Only trigger once until clear
 - [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
+- [ ] Target & Signal pointers should have distances
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [ ] Target: themed
 - [ ] Paddle: themed

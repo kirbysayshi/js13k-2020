@@ -1,55 +1,30 @@
-import { Paddle } from "./paddle";
 import { ViewportUnits, vv2 } from "./viewport";
-import { Ball } from "./ball";
-import { LevelTarget } from "./target";
-import { useCES } from "./components";
-import { translate } from "pocket-physics";
-import { Edge } from "./edge";
+import {
+  makePaddle,
+  makeBall,
+  makeLevelTarget,
+  makeEdge,
+  LevelDesc,
+} from "./level-objects";
 
-
-export function level03 () {
-  const ces = useCES();
-  const screen = ces.selectFirstData("viewport")!;
-
-  const paddle: Paddle = {
-    rads: 0,
-    width: (screen.vpWidth / 8) as ViewportUnits,
-    height: (screen.vpWidth / 16) as ViewportUnits,
-    int: {
-      acel: vv2(),
-      cpos: vv2(),
-      ppos: vv2(),
-    },
-  };
-
-  const ball: Ball = {
-    cpos: vv2(),
-    ppos: vv2(),
-    acel: vv2(),
-    width: (screen.vpWidth / 16) as ViewportUnits,
-    height: (screen.vpWidth / 16) as ViewportUnits,
-  };
-
-  const target: LevelTarget = {
-    int: { cpos: vv2(), ppos: vv2(), acel: vv2() },
-    dims: vv2(10, 10),
-  };
-
-  translate(vv2(-10,-10), target.int.cpos, target.int.ppos);
-
-  ball.acel.x = 0.5 as ViewportUnits;
-  ball.acel.y = 0.5 as ViewportUnits;
+export function level03(): LevelDesc {
+  const paddle = makePaddle();
+  const ball = makeBall(vv2(), 0.5 as ViewportUnits, vv2(1, 1));
+  const target = makeLevelTarget(vv2(-10, -10));
 
   // Add some obstacles
 
-  const edges: Edge[] = [
+  const edges = [
     // vertical line, normal dir is important!
-    { e0:  vv2(30, -10), e1: vv2(30, 40) },
-    { e0:  vv2(20, 50), e1: vv2(-20, 50) }
-  ]
+    makeEdge(vv2(30, -10), vv2(30, 40)),
+    makeEdge(vv2(20, 50), vv2(-20, 50)),
+  ];
 
   return {
-    ball, paddle, target, edges, directionalAccelerators: null
-  }
+    ball,
+    paddle,
+    target,
+    edges,
+    das: [],
+  };
 }
-
