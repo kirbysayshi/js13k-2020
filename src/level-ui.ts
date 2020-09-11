@@ -7,10 +7,7 @@ import {
   predictTextHeight,
 } from "./viewport";
 import { GameData, ticksAsSeconds, formatSeconds } from "./game-data";
-import {
-  projectPointEdge,
-  distance,
-} from "pocket-physics";
+import { projectPointEdge, distance } from "pocket-physics";
 import { makePointEdgeProjectionResult, vd } from "./phys-utils";
 import { YellowRGBA, BodyTextLines, BlackRGBA } from "./theme";
 
@@ -36,22 +33,20 @@ export function drawLevelUI(game: GameData, interp: number) {
 
   if (!game.levelObjects) return;
 
-  
-    drawPointer(
-      game.levelObjects.target.int.cpos,
-      game.levelObjects.target.dims,
-      "blue",
-      "TARGET"
-    );
+  drawPointer(
+    game.levelObjects.target.int.cpos,
+    game.levelObjects.target.dims,
+    "blue",
+    "TARGET"
+  );
 
-  
-    drawPointer(
-      game.levelObjects.ball.cpos,
-      // TODO: make this into a persistent vv2!
-      vv2(game.levelObjects.ball.width, game.levelObjects.ball.height),
-      YellowRGBA,
-      "SIGNAL"
-    );
+  drawPointer(
+    game.levelObjects.ball.cpos,
+    // TODO: make this into a persistent vv2!
+    vv2(game.levelObjects.ball.width, game.levelObjects.ball.height),
+    YellowRGBA,
+    "SIGNAL"
+  );
 }
 
 function drawPointer(
@@ -197,14 +192,7 @@ function drawPointer(
   ctx.save();
 
   // Draw label
-  drawTextLinesInWorld(
-    label,
-    point,
-    pin,
-    BodyTextLines,
-    BlackRGBA,
-    YellowRGBA
-  );
+  drawTextLinesInWorld(label, point, pin, BodyTextLines, BlackRGBA, YellowRGBA);
 
   ctx.restore();
 }

@@ -127,13 +127,11 @@ export function drawStarfield() {
   let xTileRemainder = (camera.target.x % genWidth) / genWidth;
   let yTileRemainder = (camera.target.y % genHeight) / genHeight;
 
-  xTileRemainder = camera.target.x < 0
-    ? 1 - Math.abs(xTileRemainder)
-    : xTileRemainder;
-  
-  yTileRemainder = camera.target.y < 0
-    ? 1 - Math.abs(yTileRemainder)
-    : yTileRemainder;
+  xTileRemainder =
+    camera.target.x < 0 ? 1 - Math.abs(xTileRemainder) : xTileRemainder;
+
+  yTileRemainder =
+    camera.target.y < 0 ? 1 - Math.abs(yTileRemainder) : yTileRemainder;
 
   const ctx = vp.dprCanvas.ctx;
 
@@ -165,113 +163,113 @@ export function drawStarfield() {
     toPixelUnits(genHeight)
   );
 
-  // only draw the rest 
+  // only draw the rest
 
   if (xTileRemainder < 0.5)
-  ctx.drawImage(
-    starfield.cvs,
-    0,
-    0,
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight),
-    toProjectedPixels(((xTile - 1) * genWidth) as ViewportUnits, "x"),
-    toProjectedPixels((yTile * genHeight) as ViewportUnits, "y"),
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight)
-  );
+    ctx.drawImage(
+      starfield.cvs,
+      0,
+      0,
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight),
+      toProjectedPixels(((xTile - 1) * genWidth) as ViewportUnits, "x"),
+      toProjectedPixels((yTile * genHeight) as ViewportUnits, "y"),
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight)
+    );
 
   if (xTileRemainder >= 0.5)
-  ctx.drawImage(
-    starfield.cvs,
-    0,
-    0,
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight),
-    toProjectedPixels(((xTile + 1) * genWidth) as ViewportUnits, "x"),
-    toProjectedPixels((yTile * genHeight) as ViewportUnits, "y"),
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight)
-  );
+    ctx.drawImage(
+      starfield.cvs,
+      0,
+      0,
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight),
+      toProjectedPixels(((xTile + 1) * genWidth) as ViewportUnits, "x"),
+      toProjectedPixels((yTile * genHeight) as ViewportUnits, "y"),
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight)
+    );
 
   if (yTileRemainder < 0.5)
-  ctx.drawImage(
-    starfield.cvs,
-    0,
-    0,
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight),
-    toProjectedPixels((xTile * genWidth) as ViewportUnits, "x"),
-    toProjectedPixels(((yTile - 1) * genHeight) as ViewportUnits, "y"),
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight)
-  );
+    ctx.drawImage(
+      starfield.cvs,
+      0,
+      0,
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight),
+      toProjectedPixels((xTile * genWidth) as ViewportUnits, "x"),
+      toProjectedPixels(((yTile - 1) * genHeight) as ViewportUnits, "y"),
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight)
+    );
 
   if (yTileRemainder >= 0.5)
-  ctx.drawImage(
-    starfield.cvs,
-    0,
-    0,
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight),
-    toProjectedPixels((xTile * genWidth) as ViewportUnits, "x"),
-    toProjectedPixels(((yTile + 1) * genHeight) as ViewportUnits, "y"),
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight)
-  );
+    ctx.drawImage(
+      starfield.cvs,
+      0,
+      0,
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight),
+      toProjectedPixels((xTile * genWidth) as ViewportUnits, "x"),
+      toProjectedPixels(((yTile + 1) * genHeight) as ViewportUnits, "y"),
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight)
+    );
 
   if (xTileRemainder < 0.5 && yTileRemainder < 0.5)
-  ctx.drawImage(
-    starfield.cvs,
-    0,
-    0,
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight),
-    toProjectedPixels(((xTile - 1) * genWidth) as ViewportUnits, "x"),
-    toProjectedPixels(((yTile - 1) * genHeight) as ViewportUnits, "y"),
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight)
-  );
+    ctx.drawImage(
+      starfield.cvs,
+      0,
+      0,
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight),
+      toProjectedPixels(((xTile - 1) * genWidth) as ViewportUnits, "x"),
+      toProjectedPixels(((yTile - 1) * genHeight) as ViewportUnits, "y"),
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight)
+    );
 
   if (xTileRemainder >= 0.5 && yTileRemainder < 0.5)
-  ctx.drawImage(
-    starfield.cvs,
-    0,
-    0,
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight),
-    toProjectedPixels(((xTile + 1) * genWidth) as ViewportUnits, "x"),
-    toProjectedPixels(((yTile - 1) * genHeight) as ViewportUnits, "y"),
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight)
-  );
+    ctx.drawImage(
+      starfield.cvs,
+      0,
+      0,
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight),
+      toProjectedPixels(((xTile + 1) * genWidth) as ViewportUnits, "x"),
+      toProjectedPixels(((yTile - 1) * genHeight) as ViewportUnits, "y"),
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight)
+    );
 
   if (xTileRemainder < 0.5 && yTileRemainder >= 0.5)
-  ctx.drawImage(
-    starfield.cvs,
-    0,
-    0,
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight),
-    toProjectedPixels(((xTile - 1) * genWidth) as ViewportUnits, "x"),
-    toProjectedPixels(((yTile + 1) * genHeight) as ViewportUnits, "y"),
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight)
-  );
+    ctx.drawImage(
+      starfield.cvs,
+      0,
+      0,
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight),
+      toProjectedPixels(((xTile - 1) * genWidth) as ViewportUnits, "x"),
+      toProjectedPixels(((yTile + 1) * genHeight) as ViewportUnits, "y"),
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight)
+    );
 
   if (xTileRemainder >= 0.5 && yTileRemainder >= 0.5)
-  ctx.drawImage(
-    starfield.cvs,
-    0,
-    0,
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight),
-    toProjectedPixels(((xTile + 1) * genWidth) as ViewportUnits, "x"),
-    toProjectedPixels(((yTile + 1) * genHeight) as ViewportUnits, "y"),
-    toPixelUnits(genWidth),
-    toPixelUnits(genHeight)
-  );
+    ctx.drawImage(
+      starfield.cvs,
+      0,
+      0,
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight),
+      toProjectedPixels(((xTile + 1) * genWidth) as ViewportUnits, "x"),
+      toProjectedPixels(((yTile + 1) * genHeight) as ViewportUnits, "y"),
+      toPixelUnits(genWidth),
+      toPixelUnits(genHeight)
+    );
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== "production") {
     if (useDebugMode()) drawBGGrid();
   }
 }

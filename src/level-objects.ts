@@ -72,8 +72,10 @@ export function makeEdge(
   endpoint1: ViewportUnitVector2
 ): Edge {
   return {
-    e0: endpoint0, e1: endpoint1, oneWay: false
-  }
+    e0: endpoint0,
+    e1: endpoint1,
+    oneWay: false,
+  };
 }
 
 export function makeOneWayEdge(
@@ -81,8 +83,10 @@ export function makeOneWayEdge(
   endpoint1: ViewportUnitVector2
 ): Edge {
   return {
-    e0: endpoint0, e1: endpoint1, oneWay: true
-  }
+    e0: endpoint0,
+    e1: endpoint1,
+    oneWay: true,
+  };
 }
 
 export function makeAccelerator(

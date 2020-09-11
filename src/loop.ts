@@ -16,7 +16,7 @@ type LoopOptions = {
   panicAt?: Ms;
   onPanic?: () => void;
   onFPS?: (fps: number) => void;
-}
+};
 
 export const Loop = ({
   drawTime,
@@ -27,13 +27,12 @@ export const Loop = ({
   onPanic = () => {},
   onFPS = () => {},
 }: LoopOptions) => {
-
   const perf = window.performance;
 
   const drawMs = drawTime;
   const updateMs = updateTime;
   const pnow = perf.now.bind(perf);
-  const rAF = window.requestAnimationFrame.bind(window)
+  const rAF = window.requestAnimationFrame.bind(window);
 
   let accumulator = 0;
   let raf: null | number = null;
@@ -42,7 +41,7 @@ export const Loop = ({
   let framesThisSecond = 0;
   let fps = 60;
 
-  (function accumulate () {
+  (function accumulate() {
     const now = pnow();
     raf = rAF(accumulate);
 
@@ -78,14 +77,13 @@ export const Loop = ({
       lastFPS = now;
       onFPS(fps);
     }
-
-  }());
+  })();
 
   const stop = () => {
     if (raf) cancelAnimationFrame(raf);
-  }
+  };
 
   return {
     stop,
-  }
-}
+  };
+};

@@ -17,7 +17,7 @@ export type LevelTarget = {
 };
 
 export function drawLevelTarget(target: LevelTarget, interp: number) {
-  const vp = useCES().selectFirstData('viewport')!;
+  const vp = useCES().selectFirstData("viewport")!;
   const ctx = vp.dprCanvas.ctx;
   const { x, y } = target.int.cpos as ViewportUnitVector2;
   const halfWidth = (target.dims.x / 2) as ViewportUnits;
@@ -25,7 +25,7 @@ export function drawLevelTarget(target: LevelTarget, interp: number) {
 
   ctx.save();
   ctx.fillStyle = YellowRGBA; //"rgba(128,255,255,1)";
-  ctx.translate(toProjectedPixels(x, 'x'), toProjectedPixels(y, 'y'));
+  ctx.translate(toProjectedPixels(x, "x"), toProjectedPixels(y, "y"));
   ctx.fillRect(
     0 - toPixelUnits(halfWidth),
     0 - toPixelUnits(halfHeight),

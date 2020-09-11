@@ -35,7 +35,7 @@ export function makeDPRCanvas(
     height,
     cvs,
     ctx,
-    dpr
+    dpr,
   };
 }
 

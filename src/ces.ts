@@ -25,25 +25,22 @@ class CmpSelection<ED extends EntityData> {
 
   // maybeInsert
   mbIns(id: EntityId, data: ED[]) {
-    const dataKinds = data.map(d => d.k);
-    const matches = this.kinds.every(k => dataKinds.indexOf(k) > -1);
+    const dataKinds = data.map((d) => d.k);
+    const matches = this.kinds.every((k) => dataKinds.indexOf(k) > -1);
     if (!matches || this.es.has(id)) return;
     this.es.add(id);
   }
 
   // maybeRemove
   mbRm(id: EntityId, data: ED[]) {
-    const dataKinds = data.map(d => d.k);
-    const matches = this.kinds.every(k => dataKinds.indexOf(k) > -1);
+    const dataKinds = data.map((d) => d.k);
+    const matches = this.kinds.every((k) => dataKinds.indexOf(k) > -1);
     if (!matches || !this.es.has(id)) return;
     this.es.delete(id);
   }
 
   static hash(kinds: Readonly<EntityData["k"][]>): SelectionHash {
-    return kinds
-      .slice()
-      .sort()
-      .join("|");
+    return kinds.slice().sort().join("|");
   }
 }
 
@@ -70,7 +67,7 @@ export class CES<ED extends EntityData> {
     // new entity, create components
     const id = { id: this.lastId++ };
     this.es.set(id, initData);
-    this.ss.forEach(selection => selection.mbIns(id, initData));
+    this.ss.forEach((selection) => selection.mbIns(id, initData));
     return id as AssuredEntityId<NarrowComponent<ED, T["k"]>>;
   }
 
@@ -144,7 +141,7 @@ export class CES<ED extends EntityData> {
 
     const recurse = (obj: any) => {
       if (obj && typeof obj === "object" && !isEntityId(obj)) {
-        Object.values(obj).forEach(value => {
+        Object.values(obj).forEach((value) => {
           if (isEntityId(value)) {
             this.destroy(value);
             reflush = true;
@@ -155,14 +152,14 @@ export class CES<ED extends EntityData> {
       }
     };
 
-    this.dn.forEach(id => {
+    this.dn.forEach((id) => {
       this.dn.delete(id);
       if (!this.es.has(id)) return;
       const data = this.es.get(id)!;
 
       // recursively traverse the entities referenced by this component
       // and mark them for deletion.
-      data.forEach(cmp => {
+      data.forEach((cmp) => {
         recurse(cmp);
         // Object.values(cmp).forEach(value => {
 
@@ -178,7 +175,7 @@ export class CES<ED extends EntityData> {
       });
 
       this.es.delete(id);
-      this.ss.forEach(selection => selection.mbRm(id, data));
+      this.ss.forEach((selection) => selection.mbRm(id, data));
     });
 
     // We have found more entities to delete. Flush again!
@@ -198,7 +195,7 @@ export class CES<ED extends EntityData> {
       let every = true;
       for (let i = 0; i < kinds.length; i++) {
         const kind = kinds[i];
-        const d = data.find(d => d.k === kind);
+        const d = data.find((d) => d.k === kind);
         if (!d) every = false;
       }
       if (every) {
@@ -215,24 +212,24 @@ export class CES<ED extends EntityData> {
     // that the .value could be undefined and instead is passing `any` through.
     // Doing this helps.
     const next: IteratorResult<EntityId> = entities.values().next();
-    return next.value as (AssuredEntityId<NarrowComponent<ED, T>> | undefined);
+    return next.value as AssuredEntityId<NarrowComponent<ED, T>> | undefined;
   }
 
   data<T extends ED, K extends T["k"]>(id: AssuredEntityId<T>, kind: K) {
     const entity = this.es.get(id);
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== "production") {
       if (!entity) throw new Error(`Entity(${id}) not found!`);
     }
-    
+
     let data;
     for (let i = 0; i < entity!.length; i++) {
       const d = entity![i];
       if (d.k === kind) data = d;
     }
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== "production") {
       if (!data) throw new Error(`Data(${kind}) not found for Entity(${id})!`);
     }
-    
+
     return data as NarrowComponent<ED, K>;
   }
 

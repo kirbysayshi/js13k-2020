@@ -66,7 +66,7 @@ export type AssetCmp = {
 export type DrawableAssetDef = [MovementCmp, AssetCmp];
 export const drawableAssetSelector: EntityDefSelector<DrawableAssetDef> = [
   "v-movement",
-  "asset"
+  "asset",
 ] as const;
 
 export function drawableAssetDef(
@@ -81,14 +81,14 @@ export function drawableAssetDef(
       k: "v-movement",
       cpos: v2(x, y) as ViewportUnitVector2,
       ppos: v2(x, y) as ViewportUnitVector2,
-      acel: v2() as ViewportUnitVector2
+      acel: v2() as ViewportUnitVector2,
     },
     {
       k: "asset",
       asset: asset,
       width,
-      height
-    }
+      height,
+    },
   ];
 }
 

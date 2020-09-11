@@ -135,20 +135,24 @@ export function clearScreen() {
   ctx.restore();
 }
 
-export function fillBeyondCamera(
-  color: BlackRGBA = BlackRGBA
-) {
+export function fillBeyondCamera(color: BlackRGBA = BlackRGBA) {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
   const { ctx } = vp.dprCanvas;
   ctx.fillStyle = color;
 
-  const remainingX = vp.camera.frustrum.x * 2 as ViewportUnits;
-  const remainingY = vp.vpHeight - (vp.camera.frustrum.y * 2) as ViewportUnits;
+  const remainingX = (vp.camera.frustrum.x * 2) as ViewportUnits;
+  const remainingY = (vp.vpHeight - vp.camera.frustrum.y * 2) as ViewportUnits;
 
   ctx.fillRect(
-    toProjectedPixels(vp.camera.target.x - vp.camera.frustrum.x as ViewportUnits, "x"),
-    toProjectedPixels(vp.camera.target.y - vp.camera.frustrum.y as ViewportUnits, "y"),
+    toProjectedPixels(
+      (vp.camera.target.x - vp.camera.frustrum.x) as ViewportUnits,
+      "x"
+    ),
+    toProjectedPixels(
+      (vp.camera.target.y - vp.camera.frustrum.y) as ViewportUnits,
+      "y"
+    ),
     toPixelUnits(remainingX),
     toPixelUnits(-remainingY as ViewportUnits)
   );

@@ -36,12 +36,16 @@ export function drawEdges(edges: Edge[]) {
 
   ctx.save();
 
-  ctx.strokeStyle = YellowRGBA
+  ctx.strokeStyle = YellowRGBA;
   ctx.lineWidth = toPixelUnits(1 as ViewportUnits);
 
   for (let i = 0; i < edges.length; i++) {
     const edge = edges[i];
-    if (edge.oneWay) ctx.setLineDash([toPixelUnits(1 as ViewportUnits), toPixelUnits(2 as ViewportUnits)])
+    if (edge.oneWay)
+      ctx.setLineDash([
+        toPixelUnits(1 as ViewportUnits),
+        toPixelUnits(2 as ViewportUnits),
+      ]);
     else ctx.setLineDash([]);
     ctx.beginPath();
     ctx.moveTo(
@@ -62,8 +66,8 @@ export function drawEdges(edges: Edge[]) {
 export function processEdges(edges: Edge[], ball: Ball) {
   for (let i = 0; i < edges.length; i++) {
     const edge = edges[i];
-    maybePassThroughOneWay(ball, ball.width / 2 as ViewportUnits, edge);
-    maybeBounceOffEdge(ball, ball.width / 2 as ViewportUnits, edge);
+    maybePassThroughOneWay(ball, (ball.width / 2) as ViewportUnits, edge);
+    maybeBounceOffEdge(ball, (ball.width / 2) as ViewportUnits, edge);
   }
 }
 
@@ -72,7 +76,6 @@ function maybePassThroughOneWay(
   radius: ViewportUnits,
   edge: Edge
 ) {
-
   if (!edge.oneWay) return;
 
   const intersectionPoint = vv2();

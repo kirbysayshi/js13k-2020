@@ -5,7 +5,7 @@ import {
   useCES,
   Component,
   MovementCmp,
-  EntityDefSelector
+  EntityDefSelector,
 } from "./components";
 import { ViewportUnitVector2, toViewportUnits } from "./viewport";
 
@@ -40,7 +40,7 @@ export type DragStateCmp = {
 type DragStateDef = [DragStateCmp, MovementCmp];
 export const dragStateSelector: EntityDefSelector<DragStateDef> = [
   "drag-state",
-  "v-movement"
+  "v-movement",
 ] as const;
 
 const pointFromEvent = (ev: TouchEvent | MouseEvent): ViewportUnitVector2 => {
@@ -65,7 +65,7 @@ const pointFromEvent = (ev: TouchEvent | MouseEvent): ViewportUnitVector2 => {
 
 function excludeDestroyed<T extends Component>(ids: Set<AssuredEntityId<T>>) {
   const ces = useCES();
-  return Array.from(ids).filter(id => !ces.isDestroyed(id));
+  return Array.from(ids).filter((id) => !ces.isDestroyed(id));
 }
 
 // Without exporting and calling, Rollup was excluding these listeners!
@@ -73,7 +73,7 @@ function excludeDestroyed<T extends Component>(ids: Set<AssuredEntityId<T>>) {
 // anyway but very unintuitive.
 export function initDragListeners() {
   const root = useRootElement();
-  listen(root, "touchstart", ev => {
+  listen(root, "touchstart", (ev) => {
     let point = pointFromEvent(ev);
     const ces = useCES();
 
@@ -81,7 +81,7 @@ export function initDragListeners() {
     const targets = ces.select(["pointer-target"]);
     let found: null | AssuredEntityId<PointerTargetCmp> = null;
     let foundCenter: null | ViewportUnitVector2 = null;
-    targets.forEach(id => {
+    targets.forEach((id) => {
       if (found) return;
       const data = ces.data(id, "pointer-target");
       if (pointInBox(point, data.box)) {
@@ -98,7 +98,7 @@ export function initDragListeners() {
     const e: DragStateDef = [
       {
         k: "drag-state",
-        target: found
+        target: found,
       },
       {
         k: "v-movement",
@@ -107,14 +107,14 @@ export function initDragListeners() {
         ppos: copy(v2(), foundCenter) as ViewportUnitVector2,
         // cpos: copy(v2(), point) as ViewportUnitVector2,
         // ppos: copy(v2(), point) as ViewportUnitVector2,
-        acel: v2() as ViewportUnitVector2
-      }
+        acel: v2() as ViewportUnitVector2,
+      },
     ];
 
     ces.entity(e);
   });
 
-  listen(root, "touchmove", ev => {
+  listen(root, "touchmove", (ev) => {
     const ces = useCES();
     const ids = excludeDestroyed(ces.select(dragStateSelector));
     if (ids.length === 0) return;
@@ -130,7 +130,7 @@ export function initDragListeners() {
     copy(pos.ppos, point);
   });
 
-  listen(root, "touchend", ev => {
+  listen(root, "touchend", (ev) => {
     const ces = useCES();
     const ids = excludeDestroyed(ces.select(dragStateSelector));
     if (ids.length === 0) return;

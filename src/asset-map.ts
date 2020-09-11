@@ -9,8 +9,7 @@ import { loadImage } from "./load-image";
 
 const unloaded = [
   // { path: TestImage, name: "test" },
-  { path: '', name: "empty" },
-  
+  { path: "", name: "empty" },
 ] as const;
 
 type AssetNames = typeof unloaded[number]["name"];

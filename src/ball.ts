@@ -82,7 +82,10 @@ export function drawBall(ball: Ball, interp: number) {
 
     ctx.lineWidth = toPixelUnits(1 as ViewportUnits);
     ctx.strokeStyle = YellowRGBA05;
-    ctx.setLineDash([toPixelUnits(1 as ViewportUnits), toPixelUnits(3 as ViewportUnits)]);
+    ctx.setLineDash([
+      toPixelUnits(1 as ViewportUnits),
+      toPixelUnits(3 as ViewportUnits),
+    ]);
 
     ctx.beginPath();
     ctx.moveTo(x, y);
