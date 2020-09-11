@@ -257,7 +257,7 @@ export function predictTextHeight(text: string, maxLinesPerCanvas: number) {
 
   // This will need to be manually adjusted depending on the font.
   const lineHeight = 1.2;
-  const font = `${textSize}px/${lineHeight} monospace`;
+  const font = `${textSize}px/${lineHeight} Arial, sans-serif`;
   ctx.font = font;
 
   const lineMeasurements = ctx.measureText(text);

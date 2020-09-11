@@ -11,7 +11,7 @@ import {
 } from "./viewport";
 import { rotate2d } from "./phys-utils";
 import { useDebugMode } from "./query-string";
-import { BlackRGBA } from "./theme";
+import { BlackRGBA, YellowRGBA } from "./theme";
 
 export type Paddle = {
   rads: number;
@@ -22,11 +22,11 @@ export type Paddle = {
 };
 
 export function rotatePaddleLeft(p: Paddle) {
-  p.rads += 0.2;
+  p.rads += 0.1;
 }
 
 export function rotatePaddleRight(p: Paddle) {
-  p.rads -= 0.2;
+  p.rads -= 0.1;
 }
 
 export function movePaddle(p: Paddle, dir: ViewportUnitVector2) {
@@ -90,7 +90,7 @@ export function drawPaddle(p: Paddle) {
   } = getOffsetForPaddlePosition(p, vp);
 
   ctx.save();
-  ctx.fillStyle = "rgba(255,255,255,1)";
+  ctx.fillStyle = YellowRGBA;
   ctx.translate(toProjectedPixels(x, "x"), toProjectedPixels(y, "y"));
   ctx.rotate(Math.PI / 2 + angle);
   ctx.fillRect(

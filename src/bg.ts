@@ -3,7 +3,7 @@ import { ViewportUnits, toProjectedPixels, toPixelUnits } from "./viewport";
 import { DPRCanvas, makeDPRCanvas } from "./canvas";
 import { useRandom } from "./rng";
 import { useDebugMode } from "./query-string";
-import { BlackRGBA, YellowRGBA } from "./theme";
+import { BlackRGBA, YellowRGBA, YellowRGBA01, YellowRGBA05 } from "./theme";
 
 function drawBGGrid() {
   // draw lines every 5 viewport units?
@@ -93,7 +93,7 @@ export function drawStarfield() {
     const maxSize = 0.3 as ViewportUnits;
     const max = 8 * (vp.camera.frustrum.y * 2);
 
-    ctx.fillStyle = YellowRGBA;
+    ctx.fillStyle = YellowRGBA05;
 
     let created = 0;
     while (created < max) {

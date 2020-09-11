@@ -82,12 +82,13 @@ Tasks
 - [ ] Directional Accelerator: Only trigger once until clear
 - [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
 - [ ] Target & Signal pointers should have distances
-- [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
-- [ ] Target: themed
-- [ ] Paddle: themed
-- [ ] Paddle Crosshairs: themed
+- [x] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
+- [x] Target: themed
+- [x] Paddle: themed
+- [x] Paddle Crosshairs: themed
 - [ ] Font: themed
-- [ ] Edges: themed
+- [ ] Move timer, level text, fps, etc to just below game field / camera (or move viewport/camera down? need a restart button too)
+- [x] Edges: themed
 - [ ] Mission Completed screen: themed
 - [ ] End Game Screen: themed
 - [ ] Background window: themed

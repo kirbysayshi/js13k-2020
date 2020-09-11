@@ -9,6 +9,7 @@ import {
 } from "./viewport";
 import { Ball } from "./ball";
 import { useCES } from "./components";
+import { YellowRGBA } from "./theme";
 
 export type LevelTarget = {
   int: IntegratableVU;
@@ -23,7 +24,7 @@ export function drawLevelTarget(target: LevelTarget, interp: number) {
   const halfHeight = (target.dims.y / 2) as ViewportUnits;
 
   ctx.save();
-  ctx.fillStyle = "rgba(128,255,255,1)";
+  ctx.fillStyle = YellowRGBA; //"rgba(128,255,255,1)";
   ctx.translate(toProjectedPixels(x, 'x'), toProjectedPixels(y, 'y'));
   ctx.fillRect(
     0 - toPixelUnits(halfWidth),

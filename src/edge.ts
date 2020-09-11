@@ -21,6 +21,7 @@ import {
   projectCposWithRadius,
   makePointEdgeProjectionResult,
 } from "./phys-utils";
+import { YellowRGBA } from "./theme";
 
 export type Edge = {
   e0: ViewportUnitVector2;
@@ -35,7 +36,7 @@ export function drawEdges(edges: Edge[]) {
 
   ctx.save();
 
-  ctx.strokeStyle = "red";
+  ctx.strokeStyle = YellowRGBA
   ctx.lineWidth = toPixelUnits(1 as ViewportUnits);
 
   for (let i = 0; i < edges.length; i++) {
