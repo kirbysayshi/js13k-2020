@@ -70,3 +70,11 @@ Only one side of an edge is collidable. If you have an edge A -> B, A(0,0), B(10
 #### "Markers"
 
 If the signal/ball or target are outside the camera, they get a tracking marker to tell you where it is, roughly.
+
+#### Debugging
+
+You can append `?debug` to the url (like http://127.0.0.1:8080/?debug) to get a grid and fps meter.
+
+#### Random Numbers
+
+Don't use Math.random! Instead: `useRandom()` will give you a seedable random number. You can change the seed with `?seed=1234567` to ensure reproducibility while designing (default is to use the date).
