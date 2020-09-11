@@ -29,7 +29,6 @@ import {
 } from "./viewport";
 import { useCES } from "./components";
 import { Paddle, getOffsetForPaddlePosition } from "./paddle";
-import { maybeBounceOffEdge } from "./edge";
 import {
   projectCposWithRadius,
   makePointEdgeProjectionResult,

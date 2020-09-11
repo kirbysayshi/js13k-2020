@@ -64,12 +64,24 @@ export function makeLevelTarget(start: ViewportUnitVector2): LevelTarget {
   };
 }
 
+/**
+ * Remember: endpoint0 -> endpoint1 means the bounce (normal) is ^ (up)!
+ */
 export function makeEdge(
   endpoint0: ViewportUnitVector2,
   endpoint1: ViewportUnitVector2
 ): Edge {
   return {
-    e0: endpoint0, e1: endpoint1
+    e0: endpoint0, e1: endpoint1, oneWay: false
+  }
+}
+
+export function makeOneWayEdge(
+  endpoint0: ViewportUnitVector2,
+  endpoint1: ViewportUnitVector2
+): Edge {
+  return {
+    e0: endpoint0, e1: endpoint1, oneWay: true
   }
 }
 

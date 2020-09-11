@@ -72,7 +72,7 @@ Tasks
 - [x] Level Contract / Exports need to define ball/paddle/etc position not the paddle itself
 - [x] Right Shift should also trigger boost to allow multiple hands
 - [x] Draw projection of ball direction + velocity (ray)
-- [ ] One-way edge: pass through (dotted line) but bounces once on the other side
+- [x] One-way edge: pass through (dotted line) but bounces once on the other side
 - [ ] Demo level for Al/Phoebe to use as template
 - [ ] Send to Al & Phoebe with basic instructions
 - [ ] BUG: Doesn't even load on mobile?

@@ -10,27 +10,24 @@ import {
   makeLevelTarget,
   makeAccelerator,
   LevelDesc,
+  makeOneWayEdge,
 } from "./level-objects";
-import { DirectionalAccelerator } from "./directional-accelerator";
-import { Edge } from "./edge";
-
-
 
 export function level01(): LevelDesc {
   const paddle = makePaddle();
-  const ball: Ball = makeBall(vv2(), 0.1 as ViewportUnits, vv2(1, 1));
+  const ball: Ball = makeBall(vv2(), 0.1 as ViewportUnits, vv2(0, 1));
 
   const target = makeLevelTarget(vv2(-10, -10));
 
   const accelerator = makeAccelerator(vv2(10, 10), vv2(0, 1));
 
-  // TODO: make a contract for how these should be returned? useEdges(), useDAs()?
-
   return {
     ball,
     paddle,
     target,
-    edges: [],
+    edges: [
+      makeOneWayEdge(vv2(-20, 7), vv2(20, 7))
+    ],
     das: [accelerator],
   };
 }

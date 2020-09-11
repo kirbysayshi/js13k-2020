@@ -17,11 +17,15 @@ import {
   dot,
 } from "pocket-physics";
 import { Ball } from "./ball";
-import { projectCposWithRadius, makePointEdgeProjectionResult } from "./phys-utils";
+import {
+  projectCposWithRadius,
+  makePointEdgeProjectionResult,
+} from "./phys-utils";
 
 export type Edge = {
   e0: ViewportUnitVector2;
   e1: ViewportUnitVector2;
+  oneWay: boolean;
 };
 
 export function drawEdges(edges: Edge[]) {
@@ -36,6 +40,8 @@ export function drawEdges(edges: Edge[]) {
 
   for (let i = 0; i < edges.length; i++) {
     const edge = edges[i];
+    if (edge.oneWay) ctx.setLineDash([toPixelUnits(1 as ViewportUnits), toPixelUnits(2 as ViewportUnits)])
+    else ctx.setLineDash([]);
     ctx.beginPath();
     ctx.moveTo(
       toProjectedPixels(edge.e0.x, "x"),
@@ -55,15 +61,45 @@ export function drawEdges(edges: Edge[]) {
 export function processEdges(edges: Edge[], ball: Ball) {
   for (let i = 0; i < edges.length; i++) {
     const edge = edges[i];
-    maybeBounceOffEdge(ball, ball.width, edge);
+    maybePassThroughOneWay(ball, ball.width / 2 as ViewportUnits, edge);
+    maybeBounceOffEdge(ball, ball.width / 2 as ViewportUnits, edge);
   }
 }
 
-export function maybeBounceOffEdge(
+function maybePassThroughOneWay(
   int: IntegratableVU,
   radius: ViewportUnits,
   edge: Edge
 ) {
+
+  if (!edge.oneWay) return;
+
+  const intersectionPoint = vv2();
+  const projectedCpos = projectCposWithRadius(vv2(), int, radius);
+  const intersected = segmentIntersection(
+    projectedCpos,
+    int.ppos,
+    edge.e0,
+    edge.e1,
+    intersectionPoint
+  );
+  const projectedResult = makePointEdgeProjectionResult();
+  projectPointEdge(int.ppos, edge.e0, edge.e1, projectedResult);
+
+  if (intersected && projectedResult.similarity < 0) {
+    // ppos was behind edge, cpos is in front: crossed!
+    // Turn it into a normal Edge!
+    edge.oneWay = false;
+  }
+}
+
+function maybeBounceOffEdge(
+  int: IntegratableVU,
+  radius: ViewportUnits,
+  edge: Edge
+) {
+  if (edge.oneWay) return;
+
   const intersectionPoint = vv2();
   const projectedCpos = projectCposWithRadius(vv2(), int, radius);
   const intersected = segmentIntersection(
@@ -83,7 +119,6 @@ export function maybeBounceOffEdge(
   projectPointEdge(int.ppos, edge.e0, edge.e1, projectedResult);
 
   if (intersected && projectedResult.similarity > 1) {
-
     // TODO: This can only be used once per update step, because there isn't a
     // way of knowing right now if the rewinding collision was due to an actual
     // collision or the ball's velocity reflected as a result of a collision.
@@ -96,7 +131,6 @@ export function maybeBounceOffEdge(
       { cpos: edge.e0, ppos: edge.e0, acel: vv2() },
       { cpos: edge.e1, ppos: edge.e1, acel: vv2() }
     );
-
 
     const mass1 = 1;
     const mass2 = 10000000;
