@@ -67,14 +67,17 @@ Tasks
 - [x] clear canvas below the "safe" upper box
 - [x] Prevent ball from accelerating when colliding...
 - [x] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
+- [x] Signal: themed
+- [ ] BUG: directional accelerator does not reset velocity vector (direction)
+- [ ] Draw projection of ball direction + velocity (ray)
+- [ ] One-way edge: pass through (dotted line) but bounces once on the other side
+- [ ] Demo level for Al/Phoebe to use as template
+- [ ] Send to Al & Phoebe with basic instructions
 - [ ] BUG: Doesn't even load on mobile?
 - [ ] Title Screen / Summary
-- [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
-- [ ] BUG: directional accelerator does not reset velocity vector (direction)
 - [ ] Directional Accelerator: Only trigger once until clear
-- [ ] One-way edge: pass through (dotted line) but bounces once on the other side
+- [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
 - [ ] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
-- [ ] Signal: themed
 - [ ] Target: themed
 - [ ] Paddle: themed
 - [ ] Paddle Crosshairs: themed
@@ -83,9 +86,11 @@ Tasks
 - [ ] Mission Completed screen: themed
 - [ ] End Game Screen: themed
 - [ ] Background window: themed
+- [ ] Audio: hit effects
+- [ ] Audio: some looping ambient chords
 - [ ] Max Velocity for signal
-- [ ] Paddle Boost should be a metered resource
-- [ ] Demo level for Al/Phoebe to use as template
+- [ ] Paddle Boost should be a metered resource?
+- [ ] Level / Tutorial Flavor text?
 - [ ] Level 01
 - [ ] Level 02
 - [ ] Level 03
@@ -97,7 +102,7 @@ Tasks
 - [ ] Level 09
 - [ ] Level 10
 - [ ] End Game screen has list of all times per level (+par?)
-- [ ] Draw projection of ball direction + velocity (ray)
+- [ ] On Screen Controls to demonstrate (+mobile)
 - [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?

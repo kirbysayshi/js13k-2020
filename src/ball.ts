@@ -17,6 +17,7 @@ import {
   overlapAABBAABB,
   translate,
   scale,
+  normalize,
 } from "pocket-physics";
 import {
   toPixelUnits,
@@ -34,6 +35,7 @@ import {
   makePointEdgeProjectionResult,
   setVelocity,
 } from "./phys-utils";
+import { YellowRGBA, YellowRGBA05 } from "./theme";
 
 export type Ball = {
   cpos: ViewportUnitVector2;
@@ -70,13 +72,37 @@ export function drawBall(ball: Ball, interp: number) {
   const pxHeight = toPixelUnits(height);
 
   ctx.save();
-  ctx.fillStyle = "rgba(255,255,255,1)";
+
+  // TODO: consider a motion trail for the signal
+
+  const trailDist = halfWidth / 8;
+  const vel = sub(vv2(), cpos, ppos);
+  const trails = magnitude(vel) / trailDist;
+  const dir = normalize(vel, vel);
+
+  ctx.fillStyle = YellowRGBA05;
+
+  const trail = vv2();
+
+  for (let i = 0; i < trails; i++) {
+    scale(trail, dir, i * trailDist);
+
+    ctx.fillRect(
+      x - toPixelUnits(trail.x) - toPixelUnits(halfWidth),
+      y - toPixelUnits(trail.y) - toPixelUnits(halfHeight),
+      pxWidth,
+      pxHeight
+    );
+  }
+
+  ctx.fillStyle = YellowRGBA;
   ctx.fillRect(
     x - toPixelUnits(halfWidth),
     y - toPixelUnits(halfHeight),
     pxWidth,
     pxHeight
   );
+
   ctx.restore();
 }
 

@@ -11,6 +11,7 @@ import {
 } from "./viewport";
 import { rotate2d } from "./phys-utils";
 import { useDebugMode } from "./query-string";
+import { BlackRGBA } from "./theme";
 
 export type Paddle = {
   rads: number;
@@ -156,7 +157,7 @@ function drawEdge(ctx: CanvasRenderingContext2D, edge: Edge, interp: number) {
 
   ctx.save();
   ctx.beginPath();
-  ctx.strokeStyle = "rgba(40,40,40,1)";
+  ctx.strokeStyle = BlackRGBA;
   ctx.lineWidth = toPixelUnits(0.5 as ViewportUnits);
   ctx.moveTo(
     toProjectedPixels(edge.p0.x, "x"),

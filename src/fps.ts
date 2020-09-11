@@ -1,5 +1,6 @@
 import { useCES, DrawStepSystem } from "./components";
 import { drawTextLinesInViewport, vv2 } from "./viewport";
+import { YellowRGBA, BodyTextLines } from "./theme";
 
 // fps entity
 const ces = useCES();
@@ -12,8 +13,8 @@ export const drawFps: DrawStepSystem = (ces) => {
     fpsData.v.toFixed(2),
     vv2(100, 0),
     "right",
-    44,
-    "rgba(255,255,132,1)"
+    BodyTextLines,
+    YellowRGBA
   );
 };
 

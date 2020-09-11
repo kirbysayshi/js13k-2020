@@ -17,6 +17,7 @@ import {
   add,
 } from "pocket-physics";
 import { AssuredEntityId } from "./ces";
+import { YellowRGBA, BlackRGBA } from "./theme";
 
 type Pixels = number & { _isPixels: true };
 
@@ -135,7 +136,7 @@ export function clearScreen() {
 }
 
 export function fillBeyondCamera(
-  color: "rgba(40,40,40,1)" = "rgba(40,40,40,1)"
+  color: BlackRGBA = BlackRGBA
 ) {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
@@ -159,7 +160,7 @@ export function drawTextLinesInViewport(
   start: ViewportUnitVector2,
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
-  color: "rgba(255,255,132,1)" | "rgba(40,40,40,1)"
+  color: YellowRGBA | BlackRGBA
 ): ViewportUnits {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
@@ -185,7 +186,7 @@ export function drawTextLinesInWorld(
   start: ViewportUnitVector2,
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
-  color: "rgba(255,255,132,1)" | "rgba(40,40,40,1)",
+  color: YellowRGBA | BlackRGBA,
   bgcolor: "transparent" | string = "transparent"
 ): ViewportUnits {
   const ces = useCES();

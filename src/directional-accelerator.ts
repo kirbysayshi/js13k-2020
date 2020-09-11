@@ -12,6 +12,7 @@ import { useCES } from "./components";
 import { angleOf, rotate2d, makePointEdgeProjectionResult, setVelocity } from "./phys-utils";
 import { useDebugMode } from "./query-string";
 import { segmentIntersection, projectPointEdge } from "pocket-physics";
+import { YellowRGBA } from "./theme";
 
 export type DirectionalAccelerator = {
   int: IntegratableVU;
@@ -45,8 +46,8 @@ function drawAccelerator(da: DirectionalAccelerator) {
   const offset = ((lineThickness * Math.SQRT2) / 2) as ViewportUnits;
 
   ctx.save();
-  ctx.fillStyle = "rgba(255,255,132,1)";
-  ctx.strokeStyle = "rgba(255,255,132,1)";
+  ctx.fillStyle = YellowRGBA;
+  ctx.strokeStyle = YellowRGBA;
 
   const direction = angleOf(da.enter);
 

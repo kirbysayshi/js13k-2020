@@ -19,6 +19,7 @@ import {
   distance,
 } from "pocket-physics";
 import { makePointEdgeProjectionResult, vd } from "./phys-utils";
+import { YellowRGBA, BodyTextLines, BlackRGBA } from "./theme";
 
 export function drawLevelUI(game: GameData, interp: number) {
   const vp = useCES().selectFirstData("viewport")!;
@@ -28,16 +29,16 @@ export function drawLevelUI(game: GameData, interp: number) {
     time,
     vv2(vp.vpWidth / 2, 0),
     "center",
-    44,
-    "rgba(255,255,132,1)"
+    BodyTextLines,
+    YellowRGBA
   );
 
   drawTextLinesInViewport(
     `Level ${game.level + 1} of ??`,
     vv2(0, 0),
     "left",
-    44,
-    "rgba(255,255,132,1)"
+    BodyTextLines,
+    YellowRGBA
   );
 
   if (game.levelObjects.target)
@@ -53,7 +54,7 @@ export function drawLevelUI(game: GameData, interp: number) {
       game.levelObjects.ball.cpos,
       // TODO: make this into a persistent vv2!
       vv2(game.levelObjects.ball.width, game.levelObjects.ball.height),
-      "rgba(255,255,132,1)",
+      YellowRGBA,
       "SIGNAL"
     );
 }
@@ -61,7 +62,7 @@ export function drawLevelUI(game: GameData, interp: number) {
 function drawPointer(
   target: ViewportUnitVector2,
   wh: ViewportUnitVector2,
-  color: "rgba(255,255,132,1)" | "blue",
+  color: YellowRGBA | "blue",
   label: string
 ) {
   // given a world point and label, draw an arrow / triangle that follows the
@@ -136,7 +137,7 @@ function drawPointer(
   let dist;
   let pin: "right" | "left" | "center";
 
-  const prediction = predictTextHeight(label, 44);
+  const prediction = predictTextHeight(label, BodyTextLines);
 
   if (top.similarity > 0 && right.similarity > 0) {
     point = vv2(right.projectedPoint.x, top.projectedPoint.y);
@@ -205,9 +206,9 @@ function drawPointer(
     label,
     point,
     pin,
-    44,
-    "rgba(40,40,40,1)",
-    "rgba(255,255,132,1)"
+    BodyTextLines,
+    BlackRGBA,
+    YellowRGBA
   );
 
   ctx.restore();

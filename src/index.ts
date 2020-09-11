@@ -38,6 +38,7 @@ import {
 } from "./viewport";
 import { drawFps, onFPS } from "./fps";
 import { maybeCollideWithAccelerators, drawAccelerators } from "./directional-accelerator";
+import { YellowRGBA } from "./theme";
 
 async function boot() {
   await loadAssets();
@@ -95,7 +96,7 @@ async function boot() {
           vv2(vp.vpWidth / 2, -10),
           "center",
           15,
-          "rgba(255,255,132,1)"
+          YellowRGBA
         );
         break;
       }
@@ -119,7 +120,7 @@ async function boot() {
           vv2(vp.vpWidth / 2, -10),
           "center",
           15,
-          "rgba(255,255,132,1)"
+          YellowRGBA
         );
 
         console.log("thanks!");

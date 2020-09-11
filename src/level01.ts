@@ -25,8 +25,8 @@ export function level01 () {
     cpos: vv2(),
     ppos: vv2(),
     acel: vv2(),
-    width: (screen.vpWidth / 16) as ViewportUnits,
-    height: (screen.vpWidth / 16) as ViewportUnits,
+    width: (screen.vpWidth / 32) as ViewportUnits,
+    height: (screen.vpWidth / 32) as ViewportUnits,
   };
 
   const target: LevelTarget = {
