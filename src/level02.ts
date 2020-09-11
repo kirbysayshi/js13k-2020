@@ -21,7 +21,16 @@ export function level02(): LevelDesc {
     target: makeLevelTarget(vv2(30, 10)),
     edges: [
       makeEdge(vv2(20, 15), vv2(-20, 15)), // normal is downwards
-      makeOneWayEdge(vv2(-20, 5), vv2(20, 5))
+      makeOneWayEdge(vv2(-20, 5), vv2(20, 5)),
+
+      // top
+      makeEdge(vv2(50, 50), vv2(-50, 50)),
+      // left
+      makeEdge(vv2(-50, 50), vv2(-50, -50)),
+      // bottom
+      makeEdge(vv2(-50, -50), vv2(50, -50)),
+      // right
+      makeEdge(vv2(50, -50), vv2(50, 50)),
     ],
     das: [],
   };
