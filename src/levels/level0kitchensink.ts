@@ -1,5 +1,4 @@
-
-import { ViewportUnits, vv2 } from "./viewport";
+import { ViewportUnits, vv2 } from "../viewport";
 import {
   makePaddle,
   makeBall,
@@ -7,7 +6,7 @@ import {
   makeEdge,
   LevelDesc,
   makeAccelerator,
-} from "./level-objects";
+} from "../level-objects";
 
 export function levelKitchenSink(): LevelDesc {
   const paddle = makePaddle();

@@ -1,18 +1,12 @@
-import { Paddle } from "./paddle";
-import { ViewportUnits, vv2 } from "./viewport";
-import { Ball } from "./ball";
-import { LevelTarget } from "./target";
-import { useCES } from "./components";
-import { translate } from "pocket-physics";
 import {
-  makePaddle,
-  makeBall,
-  makeLevelTarget,
   LevelDesc,
-  makeOneWayEdge,
-  makeAccelerator,
+  makeBall,
+  makePaddle,
+  makeLevelTarget,
   makeEdge,
-} from "./level-objects";
+  makeOneWayEdge,
+} from "../level-objects";
+import { vv2, ViewportUnits } from "../viewport";
 
 export function level02(): LevelDesc {
   return {

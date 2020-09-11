@@ -5,10 +5,10 @@ import { Edge } from "./edge";
 import { UpdateTimeDelta } from "./components";
 import { DirectionalAccelerator } from "./directional-accelerator";
 import { LevelDesc } from "./level-objects";
-import { level01 } from "./level01";
-import { level02 } from "./level02";
-import { level03 } from "./level03";
-import { levelKitchenSink } from "./level0kitchensink";
+import { level01 } from "./levels/level01";
+import { level02 } from "./levels/level02";
+import { level03 } from "./levels/level03";
+import { levelKitchenSink } from "./levels/level0kitchensink";
 
 type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
 
@@ -36,7 +36,7 @@ export const game: GameData = {
     // levelKitchenSink,
     level01,
     level02,
-    level03
+    level03,
   ],
 };
 
@@ -48,7 +48,7 @@ export function toState(next: typeof game["state"]) {
 }
 
 export function ticksAsSeconds(ticks: number): number {
-  return ((ticks * UpdateTimeDelta) / 1000);
+  return (ticks * UpdateTimeDelta) / 1000;
 }
 
 export function formatSeconds(s: number) {

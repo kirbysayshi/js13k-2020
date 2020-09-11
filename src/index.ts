@@ -14,9 +14,6 @@ import { drawEdges, processEdges } from "./edge";
 import { game, toState, ticksAsSeconds, formatSeconds } from "./game-data";
 import { useKeyInputs } from "./keys";
 import { drawLevelUI } from "./level-ui";
-import { level01 } from "./level01";
-import { level02 } from "./level02";
-import { level03 } from "./level03";
 import { Loop } from "./loop";
 import {
   drawPaddle,
@@ -37,7 +34,10 @@ import {
   fillBeyondCamera,
 } from "./viewport";
 import { drawFps, onFPS } from "./fps";
-import { maybeCollideWithAccelerators, drawAccelerators } from "./directional-accelerator";
+import {
+  maybeCollideWithAccelerators,
+  drawAccelerators,
+} from "./directional-accelerator";
 import { YellowRGBA } from "./theme";
 import { LevelDesc } from "./level-objects";
 
@@ -104,7 +104,6 @@ async function boot() {
       }
 
       case "thanks": {
-
         const totalTicks = game.levelTicks.reduce((total, ticks) => {
           total += ticks;
           return total;
@@ -161,7 +160,8 @@ async function boot() {
         if (keyInputs.ArrowRight) rotatePaddleRight(paddle!);
 
         // Shift is a boost
-        const paddleAcel = (keyInputs.ShiftLeft || keyInputs.ShiftRight) ? vv2(1, 0) : vv2(0.2, 0);
+        const paddleAcel =
+          keyInputs.ShiftLeft || keyInputs.ShiftRight ? vv2(1, 0) : vv2(0.2, 0);
         const origin = vv2();
         let angle = 0;
         if (keyInputs.KeyW && keyInputs.KeyD) angle = Math.PI / 4;
