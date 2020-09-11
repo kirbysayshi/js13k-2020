@@ -161,7 +161,7 @@ async function boot() {
         if (keyInputs.ArrowRight) rotatePaddleRight(paddle!);
 
         // Shift is a boost
-        const paddleAcel = keyInputs.ShiftLeft ? vv2(1, 0) : vv2(0.2, 0);
+        const paddleAcel = (keyInputs.ShiftLeft || keyInputs.ShiftRight) ? vv2(1, 0) : vv2(0.2, 0);
         const origin = vv2();
         let angle = 0;
         if (keyInputs.KeyW && keyInputs.KeyD) angle = Math.PI / 4;

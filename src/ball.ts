@@ -35,7 +35,7 @@ import {
   makePointEdgeProjectionResult,
   setVelocity,
 } from "./phys-utils";
-import { YellowRGBA, YellowRGBA05 } from "./theme";
+import { YellowRGBA, YellowRGBA01, YellowRGBA05 } from "./theme";
 
 export type Ball = {
   cpos: ViewportUnitVector2;
@@ -73,35 +73,59 @@ export function drawBall(ball: Ball, interp: number) {
 
   ctx.save();
 
-  // TODO: consider a motion trail for the signal
+  // Draw a velocity line for aiming
+  {
+    const vel = sub(vv2(), cpos, ppos);
+    const dir = normalize(vel, vel);
 
-  const trailDist = halfWidth / 8;
-  const vel = sub(vv2(), cpos, ppos);
-  const trails = magnitude(vel) / trailDist;
-  const dir = normalize(vel, vel);
+    // TODO: something more intelligent, like Math.max(distance from the paddle, 10vpw)
+    const tenVPLine = scale(dir, dir, vp.vpWidth * 10) as ViewportUnitVector2;
 
-  ctx.fillStyle = YellowRGBA05;
+    ctx.lineWidth = toPixelUnits(1 as ViewportUnits);
+    ctx.strokeStyle = YellowRGBA05;
+    ctx.setLineDash([toPixelUnits(1 as ViewportUnits), toPixelUnits(3 as ViewportUnits)]);
 
-  const trail = vv2();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + toPixelUnits(tenVPLine.x), y + toPixelUnits(tenVPLine.y));
+    ctx.stroke();
 
-  for (let i = 0; i < trails; i++) {
-    scale(trail, dir, i * trailDist);
+    ctx.setLineDash([]);
+  }
 
+  // Draw a motion trail
+  {
+    const trailDist = halfWidth / 8;
+    const vel = sub(vv2(), cpos, ppos);
+    const trails = magnitude(vel) / trailDist;
+    const dir = normalize(vel, vel);
+
+    ctx.fillStyle = YellowRGBA01;
+
+    const trail = vv2();
+
+    for (let i = 0; i < trails; i++) {
+      scale(trail, dir, i * trailDist);
+
+      ctx.fillRect(
+        x - toPixelUnits(trail.x) - toPixelUnits(halfWidth),
+        y - toPixelUnits(trail.y) - toPixelUnits(halfHeight),
+        pxWidth,
+        pxHeight
+      );
+    }
+  }
+
+  // Draw the position
+  {
+    ctx.fillStyle = YellowRGBA;
     ctx.fillRect(
-      x - toPixelUnits(trail.x) - toPixelUnits(halfWidth),
-      y - toPixelUnits(trail.y) - toPixelUnits(halfHeight),
+      x - toPixelUnits(halfWidth),
+      y - toPixelUnits(halfHeight),
       pxWidth,
       pxHeight
     );
   }
-
-  ctx.fillStyle = YellowRGBA;
-  ctx.fillRect(
-    x - toPixelUnits(halfWidth),
-    y - toPixelUnits(halfHeight),
-    pxWidth,
-    pxHeight
-  );
 
   ctx.restore();
 }

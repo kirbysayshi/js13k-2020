@@ -6,7 +6,7 @@ import { listen } from "./dom";
 
 // Represent the physical key on the keyboard (position) instead of the character itself.
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
-type Codes = 'KeyW' | 'KeyA' | 'KeyS' | 'KeyD' | 'ArrowRight' | 'ArrowLeft' | 'ShiftLeft';
+type Codes = 'KeyW' | 'KeyA' | 'KeyS' | 'KeyD' | 'ArrowRight' | 'ArrowLeft' | 'ShiftLeft' | 'ShiftRight';
 
 // the quotes, so disable it.
 const keyInputs: {
@@ -26,6 +26,8 @@ const keyInputs: {
   'ArrowRight': false,
   // prettier-ignore
   'ShiftLeft': false,
+  // prettier-ignore
+  'ShiftRight': false,
 };
 
 listen(window, "keydown", (ev) => {

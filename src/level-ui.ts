@@ -1,21 +1,14 @@
-import { useCES, UpdateTimeDelta } from "./components";
+import { useCES } from "./components";
 import {
   drawTextLinesInViewport,
   vv2,
   ViewportUnitVector2,
-  toPixelUnits,
-  toProjectedPixels,
-  ViewportUnits,
   drawTextLinesInWorld,
   predictTextHeight,
 } from "./viewport";
 import { GameData, ticksAsSeconds, formatSeconds } from "./game-data";
 import {
-  v2,
-  overlapAABBAABB,
-  AABBOverlapResult,
   projectPointEdge,
-  Vector2,
   distance,
 } from "pocket-physics";
 import { makePointEdgeProjectionResult, vd } from "./phys-utils";

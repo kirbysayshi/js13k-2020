@@ -70,13 +70,13 @@ Tasks
 - [x] Signal: themed
 - [x] BUG: directional accelerator does not reset velocity vector (direction)
 - [x] Level Contract / Exports need to define ball/paddle/etc position not the paddle itself
-- [ ] Draw projection of ball direction + velocity (ray)
+- [x] Right Shift should also trigger boost to allow multiple hands
+- [x] Draw projection of ball direction + velocity (ray)
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
 - [ ] Demo level for Al/Phoebe to use as template
 - [ ] Send to Al & Phoebe with basic instructions
 - [ ] BUG: Doesn't even load on mobile?
 - [ ] Title Screen / Summary
-- [ ] Right Shift should also trigger boost to allow multiple hands
 - [ ] BUG: signal can tunnel through paddle and get stuck in the middle...
 - [ ] DESIGN: how to give minor signal corrections at speed???
 - [ ] Directional Accelerator: Only trigger once until clear
@@ -91,6 +91,7 @@ Tasks
 - [ ] Mission Completed screen: themed
 - [ ] End Game Screen: themed
 - [ ] Background window: themed
+- [ ] Ball velocity projection should bounce off paddle...
 - [ ] Audio: hit effects
 - [ ] Audio: some looping ambient chords
 - [ ] Max Velocity for signal
