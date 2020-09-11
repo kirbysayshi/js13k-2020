@@ -42,10 +42,10 @@ export function level01 () {
   const accelerator = {
     int: { cpos: vv2(), ppos: vv2(), acel: vv2() },
     dims: vv2(10, 10),
-    enter: vv2(1, 1),
+    enter: vv2(0, 1),
   }
 
-  translate(vv2(10,-10), accelerator.int.ppos, accelerator.int.cpos)
+  translate(vv2(10,10), accelerator.int.ppos, accelerator.int.cpos)
 
   return {
     ball, paddle, target, edges: null, directionalAccelerators: [accelerator],

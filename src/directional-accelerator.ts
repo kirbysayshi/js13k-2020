@@ -9,9 +9,20 @@ import {
 } from "./viewport";
 import { Ball } from "./ball";
 import { useCES } from "./components";
-import { angleOf, rotate2d, makePointEdgeProjectionResult, setVelocity } from "./phys-utils";
+import {
+  angleOf,
+  rotate2d,
+  makePointEdgeProjectionResult,
+  setVelocity,
+} from "./phys-utils";
 import { useDebugMode } from "./query-string";
-import { segmentIntersection, projectPointEdge } from "pocket-physics";
+import {
+  segmentIntersection,
+  projectPointEdge,
+  set,
+  copy,
+  translate,
+} from "pocket-physics";
 import { YellowRGBA } from "./theme";
 
 export type DirectionalAccelerator = {
@@ -51,7 +62,7 @@ function drawAccelerator(da: DirectionalAccelerator) {
 
   const direction = angleOf(da.enter);
 
-  ctx.translate(toProjectedPixels(x, 'x'), toProjectedPixels(y, 'y'));
+  ctx.translate(toProjectedPixels(x, "x"), toProjectedPixels(y, "y"));
 
   // The drawing code goes from y -> y+ (up), so we need to compensatel
   ctx.rotate(direction - Math.PI / 2);
@@ -91,8 +102,6 @@ function drawAccelerator(da: DirectionalAccelerator) {
     -Math.PI / 4
   );
 
-  
-
   ctx.restore();
 }
 
@@ -125,7 +134,10 @@ function drawHalfChevron(
   }
 }
 
-export function maybeCollideWithAccelerators(ball: Ball, das: DirectionalAccelerator[]) {
+export function maybeCollideWithAccelerators(
+  ball: Ball,
+  das: DirectionalAccelerator[]
+) {
   for (let i = 0; i < das.length; i++) {
     maybeCollideWithAccelerator(ball, das[i]);
   }
@@ -133,8 +145,8 @@ export function maybeCollideWithAccelerators(ball: Ball, das: DirectionalAcceler
 
 function maybeCollideWithAccelerator(ball: Ball, da: DirectionalAccelerator) {
   const center = da.int.cpos;
-  const halfHeight = da.dims.y / 2 as ViewportUnits;
-  const halfWidth = da.dims.x / 2 as ViewportUnits;
+  const halfHeight = (da.dims.y / 2) as ViewportUnits;
+  const halfWidth = (da.dims.x / 2) as ViewportUnits;
 
   // Point the edge at unit circle theta=0
   const e0 = vv2(center.x, center.y + halfWidth);
@@ -146,7 +158,13 @@ function maybeCollideWithAccelerator(ball: Ball, da: DirectionalAccelerator) {
   rotate2d(e1, e1, center, theta);
 
   const intersectionPoint = vv2();
-  const intersected = segmentIntersection(ball.ppos, ball.cpos, e0, e1, intersectionPoint);
+  const intersected = segmentIntersection(
+    ball.ppos,
+    ball.cpos,
+    e0,
+    e1,
+    intersectionPoint
+  );
 
   const projection = makePointEdgeProjectionResult();
   projectPointEdge(ball.ppos, e0, e1, projection);
@@ -155,11 +173,18 @@ function maybeCollideWithAccelerator(ball: Ball, da: DirectionalAccelerator) {
     // velocity vector is on the entrance side of the vector, meaning the ball
     // entered from the correct side.
 
-    // TODO: standardize this value TODO: ensure the ball only hits once: once
+    // TODO: ensure the ball only hits once: once
     // it's in the accelerator, disable checks until it's out (hits the end of
     // the accelerator). something cool that can happen is to track the ball via
     // camera for long tunnels.
-    console.log('entered accelerator!');
-    setVelocity(ball, 5);
+
+    // Place ball perfectly in accelerator
+    copy(ball.cpos, da.int.cpos);
+
+    // kill existing velocity
+    copy(ball.ppos, ball.cpos);
+
+    // And Go!
+    set(ball.acel, 5 * da.enter.x, 5 * da.enter.y);
   }
 }

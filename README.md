@@ -68,7 +68,8 @@ Tasks
 - [x] Prevent ball from accelerating when colliding...
 - [x] Probably model collisions manually using segmentIntersection, projectPointEdge, collisionResponseAABB + valid normal
 - [x] Signal: themed
-- [ ] BUG: directional accelerator does not reset velocity vector (direction)
+- [x] BUG: directional accelerator does not reset velocity vector (direction)
+- [ ] Level Contract / Exports need to define ball/paddle/etc position not the paddle itself
 - [ ] Draw projection of ball direction + velocity (ray)
 - [ ] One-way edge: pass through (dotted line) but bounces once on the other side
 - [ ] Demo level for Al/Phoebe to use as template
