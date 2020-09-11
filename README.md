@@ -73,7 +73,7 @@ Tasks
 - [x] Right Shift should also trigger boost to allow multiple hands
 - [x] Draw projection of ball direction + velocity (ray)
 - [x] One-way edge: pass through (dotted line) but bounces once on the other side
-- [ ] Demo level for Al/Phoebe to use as template
+- [x] Demo level for Al/Phoebe to use as template
 - [ ] Send to Al & Phoebe with basic instructions
 - [ ] BUG: Doesn't even load on mobile?
 - [ ] Title Screen / Summary
@@ -215,3 +215,9 @@ Spent a lot of time trying to prevent tunneling and changing paddle collisions t
 Three nights remain.
 
 ## 2020-09-10
+
+Really got a ton done today!
+
+Added more theming (signal trails!), fixed bugs (edge collisions, accelerator). But mostly got what I deemed the minimum to be able to send it for level design collaboration. Got level code to be a bit better structured and hopefully more comprehensible.
+
+Added one-way edges! They were thankfully very simple to implement. 

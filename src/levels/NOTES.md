@@ -2,7 +2,7 @@
 
 ## Player Goal
 
-Bounce the signal (ball) to the target, while avoiding subspace disruptions, as quickly as possible (don't let it 404! silly theme...)
+Bounce the signal (ball) to the target as quickly as possible while avoiding subspace disruptions (don't let it 404! silly theme...)
 
 ## Controls
 
@@ -51,7 +51,7 @@ I may end up locking the controls and camera to track the signal once it hits a 
 
 #### Units of measure
 
-"world space" is in a unit called ViewportUnits. 100 == the width of the visible play area (aka the camera). The camera is 100x100 units. You can make the world as large as you want, of course. The three demo levels (so far) are sized to the size of the camera since they're introducing concepts to the player.
+"world space" is in a unit called ViewportUnits. 100 == the width of the visible play area (aka the camera). The camera is 100x100 units. You can place things anywhere in the world and make it as large as you want, of course. The three demo levels (so far) are sized to the size of the camera since they're introducing concepts to the player.
 
 The camera starts at where ever the paddle is. Default is 0,0
 
