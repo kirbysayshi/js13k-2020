@@ -34,20 +34,39 @@ yarn start
 
 ## Level Design Notes
 
-There are edges, one-way edges (pass through from behind, becomes solid after a single pass), directional accelerators (aka DK Barrel Cannons), the target, and the ball/signal. If you're looking for inspiration, think mini golf! Other ideas: having to "race" the signal before it gets blasted off course by an accelerator, or using accelerators to journey in open space between smaller contained courts. Could make huge huge levels, could make tiny bounce-a-thons more like rube-goldberg.
+Entities:
+
+- edges
+- one-way edges (pass through from behind, becomes solid after a single pass)
+- directional accelerators: aka DK Barrel Cannons for the signal/ball
+- the target: ends the level when hit
+- the ball/signal: bounces around
+- the paddle: player controled and the camera always follows it
+
+If you're looking for inspiration, think mini golf! Other ideas: having to "race" the signal before it gets blasted off course by an accelerator, or using accelerators to journey in open space between smaller contained courts. Could make huge huge levels, could make tiny bounce-a-thons more like rube-goldberg.
 
 I may end up locking the controls and camera to track the signal once it hits a directional accelerator for a limited time (more like a cutscene). Haven't decided if that's necessary yet.
 
 ## Gotchas / Concepts / Misc
 
-Units of measure: "world space" is in a unit called ViewportUnits. 100 == the width of the visible play area (aka the camera). The camera is 100x100 units. You can make the world as large as you want, of course. The three demo levels (so far) are sized to the size of the camera since they're introducing concepts to the player.
+#### Units of measure
+
+"world space" is in a unit called ViewportUnits. 100 == the width of the visible play area (aka the camera). The camera is 100x100 units. You can make the world as large as you want, of course. The three demo levels (so far) are sized to the size of the camera since they're introducing concepts to the player.
 
 The camera starts at where ever the paddle is. Default is 0,0
 
-Axis: 0,0 is the middle. +x is to the right. +y is up, like in math (aka the opposite of canvas).
+#### Axis
 
-Vectors: Try to use `vv2()` / `ViewportUnitVector2` as much as possible, since that gives some type checks for internal drawing code. `... as ViewportUnits` and `... as ViewportUnitVector2` are your friends.
+0,0 is the middle. +x is to the right. +y is up, like in math (aka the opposite of canvas).
 
-Edges: Only one side of an edge is collidable. If you have an edge A -> B, A(0,0), B(10,0), then only the "top" of the edge (ball moving downwards into the edge) is collidable. The more technical description for A->B is that the edge normal points upwards.
+#### Vectors
 
-"Markers": if the signal/ball or target are outside the camera, they get a tracking marker to tell you where it is, roughly.
+Try to use `vv2()` / `ViewportUnitVector2` as much as possible, since that gives some type checks for internal drawing code. `... as ViewportUnits` and `... as ViewportUnitVector2` are your friends.
+
+#### Edges
+
+Only one side of an edge is collidable. If you have an edge A -> B, A(0,0), B(10,0), then only the "top" of the edge (ball moving downwards into the edge) is collidable. The more technical description for A->B is that the edge normal points upwards.
+
+#### "Markers"
+
+If the signal/ball or target are outside the camera, they get a tracking marker to tell you where it is, roughly.
