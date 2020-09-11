@@ -8,6 +8,7 @@ import { LevelDesc } from "./level-objects";
 import { level01 } from "./level01";
 import { level02 } from "./level02";
 import { level03 } from "./level03";
+import { levelKitchenSink } from "./level0kitchensink";
 
 type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
 
@@ -32,6 +33,7 @@ export const game: GameData = {
   levelTicks: [],
 
   levels: [
+    // levelKitchenSink,
     level01,
     level02,
     level03

@@ -119,7 +119,7 @@ function maybeBounceOffEdge(
   const projectedResult = makePointEdgeProjectionResult();
   projectPointEdge(int.ppos, edge.e0, edge.e1, projectedResult);
 
-  if (intersected && projectedResult.similarity > 1) {
+  if (intersected && projectedResult.similarity > 0) {
     // TODO: This can only be used once per update step, because there isn't a
     // way of knowing right now if the rewinding collision was due to an actual
     // collision or the ball's velocity reflected as a result of a collision.
