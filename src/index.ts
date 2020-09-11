@@ -145,14 +145,10 @@ async function boot() {
         if (game.ticks === 0) {
           // initialize on first tick
 
-          const levels = [level01, level02, level03];
-
-          const level = levels[game.level];
-
+          const level = game.levels[game.level];
           if (!level) {
             return toState("thanks");
           }
-
           (game as Mutable<typeof game>).levelObjects = level();
         }
 

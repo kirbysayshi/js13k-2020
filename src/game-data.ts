@@ -5,6 +5,9 @@ import { Edge } from "./edge";
 import { UpdateTimeDelta } from "./components";
 import { DirectionalAccelerator } from "./directional-accelerator";
 import { LevelDesc } from "./level-objects";
+import { level01 } from "./level01";
+import { level02 } from "./level02";
+import { level03 } from "./level03";
 
 type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
 
@@ -16,6 +19,7 @@ export type GameData = {
   readonly level: number;
   readonly levelObjects: LevelDesc | null;
   readonly levelTicks: number[];
+  readonly levels: (() => LevelDesc)[];
 };
 
 export const game: GameData = {
@@ -26,6 +30,10 @@ export const game: GameData = {
   // level: 1, // start at level 3
   levelObjects: null,
   levelTicks: [],
+
+  levels: [
+    level01, level02, level03
+  ],
 };
 
 export function toState(next: typeof game["state"]) {
