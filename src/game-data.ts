@@ -32,7 +32,9 @@ export const game: GameData = {
   levelTicks: [],
 
   levels: [
-    level01, level02, level03
+    level01,
+    level02,
+    level03
   ],
 };
 

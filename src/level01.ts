@@ -14,20 +14,11 @@ import {
 } from "./level-objects";
 
 export function level01(): LevelDesc {
-  const paddle = makePaddle();
-  const ball: Ball = makeBall(vv2(), 0.1 as ViewportUnits, vv2(0, 1));
-
-  const target = makeLevelTarget(vv2(-10, -10));
-
-  const accelerator = makeAccelerator(vv2(10, 10), vv2(0, 1));
-
   return {
-    ball,
-    paddle,
-    target,
-    edges: [
-      makeOneWayEdge(vv2(-20, 7), vv2(20, 7))
-    ],
-    das: [accelerator],
+    ball: makeBall(vv2(), 0.1 as ViewportUnits, vv2(1, 1)),
+    paddle: makePaddle(),
+    target: makeLevelTarget(vv2(-10, -10)),
+    edges: [],
+    das: [],
   };
 }

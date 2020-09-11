@@ -9,19 +9,20 @@ import {
   makeBall,
   makeLevelTarget,
   LevelDesc,
+  makeOneWayEdge,
+  makeAccelerator,
+  makeEdge,
 } from "./level-objects";
 
 export function level02(): LevelDesc {
-
-  const paddle = makePaddle();
-  const ball = makeBall(vv2(), 0.1 as ViewportUnits, vv2(1, 1));
-  const target = makeLevelTarget(vv2(-30, -10));
-
   return {
-    ball,
-    paddle,
-    target,
-    edges: [],
+    ball: makeBall(vv2(0, -10), 0.5 as ViewportUnits, vv2(0, 1)),
+    paddle: makePaddle(),
+    target: makeLevelTarget(vv2(30, 10)),
+    edges: [
+      makeEdge(vv2(20, 15), vv2(-20, 15)), // normal is downwards
+      makeOneWayEdge(vv2(-20, 5), vv2(20, 5))
+    ],
     das: [],
   };
 }

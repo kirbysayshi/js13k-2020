@@ -188,7 +188,7 @@ async function boot() {
         if (game.ticks === 0) {
           schedule(() => {
             return toState("nextlevel");
-          }, 5000);
+          }, 1000);
         }
         break;
       }

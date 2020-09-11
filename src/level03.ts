@@ -5,19 +5,23 @@ import {
   makeLevelTarget,
   makeEdge,
   LevelDesc,
+  makeAccelerator,
 } from "./level-objects";
 
 export function level03(): LevelDesc {
   const paddle = makePaddle();
-  const ball = makeBall(vv2(), 0.5 as ViewportUnits, vv2(1, 1));
-  const target = makeLevelTarget(vv2(-10, -10));
-
-  // Add some obstacles
+  const ball = makeBall(vv2(-30, -40), 0.5 as ViewportUnits, vv2(0, 1));
+  const target = makeLevelTarget(vv2(30, -40));
 
   const edges = [
-    // vertical line, normal dir is important!
-    makeEdge(vv2(30, -10), vv2(30, 40)),
-    makeEdge(vv2(20, 50), vv2(-20, 50)),
+    // top
+    makeEdge(vv2(50, 50), vv2(-50, 50)),
+    // left
+    makeEdge(vv2(-50, 50), vv2(-50, -50)),
+    // bottom
+    makeEdge(vv2(-50, -50), vv2(50, -50)),
+    // right
+    makeEdge(vv2(50, -50), vv2(50, 50)),
   ];
 
   return {
@@ -25,6 +29,6 @@ export function level03(): LevelDesc {
     paddle,
     target,
     edges,
-    das: [],
+    das: [makeAccelerator(vv2(-20, 10), vv2(1, -1))],
   };
 }
