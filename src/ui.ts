@@ -14,12 +14,14 @@ const cssBlackRGBA = "--blackRGBA" as const;
 const cssBodyFontSize = "--bodyFontSize" as const;
 const cssCtrlPanelHeight = "--ctrlPanelHeight" as const;
 const cssCtrlPanelTop = "--ctrlPanelTop" as const;
+const cssCtrlPanelDisplay = "--ctrlDisplay" as const;
 
 type CssYellowRGBA = typeof cssYellowRGBA;
 type CssBlackRGBA = typeof cssBlackRGBA;
 type CssBodyFontSize = typeof cssBodyFontSize;
 type CssCtrlPanelHeight = typeof cssCtrlPanelHeight;
 type CssCtrlPanelTop = typeof cssCtrlPanelTop;
+type CssCtrlPanelDisplay = typeof cssCtrlPanelDisplay;
 
 export function syncCss() {
   const cameraHalfHeight = useCES().selectFirstData("viewport")!.camera.frustrum
@@ -36,12 +38,15 @@ export function syncCss() {
 }
 
 function setRootVar(
-  v:
-    | CssYellowRGBA
+  v: // Variables
+  | CssYellowRGBA
     | CssBlackRGBA
     | CssBodyFontSize
     | CssCtrlPanelHeight
-    | CssCtrlPanelTop,
+    | CssCtrlPanelTop
+
+    // States
+    | CssCtrlPanelDisplay,
   value: string
 ) {
   const root = qsel<HTMLHtmlElement>(":root")!;
@@ -118,6 +123,14 @@ export function unwireUI() {
   internalState.unwire();
 }
 
+export function hideUIControls() {
+  setRootVar(cssCtrlPanelDisplay, "none");
+}
+
+export function showUIControls() {
+  setRootVar(cssCtrlPanelDisplay, "flex");
+}
+
 function wireStick(
   stick: HTMLDivElement,
   nub: HTMLDivElement,
@@ -173,5 +186,11 @@ function wireStick(
     unts();
     untm();
     unte();
+
+    // Ensure tick position is reset to 0 on unwire
+    stickCenter.x = stickCenter.y = 0;
+    stickSize.x = stickSize.y = 0;
+    out_Move.x = out_Move.y = 0;
+    applyToStickDom(out_Move, nub);
   };
 }

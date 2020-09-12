@@ -13,7 +13,7 @@ export type LevelDesc = {
   target: LevelTarget;
   edges: Edge[];
   das: DirectionalAccelerator[];
-  flavorText?: string;
+  flavorText: string;
 };
 
 export function makePaddle(start: ViewportUnitVector2 = vv2(0, 0)): Paddle {

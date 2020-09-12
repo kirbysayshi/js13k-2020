@@ -23,5 +23,6 @@ export function level01(): LevelDesc {
       makeEdge(vv2(50, -50), vv2(50, 50)),
     ],
     das: [],
+    flavorText: "Signal, meet target",
   };
 }

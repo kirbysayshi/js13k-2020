@@ -27,5 +27,6 @@ export function level02(): LevelDesc {
       makeEdge(vv2(50, -50), vv2(50, 50)),
     ],
     das: [],
+    flavorText: "One way is the only way",
   };
 }

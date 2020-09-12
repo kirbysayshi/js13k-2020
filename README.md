@@ -74,37 +74,22 @@ MIT
 - [x] BUG: Mobile (maybe retina) doesn't render properly
 - [x] Title Screen / Summary
 - [x] Tutorial / Objective Screen
-- [ ] Tutorial screen 1: just paddle rotation (disable movement), then a level or two
-- [ ] Tutorial screen 2: just paddle movement (enable both), then the rest of levels
-- [ ] Target & Signal pointers should have distances
-- [ ] BUG: signal can tunnel through paddle and get stuck in the middle...
-- [ ] DESIGN: how to give minor signal corrections at speed???
-- [ ] Directional Accelerator: Only trigger once until clear
-- [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
 - [x] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [x] Target: themed
 - [x] Paddle: themed
-- [x] Paddle Crosshairs: themed
-- [ ] Does the target need to be labeled?
-- [ ] Font: themed
-- [ ] Should the paddle be smaller, given enclosed levels?
-- [ ] "Level x of ??" -> "Mission XX" (or flavor text)
 - [x] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [x] Restart/Retry Level Button (keeps time, just resets positions)
-- [ ] Move timer, level text, fps, etc to just below game field / camera
-- [ ] IDEA: can use one-way edges as non-functional design element (ball moves passed)
 - [x] Edges: themed
-- [ ] Mission Completed screen: themed
-- [ ] End Game Screen: themed
 - [x] Background window: themed
 - [x] Choose a Title
 - [x] set index.html title
-- [ ] Ball velocity projection should bounce off paddle...
-- [ ] Audio: hit effects
-- [ ] Audio: some looping ambient chords
-- [ ] Max Velocity for signal
-- [ ] Paddle Boost should be a metered resource?
-- [ ] Level / Tutorial Flavor text?
+- [x] "Level x of ??" -> "Mission XX" (or flavor text)
+- [x] Level / Tutorial Flavor text?
+- [x] Move timer, level text, fps, etc to just below game field / camera
+- [x] Hide mobile controls until in game
+- [ ] Mission Completed screen: themed
+- [ ] End Game Screen: themed
+- [ ] Directional Accelerator trigger point legibility
 - [ ] Level 01
 - [ ] Level 02
 - [ ] Level 03
@@ -116,15 +101,35 @@ MIT
 - [ ] Level 09
 - [ ] Level 10
 - [ ] End Game screen has list of all times per level (+par?)
+- [ ] Font: themed
+- [ ] Paddle Crosshairs: themed
+- [ ] Tutorial screen 1: just paddle rotation (disable movement), then a level or two
+- [ ] Tutorial screen 2: just paddle movement (enable both), then the rest of levels
+- [ ] Touch Rotation Controls: make an integratable so it's not 1:1 direct (momentum?)
+- [ ] Target & Signal pointers should have distances
+- [ ] BUG: signal can tunnel through paddle and get stuck in the middle...
+- [ ] DESIGN: how to give minor signal corrections at speed???
+- [ ] Directional Accelerator: Only trigger once until clear
+- [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
+- [ ] Visual Feedback that the boost button is pressed
+- [ ] Does the target need to be labeled?
+- [ ] Should the paddle be smaller, given enclosed levels?
+- [ ] IDEA: can use one-way edges as non-functional design element (ball moves passed)
+- [ ] Ball velocity projection should bounce off paddle...
+- [ ] Audio: hit effects
+- [ ] Audio: some looping ambient chords
+- [ ] Max Velocity for signal
+- [ ] Paddle Boost should be a metered resource?
 - [ ] CES .selectFirst creates the majority of allocations (iterators), and GC is a cause of noticeable pauses.
 - [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner
 - [ ] "Play Again" button on end screen?
 - [ ] Tweet your total time
-- [ ] A lose condition? Or just best time
+
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
-- [ ] Should the paddle be able to collide with edges? Or maybe just some edges?
+- [ ] ~~A lose condition? Or just best time~~
+- [ ] ~~Should the paddle be able to collide with edges? Or maybe just some edges?~~
 
 ## DevLog
 

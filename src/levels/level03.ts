@@ -30,5 +30,6 @@ export function level03(): LevelDesc {
     target,
     edges,
     das: [makeAccelerator(vv2(-20, 10), vv2(1, -1))],
+    flavorText: "Arrows, they shoot",
   };
 }

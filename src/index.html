@@ -59,6 +59,7 @@
         --bodyFontSize: 0;
         --ctrlPanelHeight: 0;
         --ctrlPanelTop: 0;
+        --ctrlDisplay: none;
       }
 
       #ctrl {
@@ -67,7 +68,7 @@
         height: var(--ctrlPanelHeight);
         width: 100%;
 
-        display: flex;
+        display: var(--ctrlDisplay);
         justify-content: space-around;
       }
 
@@ -111,6 +112,7 @@
         border: 0;
         color: var(--blackRGBA);
         background-color: var(--yellowRGBA);
+        font-size: var(--bodyFontSize);
 
         position: absolute;
       }
@@ -122,7 +124,7 @@
       <div id="u"></div>
       <div id="ctrl">
         <div id="stick-move" class="ui-stick"><div class="ui-nub"></div></div>
-        <button id="btn-boost" class="ui-btn" style="top: 0px">BOOST</button>
+        <button id="btn-boost" class="ui-btn" style="top: 10%">BOOST</button>
         <button id="btn-reset" class="ui-btn" style="bottom: 0px">
           RESET SIGNAL
         </button>

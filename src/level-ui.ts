@@ -9,29 +9,37 @@ import {
 import { GameData, ticksAsSeconds, formatSeconds } from "./game-data";
 import { projectPointEdge, distance } from "pocket-physics";
 import { makePointEdgeProjectionResult, vd } from "./phys-utils";
-import { YellowRGBA, BodyTextLines, BlackRGBA } from "./theme";
+import {
+  YellowRGBA,
+  BodyTextLines,
+  BlackRGBA,
+  Transparent,
+  TitleTextFont,
+} from "./theme";
 
 export function drawLevelUI(game: GameData, interp: number) {
   const vp = useCES().selectFirstData("viewport")!;
 
+  if (!game.levelObjects) return;
+
   const time = formatSeconds(ticksAsSeconds(game.ticks));
   drawTextLinesInViewport(
     time,
-    vv2(vp.vpWidth / 2, 0),
+    vv2(vp.vpWidth / 2, -1),
     "center",
     BodyTextLines,
     YellowRGBA
   );
 
   drawTextLinesInViewport(
-    `Level ${game.level + 1} of ??`,
-    vv2(0, 0),
-    "left",
+    `MISSION ${game.level + 1}: ${game.levelObjects.flavorText.toUpperCase()}`,
+    vv2(vp.camera.frustrum.x, -vp.camera.frustrum.y * 2),
+    "center",
     BodyTextLines,
-    YellowRGBA
+    YellowRGBA,
+    Transparent,
+    TitleTextFont
   );
-
-  if (!game.levelObjects) return;
 
   drawPointer(
     game.levelObjects.target.int.cpos,

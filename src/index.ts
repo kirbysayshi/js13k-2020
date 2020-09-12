@@ -50,7 +50,15 @@ import {
 } from "./theme";
 import { LevelDesc } from "./level-objects";
 import { listen } from "./dom";
-import { syncCss, wireUI, setOnReset, getUIState } from "./ui";
+import {
+  syncCss,
+  wireUI,
+  setOnReset,
+  getUIState,
+  unwireUI,
+  showUIControls,
+  hideUIControls,
+} from "./ui";
 
 async function boot() {
   await loadAssets();
@@ -115,6 +123,8 @@ async function boot() {
           Transparent,
           TitleTextFont
         );
+
+        fillBeyondCamera();
 
         break;
       }
@@ -200,6 +210,8 @@ async function boot() {
           TitleTextFont
         );
 
+        fillBeyondCamera();
+
         break;
       }
 
@@ -212,6 +224,7 @@ async function boot() {
         drawBall(ball, interp);
         drawAccelerators(das);
         drawEdges(edges);
+        fillBeyondCamera();
         drawLevelUI(game, interp);
         break;
       }
@@ -230,6 +243,7 @@ async function boot() {
           15,
           YellowRGBA
         );
+        fillBeyondCamera();
         break;
       }
 
@@ -256,7 +270,7 @@ async function boot() {
           YellowRGBA
         );
 
-        console.log("thanks!");
+        fillBeyondCamera();
         break;
       }
 
@@ -264,14 +278,13 @@ async function boot() {
         const _n: never = game.state;
       }
     }
-
-    fillBeyondCamera();
   });
 
   updateStepSystems.push((ces, dt) => {
     switch (game.state) {
       case "boot": {
         if (game.ticks === 0) {
+          hideUIControls();
           const vp = ces.selectFirstData("viewport")!;
           const unlisten = listen(vp.dprCanvas.cvs, "click", () => {
             unlisten();
@@ -284,6 +297,7 @@ async function boot() {
       }
       case "tutorial": {
         if (game.ticks === 0) {
+          hideUIControls();
           const vp = ces.selectFirstData("viewport")!;
           const unlisten = listen(vp.dprCanvas.cvs, "click", () => {
             unlisten();
@@ -304,6 +318,7 @@ async function boot() {
           }
           (game as Mutable<typeof game>).levelObjects = level();
 
+          showUIControls();
           wireUI();
           setOnReset(() => {
             // On reset, just rebuild everything!!?!? Is it really that easy. IT IS!
@@ -376,6 +391,9 @@ async function boot() {
           // Stash level time now, since ticks are reset on state change.
           const g: Mutable<typeof game> = game;
           g.levelTicks[g.level] = g.ticks;
+
+          unwireUI();
+
           return toState("win");
         }
         break;
@@ -383,6 +401,7 @@ async function boot() {
 
       case "win": {
         if (game.ticks === 0) {
+          hideUIControls();
           schedule(() => {
             return toState("nextlevel");
           }, 1000);
@@ -398,6 +417,7 @@ async function boot() {
       }
 
       case "thanks": {
+        hideUIControls();
         // animation to tally up scores?
         break;
       }
