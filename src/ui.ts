@@ -15,6 +15,7 @@ const cssBodyFontSize = "--bodyFontSize" as const;
 const cssCtrlPanelHeight = "--ctrlPanelHeight" as const;
 const cssCtrlPanelTop = "--ctrlPanelTop" as const;
 const cssCtrlPanelDisplay = "--ctrlDisplay" as const;
+const cssThanksDisplay = "--thanksDisplay" as const;
 
 type CssYellowRGBA = typeof cssYellowRGBA;
 type CssBlackRGBA = typeof cssBlackRGBA;
@@ -22,6 +23,7 @@ type CssBodyFontSize = typeof cssBodyFontSize;
 type CssCtrlPanelHeight = typeof cssCtrlPanelHeight;
 type CssCtrlPanelTop = typeof cssCtrlPanelTop;
 type CssCtrlPanelDisplay = typeof cssCtrlPanelDisplay;
+type CssThanksDisplay = typeof cssThanksDisplay;
 
 export function syncCss() {
   const cameraHalfHeight = useCES().selectFirstData("viewport")!.camera.frustrum
@@ -46,7 +48,8 @@ function setRootVar(
     | CssCtrlPanelTop
 
     // States
-    | CssCtrlPanelDisplay,
+    | CssCtrlPanelDisplay
+    | CssThanksDisplay,
   value: string
 ) {
   const root = qsel<HTMLHtmlElement>(":root")!;
@@ -193,4 +196,25 @@ function wireStick(
     out_Move.x = out_Move.y = 0;
     applyToStickDom(out_Move, nub);
   };
+}
+
+export function showThanksUI() {
+  setRootVar(cssThanksDisplay, "block");
+}
+
+export function setTwitterIntent(finalTime: string) {
+  const gameURL = `https://kirbysayshi.com/js13k-2020`;
+  const href = `https://twitter.com/intent/tweet`;
+
+  const text = `I prevented Signal Decay in ${finalTime}s!`;
+  const hashtags = ["js13k"];
+
+  const query = new URLSearchParams();
+  query.append("text", text);
+  query.append("url", gameURL);
+  query.append("hashtags", hashtags.join(","));
+
+  const tweet = qsel<HTMLAnchorElement>("#btn-tweet")!;
+
+  tweet.setAttribute("href", `${href}?${query.toString()}`);
 }

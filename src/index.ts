@@ -1,4 +1,4 @@
-import { accelerate, inertia, solveDrag, set } from "pocket-physics";
+import { accelerate, inertia, solveDrag, set, copy } from "pocket-physics";
 import ScienceHalt from "science-halt";
 import { loadAssets } from "./asset-map";
 import { drawBall, moveAndMaybeBounceBall } from "./ball";
@@ -47,6 +47,7 @@ import {
   BodyTextLines,
   TitleTextFont,
   Transparent,
+  BodyTextFont,
 } from "./theme";
 import { LevelDesc } from "./level-objects";
 import { listen } from "./dom";
@@ -58,6 +59,8 @@ import {
   unwireUI,
   showUIControls,
   hideUIControls,
+  setTwitterIntent,
+  showThanksUI,
 } from "./ui";
 
 async function boot() {
@@ -232,17 +235,43 @@ async function boot() {
       case "win": {
         drawBlackBG();
 
-        const vp = ces.selectFirstData("viewport")!;
         const levelTime = formatSeconds(
           ticksAsSeconds(game.levelTicks[game.level])
         );
-        drawTextLinesInViewport(
-          `Mission\nCompleted!\n${levelTime}s`,
-          vv2(vp.vpWidth / 2, -10),
+
+        let y = 10;
+        y -= drawTextLinesInWorld(
+          `MISSION SUCCESS`,
+          vv2(0, y),
           "center",
-          15,
-          YellowRGBA
+          TitleTextLines,
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
         );
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          `${levelTime}s`,
+          vv2(0, y),
+          "center",
+          BodyTextLines,
+          YellowRGBA,
+          Transparent,
+          BodyTextFont
+        );
+
+        y -= 10;
+        y -= drawTextLinesInWorld(
+          `Finding the next signal in\nneed of assistance...`,
+          vv2(0, y),
+          "center",
+          BodyTextLines,
+          YellowRGBA,
+          Transparent,
+          BodyTextFont
+        );
+
         fillBeyondCamera();
         break;
       }
@@ -254,23 +283,65 @@ async function boot() {
       case "thanks": {
         drawBlackBG();
 
-        const totalTicks = game.levelTicks.reduce((total, ticks) => {
-          total += ticks;
-          return total;
-        }, 0);
-
-        const seconds = formatSeconds(ticksAsSeconds(totalTicks));
-
-        const vp = ces.selectFirstData("viewport")!;
-        drawTextLinesInViewport(
-          `The SIGNAL\nmade it,\nthanks to you!\nTotal:\n${seconds}s`,
-          vv2(vp.vpWidth / 2, -10),
+        let y = 45;
+        y -= drawTextLinesInWorld(
+          `ALL SIGNALS MADE IT,\nTHANKS TO YOU!`,
+          vv2(0, y),
           "center",
-          15,
-          YellowRGBA
+          BodyTextLines,
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
+        );
+
+        let totalTicks = 0;
+
+        y -= 5;
+
+        for (let i = 0; i < game.levelTicks.length; i++) {
+          const ticks = game.levelTicks[i];
+          totalTicks += ticks;
+
+          drawTextLinesInWorld(
+            `MISSION ${i + 1}:`,
+            vv2(-45, y),
+            "left",
+            BodyTextLines,
+            YellowRGBA,
+            Transparent,
+            TitleTextFont
+          );
+
+          y -= drawTextLinesInWorld(
+            `${formatSeconds(ticksAsSeconds(ticks))}s:`,
+            vv2(45, y),
+            "right",
+            BodyTextLines,
+            YellowRGBA,
+            Transparent,
+            TitleTextFont
+          );
+        }
+
+        const totalFormatted = formatSeconds(ticksAsSeconds(totalTicks));
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          `TOTAL: ${totalFormatted}s`,
+          vv2(45, y),
+          "right",
+          BodyTextLines,
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
         );
 
         fillBeyondCamera();
+
+        if (game.ticks === 0) {
+          showThanksUI();
+          setTwitterIntent(totalFormatted);
+        }
         break;
       }
 
@@ -328,7 +399,7 @@ async function boot() {
 
         if (!game.levelObjects) break;
 
-        const { target, paddle, ball } = game.levelObjects;
+        const { target, paddle, ball, das, edges } = game.levelObjects;
 
         const ui = getUIState();
         const keyInputs = useKeyInputs();
@@ -387,12 +458,24 @@ async function boot() {
 
         if (shouldAcceptPaddleMove) movePaddle(paddle!, paddleMoveAcel);
 
+        solveDrag(paddle.int, 0.8);
+        accelerate(paddle.int, dt);
+        moveAndMaybeBounceBall(ball, paddle, screen, dt);
+        maybeCollideWithAccelerators(ball, das);
+        processEdges(edges, ball);
+        inertia(paddle.int);
+        moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
+
         if (testWinCondition(target!, ball!)) {
           // Stash level time now, since ticks are reset on state change.
           const g: Mutable<typeof game> = game;
           g.levelTicks[g.level] = g.ticks;
 
+          // Destroy objects
+          g.levelObjects = null;
+
           unwireUI();
+          moveViewportCamera(vv2(0, 0));
 
           return toState("win");
         }
@@ -400,11 +483,16 @@ async function boot() {
       }
 
       case "win": {
+        moveViewportCamera(vv2(0, 0));
+
+        // const winScreenDuration = 1000;
+        const winScreenDuration = 3000;
+
         if (game.ticks === 0) {
           hideUIControls();
           schedule(() => {
             return toState("nextlevel");
-          }, 1000);
+          }, winScreenDuration);
         }
         break;
       }
@@ -412,34 +500,18 @@ async function boot() {
       case "nextlevel": {
         const g: Mutable<typeof game> = game;
         g.level += 1;
-        g.levelObjects = null;
         return toState("level");
       }
 
       case "thanks": {
         hideUIControls();
-        // animation to tally up scores?
+        moveViewportCamera(vv2(0, 0));
         break;
       }
 
       default: {
         const _n: never = game.state;
       }
-    }
-
-    if (!game.levelObjects) return;
-
-    // General level updates??? Systems???
-
-    const { target, paddle, ball, edges, das } = game.levelObjects;
-    if (target && paddle && ball) {
-      solveDrag(paddle.int, 0.8);
-      accelerate(paddle.int, dt);
-      moveAndMaybeBounceBall(ball, paddle, screen, dt);
-      maybeCollideWithAccelerators(ball, das);
-      processEdges(edges, ball);
-      inertia(paddle.int);
-      moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
     }
 
     (game as Mutable<typeof game>).ticks += 1;

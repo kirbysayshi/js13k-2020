@@ -87,8 +87,10 @@ MIT
 - [x] Level / Tutorial Flavor text?
 - [x] Move timer, level text, fps, etc to just below game field / camera
 - [x] Hide mobile controls until in game
-- [ ] Mission Completed screen: themed
-- [ ] End Game Screen: themed
+- [x] Mission Completed screen: themed
+- [x] End Game Screen: themed
+- [x] End Game screen has list of all times per level (+par?)
+- [ ] Font: themed
 - [ ] Directional Accelerator trigger point legibility
 - [ ] Level 01
 - [ ] Level 02
@@ -100,8 +102,6 @@ MIT
 - [ ] Level 08
 - [ ] Level 09
 - [ ] Level 10
-- [ ] End Game screen has list of all times per level (+par?)
-- [ ] Font: themed
 - [ ] Paddle Crosshairs: themed
 - [ ] Tutorial screen 1: just paddle rotation (disable movement), then a level or two
 - [ ] Tutorial screen 2: just paddle movement (enable both), then the rest of levels
@@ -125,7 +125,7 @@ MIT
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner
 - [ ] "Play Again" button on end screen?
-- [ ] Tweet your total time
+- [x] Tweet your total time
 
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
 - [ ] ~~A lose condition? Or just best time~~

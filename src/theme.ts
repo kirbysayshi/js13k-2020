@@ -13,7 +13,7 @@ export type YellowRGBA05 = typeof YellowRGBA05;
 export const BlackRGBA = "rgba(40,40,40,1)" as const;
 export type BlackRGBA = typeof BlackRGBA;
 
-export const BodyTextLines = 56 as const;
+export const BodyTextLines = 45 as const;
 export type BodyTextLines = typeof BodyTextLines;
 
 export const TitleTextLines = 20 as const;

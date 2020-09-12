@@ -60,6 +60,7 @@
         --ctrlPanelHeight: 0;
         --ctrlPanelTop: 0;
         --ctrlDisplay: none;
+        --thanksDisplay: none;
       }
 
       #ctrl {
@@ -109,12 +110,26 @@
       }
 
       .ui-btn {
-        border: 0;
-        color: var(--blackRGBA);
-        background-color: var(--yellowRGBA);
-        font-size: var(--bodyFontSize);
-
         position: absolute;
+
+        border: 0;
+        background-color: var(--yellowRGBA);
+        color: var(--blackRGBA);
+        font-size: var(--bodyFontSize);
+        text-transform: uppercase;
+      }
+
+      #thanks {
+        position: absolute;
+        top: var(--ctrlPanelTop);
+        height: var(--ctrlPanelHeight);
+        width: 100%;
+        display: var(--thanksDisplay, none);
+        text-align: center;
+      }
+
+      #thanks a {
+        position: static;
       }
     </style>
   </head>
@@ -124,11 +139,14 @@
       <div id="u"></div>
       <div id="ctrl">
         <div id="stick-move" class="ui-stick"><div class="ui-nub"></div></div>
-        <button id="btn-boost" class="ui-btn" style="top: 10%">BOOST</button>
+        <button id="btn-boost" class="ui-btn" style="top: 10%">Boost</button>
         <button id="btn-reset" class="ui-btn" style="bottom: 0px">
-          RESET SIGNAL
+          Reset Signal
         </button>
         <div id="stick-rotate" class="ui-stick"><div class="ui-nub"></div></div>
+      </div>
+      <div id="thanks">
+        <p><a id="btn-tweet" href="" target="_blank" class="ui-btn">Tweet Your Score</a></p>
       </div>
     </div>
     <script src="bundle.js"></script>
