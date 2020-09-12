@@ -373,7 +373,7 @@ export function computeWindowResize() {
   root.style.width = cmp.width + "px";
 
   const toPx = (n: number) =>
-    Math.floor((n / cmp.vpWidth) * cmp.dprCanvas.cvs.width);
+    Math.floor((n / cmp.vpWidth) * cmp.dprCanvas.width);
   cmp.dprCanvas.ctx.translate(
     toPx(cmp.camera.frustrum.x),
     toPx(cmp.camera.frustrum.y)

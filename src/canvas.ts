@@ -18,8 +18,8 @@ export function makeDPRCanvas(
   const dpr = window.devicePixelRatio || 1;
   cvs.style.width = width + "px";
   cvs.style.height = height + "px";
-  cvs.width = Math.round(width * dpr);
-  cvs.height = Math.round(height * dpr);
+  cvs.width = Math.floor(width * dpr);
+  cvs.height = Math.floor(height * dpr);
   ctx.scale(dpr, dpr);
 
   // These need to be set each time the canvas resizes to ensure the backing
