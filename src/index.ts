@@ -40,7 +40,13 @@ import {
   maybeCollideWithAccelerators,
   drawAccelerators,
 } from "./directional-accelerator";
-import { YellowRGBA, TitleTextLines, BodyTextLines } from "./theme";
+import {
+  YellowRGBA,
+  TitleTextLines,
+  BodyTextLines,
+  TitleTextFont,
+  Transparent,
+} from "./theme";
 import { LevelDesc } from "./level-objects";
 import { listen } from "./dom";
 
@@ -77,11 +83,13 @@ async function boot() {
         let y = 10;
 
         y -= drawTextLinesInWorld(
-          "Signal Decay",
+          "SIGNAL DECAY",
           vv2(0, y),
           "center",
           TitleTextLines,
-          YellowRGBA
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
         );
 
         y -= 5;

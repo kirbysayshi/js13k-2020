@@ -1,3 +1,6 @@
+export const Transparent = "transparent" as const;
+export type Transparent = typeof Transparent;
+
 export const YellowRGBA = "rgba(255,255,132,1)" as const;
 export type YellowRGBA = typeof YellowRGBA;
 
@@ -15,3 +18,9 @@ export type BodyTextLines = typeof BodyTextLines;
 
 export const TitleTextLines = 20 as const;
 export type TitleTextLines = typeof TitleTextLines;
+
+export const BodyTextFont = "Arial, sans-serif" as const;
+export type BodyTextFont = typeof BodyTextFont;
+
+export const TitleTextFont = "Courier, Courier New, monospace" as const;
+export type TitleTextFont = typeof TitleTextFont;

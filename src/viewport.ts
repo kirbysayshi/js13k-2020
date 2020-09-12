@@ -17,7 +17,7 @@ import {
   add,
 } from "pocket-physics";
 import { AssuredEntityId } from "./ces";
-import { YellowRGBA, BlackRGBA } from "./theme";
+import { YellowRGBA, BlackRGBA, BodyTextFont, TitleTextFont } from "./theme";
 
 type Pixels = number & { _isPixels: true };
 
@@ -163,7 +163,9 @@ export function drawTextLinesInViewport(
   start: ViewportUnitVector2,
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
-  color: YellowRGBA | BlackRGBA
+  color: YellowRGBA | BlackRGBA,
+  bgcolor: YellowRGBA | BlackRGBA | "transparent" = "transparent",
+  fontName: TitleTextFont | BodyTextFont = BodyTextFont
 ): ViewportUnits {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
@@ -180,7 +182,9 @@ export function drawTextLinesInViewport(
     corrected,
     alignment,
     maxLinesPerCanvas,
-    color
+    color,
+    bgcolor,
+    fontName
   );
 }
 
@@ -190,7 +194,8 @@ export function drawTextLinesInWorld(
   alignment: "center" | "left" | "right",
   maxLinesPerCanvas: number,
   color: YellowRGBA | BlackRGBA,
-  bgcolor: "transparent" | string = "transparent"
+  bgcolor: YellowRGBA | BlackRGBA | "transparent" = "transparent",
+  fontName: TitleTextFont | BodyTextFont = BodyTextFont
 ): ViewportUnits {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
@@ -206,7 +211,8 @@ export function drawTextLinesInWorld(
 
   const { predictedSingleLineHeight, font } = predictTextHeight(
     text,
-    maxLinesPerCanvas
+    maxLinesPerCanvas,
+    fontName
   );
 
   let totalHeight = 0;
@@ -250,7 +256,11 @@ export function drawTextLinesInWorld(
   return toViewportUnits(totalHeight);
 }
 
-export function predictTextHeight(text: string, maxLinesPerCanvas: number) {
+export function predictTextHeight(
+  text: string,
+  maxLinesPerCanvas: number,
+  fontName: TitleTextFont | BodyTextFont = BodyTextFont
+) {
   const ces = useCES();
   const vp = ces.selectFirstData("viewport")!;
   const { ctx } = vp.dprCanvas;
@@ -260,7 +270,7 @@ export function predictTextHeight(text: string, maxLinesPerCanvas: number) {
 
   // This will need to be manually adjusted depending on the font.
   const lineHeight = 1.2;
-  const font = `${textSize}px/${lineHeight} Arial, sans-serif`;
+  const font = `${textSize}px/${lineHeight} ${fontName}`;
   ctx.font = font;
 
   const lineMeasurements = ctx.measureText(text);
