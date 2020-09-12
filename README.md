@@ -89,8 +89,10 @@ MIT
 - [ ] Font: themed
 - [ ] Should the paddle be smaller, given enclosed levels?
 - [ ] "Level x of ??" -> "Mission XX" (or flavor text)
-- [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
-- [ ] Move timer, level text, fps, etc to just below game field / camera (or move viewport/camera down? need a restart button too)
+- [x] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
+- [x] Restart/Retry Level Button (keeps time, just resets positions)
+- [ ] Move timer, level text, fps, etc to just below game field / camera
+- [ ] IDEA: can use one-way edges as non-functional design element (ball moves passed)
 - [x] Edges: themed
 - [ ] Mission Completed screen: themed
 - [ ] End Game Screen: themed
@@ -114,7 +116,6 @@ MIT
 - [ ] Level 09
 - [ ] Level 10
 - [ ] End Game screen has list of all times per level (+par?)
-- [ ] On Screen Controls to demonstrate (+mobile)
 - [ ] CES .selectFirst creates the majority of allocations (iterators), and GC is a cause of noticeable pauses.
 - [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?
@@ -232,3 +233,11 @@ Fixed the terrifying bug where mobile devices appeared to be completely broken. 
 Added a title and tutorial screens, along with some design choices. More polish is needed there, but it's better than nothing!
 
 One night remains.
+
+## 2020-09-12
+
+The final day.
+
+A few hours to get the touch controls in DOM and wired up. One problem with the game architecture right now is there's no specific place for persistent state. I could use CES, but the overhead of defining a component and using it is high (in terms of cognitive complexity: it really makes me overthink everythin).
+
+Used some CSS Vars to sync font sizes and colors between the canvas world and CSS world. Probably overkill, as I'll likely have to make the font size independently larger for the UI anyway!

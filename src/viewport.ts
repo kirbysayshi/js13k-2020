@@ -290,6 +290,7 @@ export function predictTextHeight(
   const lines = text.split("\n");
   return {
     font,
+    fontSize: `${textSize}px`,
     total: toViewportUnits(heightWithLineHeight * lines.length),
     cssLineHeight: lineHeight,
     predictedSingleLineHeight: toViewportUnits(heightWithLineHeight),

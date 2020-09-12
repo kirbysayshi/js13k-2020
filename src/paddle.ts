@@ -29,8 +29,12 @@ export function rotatePaddleRight(p: Paddle) {
   p.rads -= 0.1;
 }
 
-export function movePaddle(p: Paddle, dir: ViewportUnitVector2) {
-  add(p.int.acel, p.int.acel, dir);
+export function setPaddleRotation(p: Paddle, angle: number) {
+  p.rads = angle;
+}
+
+export function movePaddle(p: Paddle, acel: ViewportUnitVector2) {
+  add(p.int.acel, p.int.acel, acel);
 }
 
 export function getValidPaddleArea(vp: ViewportCmp) {

@@ -1,4 +1,5 @@
-const qsel = document.querySelector.bind(document);
+export const qsel = document.querySelector.bind(document);
+export const qsela = document.querySelectorAll.bind(document);
 
 const ROOT_EL = qsel("#r");
 const PRIMARY_CVS = qsel("#c");

@@ -1,4 +1,4 @@
-import { accelerate, inertia, solveDrag } from "pocket-physics";
+import { accelerate, inertia, solveDrag, set } from "pocket-physics";
 import ScienceHalt from "science-halt";
 import { loadAssets } from "./asset-map";
 import { drawBall, moveAndMaybeBounceBall } from "./ball";
@@ -20,8 +20,9 @@ import {
   movePaddle,
   rotatePaddleLeft,
   rotatePaddleRight,
+  setPaddleRotation,
 } from "./paddle";
-import { rotate2d } from "./phys-utils";
+import { rotate2d, angleOf } from "./phys-utils";
 import { drawLevelTarget, testWinCondition } from "./target";
 import { schedule, tick, reset } from "./time";
 import {
@@ -49,6 +50,7 @@ import {
 } from "./theme";
 import { LevelDesc } from "./level-objects";
 import { listen } from "./dom";
+import { syncCss, wireUI, setOnReset, getUIState } from "./ui";
 
 async function boot() {
   await loadAssets();
@@ -57,6 +59,8 @@ async function boot() {
 
   // create the initial viewport and sizing
   computeWindowResize();
+
+  syncCss();
 
   // initialize touch: look at js13k-2019 for how to use (pointer-target, etc)
   // initDragListeners();
@@ -299,19 +303,34 @@ async function boot() {
             return toState("thanks");
           }
           (game as Mutable<typeof game>).levelObjects = level();
+
+          wireUI();
+          setOnReset(() => {
+            // On reset, just rebuild everything!!?!? Is it really that easy. IT IS!
+            (game as Mutable<typeof game>).levelObjects = level();
+          });
         }
 
         if (!game.levelObjects) break;
 
         const { target, paddle, ball } = game.levelObjects;
 
+        const ui = getUIState();
         const keyInputs = useKeyInputs();
+
+        // Keyboard input
         if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle!);
         if (keyInputs.ArrowRight) rotatePaddleRight(paddle!);
 
-        // Shift is a boost
-        const paddleAcel =
-          keyInputs.ShiftLeft || keyInputs.ShiftRight ? vv2(1, 0) : vv2(0.2, 0);
+        // Touch Input
+        // Note: this is a "direct" input method: stick === paddle orientation.
+        // An alternative is relative, where it's more like a knob.
+        const rotateStickIsActive = ui.rotate.x !== 0 && ui.rotate.y !== 0;
+        const touchRotate = angleOf(ui.rotate);
+        if (rotateStickIsActive) {
+          setPaddleRotation(paddle, touchRotate);
+        }
+
         const origin = vv2();
         let angle = 0;
         if (keyInputs.KeyW && keyInputs.KeyD) angle = Math.PI / 4;
@@ -322,8 +341,36 @@ async function boot() {
         else if (keyInputs.KeyA) angle = Math.PI;
         else if (keyInputs.KeyS) angle = -Math.PI / 2;
         else if (keyInputs.KeyD) angle = 0;
-        if (angle !== 0 || keyInputs.KeyD)
-          movePaddle(paddle!, rotate2d(vv2(), paddleAcel, origin, angle));
+
+        const paddleMoveStickisActive = ui.move.x !== 0 && ui.move.y !== 0;
+
+        const moveStickAngle = angleOf(ui.move);
+
+        // TODO: probably need to set a higher baseline if using touch
+        const paddleAcel =
+          keyInputs.ShiftLeft || keyInputs.ShiftRight || ui.boosting
+            ? vv2(1, 0)
+            : vv2(0.2, 0);
+
+        if (paddleMoveStickisActive) angle = moveStickAngle;
+
+        const paddleMoveAcel = rotate2d(vv2(), paddleAcel, origin, angle);
+
+        // Scale movement by stick percent
+        if (paddleMoveStickisActive) {
+          set(
+            paddleMoveAcel,
+            paddleMoveAcel.x * Math.abs(ui.move.x),
+            paddleMoveAcel.y * Math.abs(ui.move.y)
+          );
+        }
+
+        const shouldAcceptPaddleMove =
+          angle !== 0 ||
+          (angle === 0 && keyInputs.KeyD) ||
+          paddleMoveStickisActive;
+
+        if (shouldAcceptPaddleMove) movePaddle(paddle!, paddleMoveAcel);
 
         if (testWinCondition(target!, ball!)) {
           // Stash level time now, since ticks are reset on state change.

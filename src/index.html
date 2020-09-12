@@ -22,7 +22,7 @@
         padding: 0;
         overflow: hidden;
         /* background-color:#000; */
-        background-color:rgb(40,40,40);
+        background-color: var(--blackRGBA);
         position: relative;
         height: 100%;
         font-family: "Courier New", Courier, monospace;
@@ -51,11 +51,68 @@
         width: 100%;
         /* bottom: 0; */
       }
-      .modal {
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.8);
-        overflow: hidden;
-        padding: 10vw;
+
+      :root {
+        /* Will all be set by JS */
+        --yellowRGBA: black;
+        --blackRGBA: black;
+        --bodyFontSize: 0;
+        --ctrlPanelHeight: 0;
+        --ctrlPanelTop: 0;
+      }
+
+      #ctrl {
+        position: absolute;
+        top: var(--ctrlPanelTop);
+        height: var(--ctrlPanelHeight);
+        width: 100%;
+
+        display: flex;
+        justify-content: space-around;
+      }
+
+      .ui-stick {
+        flex: 1 0 0px;
+        border: 1px solid var(--yellowRGBA);
+        border-radius: 200%;
+        margin: 10%;
+
+        position: relative;
+      }
+
+      /* https://stackoverflow.com/a/29308459 */
+      .ui-stick:before {
+        content: "";
+        display: block;
+        padding-top: 100%;
+        float: left;
+      }
+
+      .ui-nub {
+        border-radius: 200%;
+        background-color: var(--yellowRGBA);
+
+        --width: 50%;
+        --height: 50%;
+
+        --leftPct: 50%;
+        --topPct: 50%;
+
+        position: absolute;
+        top: var(--topPct);
+        left: var(--leftPct);
+        width: var(--width);
+        height: var(--height);
+        margin-left: calc(var(--width) / 2 * -1);
+        margin-top: calc(var(--height) / 2 * -1);
+      }
+
+      .ui-btn {
+        border: 0;
+        color: var(--blackRGBA);
+        background-color: var(--yellowRGBA);
+
+        position: absolute;
       }
     </style>
   </head>
@@ -63,6 +120,14 @@
     <div id="r">
       <canvas id="c"></canvas>
       <div id="u"></div>
+      <div id="ctrl">
+        <div id="stick-move" class="ui-stick"><div class="ui-nub"></div></div>
+        <button id="btn-boost" class="ui-btn" style="top: 0px">BOOST</button>
+        <button id="btn-reset" class="ui-btn" style="bottom: 0px">
+          RESET SIGNAL
+        </button>
+        <div id="stick-rotate" class="ui-stick"><div class="ui-nub"></div></div>
+      </div>
     </div>
     <script src="bundle.js"></script>
   </body>
