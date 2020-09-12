@@ -2,7 +2,7 @@ import { accelerate, inertia, solveDrag } from "pocket-physics";
 import ScienceHalt from "science-halt";
 import { loadAssets } from "./asset-map";
 import { drawBall, moveAndMaybeBounceBall } from "./ball";
-import { drawStarfield } from "./bg";
+import { drawStarfield, drawBlackBG } from "./bg";
 import {
   DrawStepSystem,
   DrawTimeDelta,
@@ -103,15 +103,102 @@ async function boot() {
 
         y -= 20;
         drawTextLinesInWorld(
-          "tap to start",
+          "TAP OR CLICK TO START",
           vv2(0, y),
           "center",
           BodyTextLines,
-          YellowRGBA
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
         );
 
         break;
       }
+
+      case "tutorial": {
+        drawBlackBG();
+
+        let y = 50;
+        const x = -45;
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          [
+            "Be the best signalmancer in the galaxy!",
+            "",
+            "Help messages from deep space colonies bounce their",
+            "way to their targets as quickly as possible.",
+          ].join("\n"),
+          vv2(x, y),
+          "left",
+          BodyTextLines,
+          YellowRGBA
+        );
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          "CONTROLS (KEYBOARD)",
+          vv2(x, y),
+          "left",
+          BodyTextLines,
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
+        );
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          [
+            "WASD:  move",
+            "Hold any SHIFT to boost",
+            "",
+            "Arrow Left / Arrow Right: rotate the Deflector",
+          ].join("\n"),
+          vv2(x, y),
+          "left",
+          BodyTextLines,
+          YellowRGBA
+        );
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          "CONTROLS (TOUCH)",
+          vv2(x, y),
+          "left",
+          BodyTextLines,
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
+        );
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          [
+            "Left Stick:  move",
+            "Move stick and hold BOOST to boost",
+            "",
+            "Right Stick: rotate the Deflector",
+          ].join("\n"),
+          vv2(x, y),
+          "left",
+          BodyTextLines,
+          YellowRGBA
+        );
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          "TAP OR CLICK TO CONTINUE",
+          vv2(0, y),
+          "center",
+          BodyTextLines,
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
+        );
+
+        break;
+      }
+
       case "level": {
         if (!game.levelObjects) break;
         const { target, paddle, ball, edges, das } = game.levelObjects;
@@ -126,6 +213,8 @@ async function boot() {
       }
 
       case "win": {
+        drawBlackBG();
+
         const vp = ces.selectFirstData("viewport")!;
         const levelTime = formatSeconds(
           ticksAsSeconds(game.levelTicks[game.level])
@@ -145,6 +234,8 @@ async function boot() {
       }
 
       case "thanks": {
+        drawBlackBG();
+
         const totalTicks = game.levelTicks.reduce((total, ticks) => {
           total += ticks;
           return total;
@@ -176,6 +267,18 @@ async function boot() {
   updateStepSystems.push((ces, dt) => {
     switch (game.state) {
       case "boot": {
+        if (game.ticks === 0) {
+          const vp = ces.selectFirstData("viewport")!;
+          const unlisten = listen(vp.dprCanvas.cvs, "click", () => {
+            unlisten();
+            reset();
+            toState("tutorial");
+          });
+        }
+
+        break;
+      }
+      case "tutorial": {
         if (game.ticks === 0) {
           const vp = ces.selectFirstData("viewport")!;
           const unlisten = listen(vp.dprCanvas.cvs, "click", () => {

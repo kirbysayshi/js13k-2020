@@ -10,7 +10,13 @@ import { level02 } from "./levels/level02";
 import { level03 } from "./levels/level03";
 import { levelKitchenSink } from "./levels/level0kitchensink";
 
-type GameStates = "boot" | "level" | "win" | "nextlevel" | "thanks";
+type GameStates =
+  | "boot"
+  | "tutorial"
+  | "level"
+  | "win"
+  | "nextlevel"
+  | "thanks";
 
 export type GameData = {
   // ticks spent in this state

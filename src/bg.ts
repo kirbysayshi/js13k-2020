@@ -67,6 +67,28 @@ function drawBGGrid() {
   }
 }
 
+export function drawBlackBG() {
+  const vp = useCES().selectFirstData("viewport")!;
+  const {
+    camera,
+    dprCanvas: { ctx },
+  } = vp;
+  // draw black background
+  ctx.fillStyle = BlackRGBA;
+  ctx.fillRect(
+    toProjectedPixels(
+      (camera.target.x - camera.frustrum.x) as ViewportUnits,
+      "x"
+    ),
+    toProjectedPixels(
+      (camera.target.y + camera.frustrum.y) as ViewportUnits,
+      "y"
+    ),
+    toPixelUnits((camera.frustrum.x * 2) as ViewportUnits),
+    toPixelUnits((-camera.frustrum.y * 2) as ViewportUnits)
+  );
+}
+
 let starfield: DPRCanvas;
 
 export function drawStarfield() {
@@ -136,19 +158,7 @@ export function drawStarfield() {
   const ctx = vp.dprCanvas.ctx;
 
   // draw black background
-  ctx.fillStyle = BlackRGBA;
-  ctx.fillRect(
-    toProjectedPixels(
-      (camera.target.x - camera.frustrum.x) as ViewportUnits,
-      "x"
-    ),
-    toProjectedPixels(
-      (camera.target.y + camera.frustrum.y) as ViewportUnits,
-      "y"
-    ),
-    toPixelUnits((camera.frustrum.x * 2) as ViewportUnits),
-    toPixelUnits((-camera.frustrum.y * 2) as ViewportUnits)
-  );
+  drawBlackBG();
 
   // draw starfield camera is intersecting
   ctx.drawImage(

@@ -73,7 +73,9 @@ MIT
 - [x] Send to Al & Phoebe with basic instructions
 - [x] BUG: Mobile (maybe retina) doesn't render properly
 - [x] Title Screen / Summary
-- [ ] Tutorial / Objective Screen
+- [x] Tutorial / Objective Screen
+- [ ] Tutorial screen 1: just paddle rotation (disable movement), then a level or two
+- [ ] Tutorial screen 2: just paddle movement (enable both), then the rest of levels
 - [ ] Target & Signal pointers should have distances
 - [ ] BUG: signal can tunnel through paddle and get stuck in the middle...
 - [ ] DESIGN: how to give minor signal corrections at speed???
@@ -85,13 +87,16 @@ MIT
 - [x] Paddle Crosshairs: themed
 - [ ] Does the target need to be labeled?
 - [ ] Font: themed
+- [ ] Should the paddle be smaller, given enclosed levels?
+- [ ] "Level x of ??" -> "Mission XX" (or flavor text)
+- [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [ ] Move timer, level text, fps, etc to just below game field / camera (or move viewport/camera down? need a restart button too)
 - [x] Edges: themed
 - [ ] Mission Completed screen: themed
 - [ ] End Game Screen: themed
-- [ ] Background window: themed
+- [x] Background window: themed
 - [x] Choose a Title
-- [ ] set index.html title
+- [x] set index.html title
 - [ ] Ball velocity projection should bounce off paddle...
 - [ ] Audio: hit effects
 - [ ] Audio: some looping ambient chords
@@ -110,7 +115,6 @@ MIT
 - [ ] Level 10
 - [ ] End Game screen has list of all times per level (+par?)
 - [ ] On Screen Controls to demonstrate (+mobile)
-- [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
 - [ ] CES .selectFirst creates the majority of allocations (iterators), and GC is a cause of noticeable pauses.
 - [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?
@@ -224,5 +228,7 @@ Added one-way edges! They were thankfully very simple to implement.
 ## 2020-09-11
 
 Fixed the terrifying bug where mobile devices appeared to be completely broken. Turned out it was an error in which `width` I was using to multiply the initial transform on viewport creation. I was using the native width instead of css pixel width.
+
+Added a title and tutorial screens, along with some design choices. More polish is needed there, but it's better than nothing!
 
 One night remains.
