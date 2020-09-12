@@ -1,8 +1,6 @@
-js13k-2020
-===========
+# js13k-2020
 
-Usage
------
+## Usage
 
 Fork this repo, then add / change code in src/index.js as you see fit! There are dependencies included, but you can remove those. Rollup ensures that only code you `import` is included!
 
@@ -32,13 +30,11 @@ This is a debug tool.
 
 See what the compiled JS will look like, to make sure rollup is treeshaking / hoisting as expected and that dead code is being eliminated. `yarn build` will create a `dist/bundle.js` to use in this command.
 
-LICENSE
--------
+## LICENSE
 
 MIT
 
-Tasks
------
+## Tasks
 
 - [x] Paddle Moving
 - [x] Ball Moving
@@ -74,24 +70,28 @@ Tasks
 - [x] Draw projection of ball direction + velocity (ray)
 - [x] One-way edge: pass through (dotted line) but bounces once on the other side
 - [x] Demo level for Al/Phoebe to use as template
-- [ ] Send to Al & Phoebe with basic instructions
-- [ ] BUG: Doesn't even load on mobile?
-- [ ] Title Screen / Summary
+- [x] Send to Al & Phoebe with basic instructions
+- [x] BUG: Mobile (maybe retina) doesn't render properly
+- [x] Title Screen / Summary
+- [ ] Tutorial / Objective Screen
+- [ ] Target & Signal pointers should have distances
 - [ ] BUG: signal can tunnel through paddle and get stuck in the middle...
 - [ ] DESIGN: how to give minor signal corrections at speed???
 - [ ] Directional Accelerator: Only trigger once until clear
 - [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
-- [ ] Target & Signal pointers should have distances
 - [x] Color palette / THEME! Space Signals Radar Scopes : paddle, ball, target, markers, text
 - [x] Target: themed
 - [x] Paddle: themed
 - [x] Paddle Crosshairs: themed
+- [ ] Does the target need to be labeled?
 - [ ] Font: themed
 - [ ] Move timer, level text, fps, etc to just below game field / camera (or move viewport/camera down? need a restart button too)
 - [x] Edges: themed
 - [ ] Mission Completed screen: themed
 - [ ] End Game Screen: themed
 - [ ] Background window: themed
+- [x] Choose a Title
+- [ ] set index.html title
 - [ ] Ball velocity projection should bounce off paddle...
 - [ ] Audio: hit effects
 - [ ] Audio: some looping ambient chords
@@ -111,6 +111,7 @@ Tasks
 - [ ] End Game screen has list of all times per level (+par?)
 - [ ] On Screen Controls to demonstrate (+mobile)
 - [ ] Touch Knob controls for mobile: use separate dom elements for each knob to avoid multitouch issues
+- [ ] CES .selectFirst creates the majority of allocations (iterators), and GC is a cause of noticeable pauses.
 - [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner
@@ -120,9 +121,7 @@ Tasks
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
 - [ ] Should the paddle be able to collide with edges? Or maybe just some edges?
 
-
-DevLog
-------
+## DevLog
 
 ## 2020-08-27
 
@@ -220,4 +219,10 @@ Really got a ton done today!
 
 Added more theming (signal trails!), fixed bugs (edge collisions, accelerator). But mostly got what I deemed the minimum to be able to send it for level design collaboration. Got level code to be a bit better structured and hopefully more comprehensible.
 
-Added one-way edges! They were thankfully very simple to implement. 
+Added one-way edges! They were thankfully very simple to implement.
+
+## 2020-09-11
+
+Fixed the terrifying bug where mobile devices appeared to be completely broken. Turned out it was an error in which `width` I was using to multiply the initial transform on viewport creation. I was using the native width instead of css pixel width.
+
+One night remains.

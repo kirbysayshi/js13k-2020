@@ -23,7 +23,7 @@ import {
 } from "./paddle";
 import { rotate2d } from "./phys-utils";
 import { drawLevelTarget, testWinCondition } from "./target";
-import { schedule, tick } from "./time";
+import { schedule, tick, reset } from "./time";
 import {
   clearScreen,
   computeWindowResize,
@@ -32,14 +32,17 @@ import {
   ViewportUnitVector2,
   vv2,
   fillBeyondCamera,
+  drawTextLinesInWorld,
+  ViewportUnits,
 } from "./viewport";
 import { drawFps, onFPS } from "./fps";
 import {
   maybeCollideWithAccelerators,
   drawAccelerators,
 } from "./directional-accelerator";
-import { YellowRGBA } from "./theme";
+import { YellowRGBA, TitleTextLines, BodyTextLines } from "./theme";
 import { LevelDesc } from "./level-objects";
+import { listen } from "./dom";
 
 async function boot() {
   await loadAssets();
@@ -69,6 +72,36 @@ async function boot() {
   drawStepSystems.push(function (ces, interp) {
     switch (game.state) {
       case "boot": {
+        drawStarfield();
+
+        let y = 10;
+
+        y -= drawTextLinesInWorld(
+          "Signal Decay",
+          vv2(0, y),
+          "center",
+          TitleTextLines,
+          YellowRGBA
+        );
+
+        y -= 5;
+        drawTextLinesInWorld(
+          "a js13k entry by\nDrew Petersen",
+          vv2(0, y),
+          "center",
+          BodyTextLines,
+          YellowRGBA
+        );
+
+        y -= 20;
+        drawTextLinesInWorld(
+          "tap to start",
+          vv2(0, y),
+          "center",
+          BodyTextLines,
+          YellowRGBA
+        );
+
         break;
       }
       case "level": {
@@ -135,10 +168,16 @@ async function boot() {
   updateStepSystems.push((ces, dt) => {
     switch (game.state) {
       case "boot": {
-        console.log("boot");
-        // TODO: tap / push a button to start
+        if (game.ticks === 0) {
+          const vp = ces.selectFirstData("viewport")!;
+          const unlisten = listen(vp.dprCanvas.cvs, "click", () => {
+            unlisten();
+            reset();
+            toState("nextlevel");
+          });
+        }
 
-        return toState("nextlevel");
+        break;
       }
       case "level": {
         if (game.ticks === 0) {

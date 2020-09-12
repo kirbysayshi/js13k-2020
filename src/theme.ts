@@ -12,3 +12,6 @@ export type BlackRGBA = typeof BlackRGBA;
 
 export const BodyTextLines = 56 as const;
 export type BodyTextLines = typeof BodyTextLines;
+
+export const TitleTextLines = 20 as const;
+export type TitleTextLines = typeof TitleTextLines;

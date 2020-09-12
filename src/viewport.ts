@@ -158,7 +158,6 @@ export function fillBeyondCamera(color: BlackRGBA = BlackRGBA) {
   );
 }
 
-// TODO: this is currently "absolutely" positioned only, and not camera aware. Make it camera aware. units=world|viewport?
 export function drawTextLinesInViewport(
   text: string,
   start: ViewportUnitVector2,
