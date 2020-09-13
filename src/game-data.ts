@@ -15,6 +15,7 @@ import { level012 } from "./levels/level012";
 import { level013 } from "./levels/level013";
 import { level031 } from "./levels/level031";
 import { level032 } from "./levels/level032";
+import { level040 } from "./levels/level040";
 
 type GameStates =
   | "boot"
@@ -64,6 +65,7 @@ export const game: GameData = {
     level030,
     level031,
     level032,
+    level040,
   ],
 };
 
