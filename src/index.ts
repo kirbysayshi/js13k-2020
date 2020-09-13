@@ -219,18 +219,18 @@ async function boot() {
             BodyTextLines,
             YellowRGBA
           );
-
-          y -= 5;
-          y -= drawTextLinesInWorld(
-            "TAP OR CLICK TO CONTINUE",
-            vv2(0, y),
-            "center",
-            BodyTextLines,
-            YellowRGBA,
-            Transparent,
-            TitleTextFont
-          );
         }
+
+        y -= 5;
+        y -= drawTextLinesInWorld(
+          "TAP OR CLICK TO CONTINUE",
+          vv2(0, y),
+          "center",
+          BodyTextLines,
+          YellowRGBA,
+          Transparent,
+          TitleTextFont
+        );
 
         fillBeyondCamera();
 
