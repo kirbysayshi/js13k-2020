@@ -92,7 +92,7 @@ MIT
 - [x] End Game screen has list of all times per level (+par?)
 - [x] Font: themed
 - [x] Tweet your total time
-- [ ] Directional Accelerator trigger point legibility
+- [x] Directional Accelerator trigger point legibility
 - [ ] Level 01
 - [ ] Level 02
 - [ ] Level 03

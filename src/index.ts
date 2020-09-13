@@ -18,7 +18,13 @@ import {
   useCES,
 } from "./components";
 import { drawEdges, processEdges } from "./edge";
-import { game, toState, ticksAsSeconds, formatSeconds } from "./game-data";
+import {
+  game,
+  toState,
+  ticksAsSeconds,
+  formatSeconds,
+  resetTracking,
+} from "./game-data";
 import { useKeyInputs } from "./keys";
 import { drawLevelUI } from "./level-ui";
 import { Loop } from "./loop";
@@ -400,7 +406,9 @@ async function boot() {
           wireUI();
           setOnReset(() => {
             // On reset, just rebuild everything!!?!? Is it really that easy. IT IS!
-            (game as Mutable<typeof game>).levelObjects = level();
+            const g: Mutable<typeof game> = game;
+            g.levelObjects = level();
+            resetTracking();
           });
         }
 
@@ -481,9 +489,7 @@ async function boot() {
         moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
 
         if (game.trackOtherFinished) {
-          const g: Mutable<typeof game> = game;
-          g.trackOther = null;
-          g.trackOtherFinished = false;
+          resetTracking();
         }
 
         if (testWinCondition(target!, ball!)) {
@@ -493,9 +499,7 @@ async function boot() {
 
           // Destroy objects
           g.levelObjects = null;
-          g.trackOther = null;
-          g.trackOtherRemaining = -1;
-          g.trackOtherFinished = false;
+          resetTracking();
 
           unwireUI();
           moveViewportCamera(vv2(0, 0));

@@ -22,7 +22,7 @@ import {
   makePointEdgeProjectionResult,
 } from "./phys-utils";
 import { YellowRGBA } from "./theme";
-import { GameData } from "./game-data";
+import { GameData, markTrackingFinished } from "./game-data";
 
 export type Edge = {
   e0: ViewportUnitVector2;
@@ -100,8 +100,7 @@ function maybePassThroughOneWay(
 
     // Passing through a one-way deactivates camera tracking mode
     if (game.trackOther && edge.deactivatesTrackOther) {
-      const g: Mutable<typeof game> = game;
-      g.trackOtherFinished = true;
+      markTrackingFinished();
     }
   }
 }

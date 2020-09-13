@@ -16,6 +16,7 @@ import { level013 } from "./levels/level013";
 import { level031 } from "./levels/level031";
 import { level032 } from "./levels/level032";
 import { level040 } from "./levels/level040";
+import { level050 } from "./levels/level050";
 
 type GameStates =
   | "boot"
@@ -35,9 +36,10 @@ export type GameData = {
   readonly levelTicks: number[];
   readonly levels: (() => LevelDesc)[];
 
+  // Whether to track another object with the camera temporarily. To stop, set
+  // trackOtherFinished to true and allow a tick.
   readonly trackOther: null | { cpos: ViewportUnitVector2 };
   readonly trackOtherFinished: boolean;
-  readonly trackOtherRemaining: number;
 };
 
 export const game: GameData = {
@@ -51,10 +53,10 @@ export const game: GameData = {
 
   trackOther: null,
   trackOtherFinished: false,
-  trackOtherRemaining: -1,
 
   levels: [
     // levelKitchenSink,
+
     level010,
     level011,
     level012,
@@ -65,7 +67,10 @@ export const game: GameData = {
     level030,
     level031,
     level032,
+
     level040,
+
+    level050,
   ],
 };
 
@@ -82,4 +87,21 @@ export function ticksAsSeconds(ticks: number): number {
 
 export function formatSeconds(s: number) {
   return s.toFixed(3);
+}
+
+export function trackOther(other: { cpos: ViewportUnitVector2 }) {
+  const g: Mutable<typeof game> = game;
+  g.trackOther = other;
+  g.trackOtherFinished = false;
+}
+
+export function markTrackingFinished() {
+  const g: Mutable<typeof game> = game;
+  g.trackOtherFinished = true;
+}
+
+export function resetTracking() {
+  const g: Mutable<typeof game> = game;
+  g.trackOther = null;
+  g.trackOtherFinished = false;
 }

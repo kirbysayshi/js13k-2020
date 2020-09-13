@@ -22,9 +22,13 @@ import {
   set,
   copy,
   translate,
+  sub,
+  v2,
+  overlapAABBAABB,
+  AABBOverlapResult,
 } from "pocket-physics";
 import { YellowRGBA } from "./theme";
-import { GameData } from "./game-data";
+import { GameData, trackOther } from "./game-data";
 import { schedule } from "./time";
 
 export type DirectionalAccelerator = {
@@ -58,6 +62,26 @@ function drawAccelerator(da: DirectionalAccelerator) {
 
   // This is 1/2 of the hypotenuse of the corner, which is also the amount we need to offset!
   const offset = ((lineThickness * Math.SQRT2) / 2) as ViewportUnits;
+
+  // Culling: Do not draw if it won't be visible!
+  if (
+    !overlapAABBAABB(
+      vp.camera.target.x,
+      vp.camera.target.y,
+      vp.camera.frustrum.x * 3,
+      vp.camera.frustrum.y * 3,
+      x,
+      da.dims.x * 2,
+      y,
+      da.dims.y * 2,
+      {
+        resolve: v2(),
+        hitPos: v2(),
+        normal: v2(),
+      }
+    )
+  )
+    return;
 
   ctx.save();
   ctx.fillStyle = YellowRGBA;
@@ -219,11 +243,12 @@ function maybeCollideWithAccelerator(
     copy(ball.ppos, ball.cpos);
 
     // And Go!
-    set(ball.acel, 5 * da.enter.x, 5 * da.enter.y);
+    // set(ball.acel, 5 * da.enter.x, 5 * da.enter.y);
+    const velocity = vv2(8 * da.enter.x, 8 * da.enter.y);
+    sub(ball.ppos, ball.cpos, velocity);
 
     if (da.tracksBall) {
-      const g: Mutable<typeof game> = game;
-      g.trackOther = ball;
+      trackOther(ball);
     }
   }
 }
