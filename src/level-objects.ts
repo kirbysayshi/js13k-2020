@@ -124,7 +124,8 @@ export function makeEdgesFromPoints(
 export function makeAccelerator(
   start: ViewportUnitVector2,
   dir: ViewportUnitVector2,
-  tracksBall: boolean = false
+  tracksBall: boolean = false,
+  appliesAcel = true
 ): DirectionalAccelerator {
   return {
     int: {
@@ -135,5 +136,6 @@ export function makeAccelerator(
     dims: vv2(10, 10),
     enter: copy(vv2(), dir) as ViewportUnitVector2,
     tracksBall,
+    appliesAcel,
   };
 }

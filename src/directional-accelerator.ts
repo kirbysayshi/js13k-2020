@@ -36,6 +36,7 @@ export type DirectionalAccelerator = {
   enter: ViewportUnitVector2;
   dims: ViewportUnitVector2;
   tracksBall?: boolean;
+  appliesAcel: boolean;
 };
 
 export function drawAccelerators(das: DirectionalAccelerator[]) {
@@ -243,9 +244,14 @@ function maybeCollideWithAccelerator(
     copy(ball.ppos, ball.cpos);
 
     // And Go!
-    // set(ball.acel, 5 * da.enter.x, 5 * da.enter.y);
-    const velocity = vv2(8 * da.enter.x, 8 * da.enter.y);
-    sub(ball.ppos, ball.cpos, velocity);
+
+    if (da.appliesAcel) {
+      set(ball.acel, 5 * da.enter.x, 5 * da.enter.y);
+    } else {
+      // use velocity to make a series of accelerators smooth
+      const velocity = vv2(8 * da.enter.x, 8 * da.enter.y);
+      sub(ball.ppos, ball.cpos, velocity);
+    }
 
     if (da.tracksBall) {
       trackOther(ball);

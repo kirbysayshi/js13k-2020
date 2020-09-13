@@ -33,7 +33,7 @@ export function level050(): LevelDesc {
     edges,
     das: [
       ...Array.from(new Array(acceleratorCount)).map((_, i) =>
-        makeAccelerator(vv2(i * acceleratorDist, -10), vv2(1, 0), true)
+        makeAccelerator(vv2(i * acceleratorDist, -10), vv2(1, 0), true, false)
       ),
     ],
     flavorText: "Chase! Shift or btn to boost!",
