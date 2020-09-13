@@ -122,7 +122,7 @@ async function boot() {
 
         y -= 5;
         drawTextLinesInWorld(
-          "a js13k entry by\nDrew Petersen",
+          "a js13k entry",
           vv2(0, y),
           "center",
           BodyTextLines,

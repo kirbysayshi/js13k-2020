@@ -15,10 +15,10 @@ export function level030(): LevelDesc {
   const target = makeLevelTarget(vv2(30, -40));
 
   const edges = makeEdgesFromPoints([
-    vv2(-50, 50),
-    vv2(50, 50),
-    vv2(50, -50),
-    vv2(-50, -50),
+    vv2(-60, 60),
+    vv2(60, 60),
+    vv2(60, -60),
+    vv2(-60, -60),
   ]);
 
   return {

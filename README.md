@@ -93,27 +93,24 @@ MIT
 - [x] Font: themed
 - [x] Tweet your total time
 - [x] Directional Accelerator trigger point legibility
-- [ ] Level 01
-- [ ] Level 02
-- [ ] Level 03
-- [ ] Level 04
-- [ ] Level 05
-- [ ] Level 06
-- [ ] Level 07
-- [ ] Level 08
-- [ ] Level 09
-- [ ] Level 10
-- [ ] Paddle Crosshairs: themed
-- [ ] Tutorial screen 1: just paddle rotation (disable movement), then a level or two
-- [ ] Tutorial screen 2: just paddle movement (enable both), then the rest of levels
-- [ ] Touch Rotation Controls: make an integratable so it's not 1:1 direct (momentum?)
+- [x] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
+- [x] Level 01
+- [x] Level 02
+- [x] Level 03
+- [x] Level 04
+- [x] Level 05
+- [x] Level 06
+- [x] Level 07
+- [x] Level 08
+- [x] Level 09
+- [x] Level 10
 - [ ] Target & Signal pointers should have distances
+- [ ] Paddle Crosshairs: themed
+- [ ] Touch Rotation Controls: make an integratable so it's not 1:1 direct (momentum?)
 - [ ] BUG: signal can tunnel through paddle and get stuck in the middle...
 - [ ] DESIGN: how to give minor signal corrections at speed???
 - [ ] Directional Accelerator: Only trigger once until clear
-- [x] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
 - [ ] Visual Feedback that the boost button is pressed
-- [ ] Does the target need to be labeled?
 - [ ] Should the paddle be smaller, given enclosed levels?
 - [ ] IDEA: can use one-way edges as non-functional design element (ball moves passed)
 - [ ] Ball velocity projection should bounce off paddle...
@@ -125,8 +122,11 @@ MIT
 - [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner
-- [ ] "Play Again" button on end screen?
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
+- [ ] ~~"Play Again" button on end screen?~~
+- [ ] ~~Does the target need to be labeled?~~
+- [ ] ~~Tutorial screen 1: just paddle rotation (disable movement), then a level or two~~
+- [ ] ~~Tutorial screen 2: just paddle movement (enable both), then the rest of levels~~
 - [ ] ~~A lose condition? Or just best time~~
 - [ ] ~~Should the paddle be able to collide with edges? Or maybe just some edges?~~
 
@@ -249,3 +249,5 @@ Used some CSS Vars to sync font sizes and colors between the canvas world and CS
 Added a "tweet this" button like it's 2010, and finished up the end game / complete screen. The structure of the game is complete, aside from levels now.
 
 I guess I need more levels?
+
+Really hard to design levels under time pressure, especially without tools.

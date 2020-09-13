@@ -15,9 +15,9 @@ export function level031(): LevelDesc {
   const target = makeLevelTarget(vv2(510, 0));
 
   const edges = makeEdgesFromPoints([
-    vv2(-50, 50),
-    vv2(50, 50),
-    vv2(50, 5),
+    vv2(-60, 60),
+    vv2(60, 60),
+    vv2(60, 5),
 
     vv2(500, 10),
     vv2(500, 20),
@@ -26,9 +26,9 @@ export function level031(): LevelDesc {
     vv2(500, -20),
     vv2(500, -10),
 
-    vv2(50, -5),
-    vv2(50, -50),
-    vv2(-50, -50),
+    vv2(60, -5),
+    vv2(60, -60),
+    vv2(-60, -60),
   ]);
 
   return {
