@@ -161,22 +161,48 @@ function maybeCollideWithAccelerator(
   const e1 = vv2(center.x, center.y - halfWidth);
   const theta = angleOf(da.enter);
 
+  const e2 = vv2(center.x - halfWidth, center.y - halfWidth);
+  const e3 = vv2(center.x + halfWidth, center.y - halfWidth);
+
+  const e4 = vv2(center.x + halfWidth, center.y + halfWidth);
+  const e5 = vv2(center.x - halfWidth, center.y + halfWidth);
+
   // Rotate the edge to match the orientation of the accelerator entraance.
   rotate2d(e0, e0, center, theta);
   rotate2d(e1, e1, center, theta);
+  rotate2d(e2, e2, center, theta);
+  rotate2d(e3, e3, center, theta);
+  rotate2d(e4, e4, center, theta);
+  rotate2d(e5, e5, center, theta);
 
-  const intersectionPoint = vv2();
-  const intersected = segmentIntersection(
-    ball.ppos,
-    ball.cpos,
-    e0,
-    e1,
-    intersectionPoint
-  );
+  const edges = [
+    [e0, e1],
+    [e2, e3],
+    [e4, e5],
+  ];
 
-  const projection = makePointEdgeProjectionResult();
-  projectPointEdge(ball.ppos, e0, e1, projection);
-  if (intersected && projection.similarity < 0) {
+  let triggered = false;
+
+  for (let i = 0; i < edges.length; i++) {
+    const edge = edges[i];
+    const intersectionPoint = vv2();
+    const intersected = segmentIntersection(
+      ball.ppos,
+      ball.cpos,
+      edge[0],
+      edge[1],
+      intersectionPoint
+    );
+
+    const projection = makePointEdgeProjectionResult();
+    projectPointEdge(ball.ppos, edge[0], edge[1], projection);
+    if (intersected && projection.similarity < 0) {
+      triggered = true;
+      break;
+    }
+  }
+
+  if (triggered) {
     // ball's velocity vector both intersected the segment AND the start of the
     // velocity vector is on the entrance side of the vector, meaning the ball
     // entered from the correct side.
