@@ -5,6 +5,7 @@ import {
   makeLevelTarget,
   makeEdge,
   makeOneWayEdge,
+  makeEdgesFromPoints,
 } from "../level-objects";
 import { vv2, ViewportUnits } from "../viewport";
 
@@ -16,15 +17,12 @@ export function level02(): LevelDesc {
     edges: [
       makeEdge(vv2(20, 15), vv2(-20, 15)), // normal is downwards
       makeOneWayEdge(vv2(-20, 5), vv2(20, 5)),
-
-      // top
-      makeEdge(vv2(50, 50), vv2(-50, 50)),
-      // left
-      makeEdge(vv2(-50, 50), vv2(-50, -50)),
-      // bottom
-      makeEdge(vv2(-50, -50), vv2(50, -50)),
-      // right
-      makeEdge(vv2(50, -50), vv2(50, 50)),
+      ...makeEdgesFromPoints([
+        vv2(-50, 50),
+        vv2(50, 50),
+        vv2(50, -50),
+        vv2(-50, -50),
+      ]),
     ],
     das: [],
     flavorText: "One way is the only way",

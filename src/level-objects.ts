@@ -16,12 +16,15 @@ export type LevelDesc = {
   flavorText: string;
 };
 
-export function makePaddle(start: ViewportUnitVector2 = vv2(0, 0)): Paddle {
+export function makePaddle(
+  rads: number = 0,
+  start: ViewportUnitVector2 = vv2(0, 0)
+): Paddle {
   const ces = useCES();
   const screen = ces.selectFirstData("viewport")!;
 
   return {
-    rads: 0,
+    rads,
     width: (screen.vpWidth / 2) as ViewportUnits,
     height: (screen.vpWidth / 16) as ViewportUnits,
     int: {
@@ -90,6 +93,32 @@ export function makeOneWayEdge(
     oneWay: true,
     deactivatesTrackOther,
   };
+}
+
+// assume the points p1, p2, pN are wound with their normals inwards. They start in the upper left-ish, and move clockwise, roughly.
+export function makeEdgesFromPoints(
+  points: ViewportUnitVector2[],
+  autoClose = true,
+  clockwiseWinding = true
+) {
+  const edges: Edge[] = [];
+
+  for (let i = 0; i < points.length; i++) {
+    const prev = i > 0 ? points[i - 1] : null;
+    const curr = points[i];
+    if (!prev) continue;
+    edges.push(clockwiseWinding ? makeEdge(curr, prev) : makeEdge(prev, curr));
+  }
+
+  if (autoClose) {
+    edges.push(
+      clockwiseWinding
+        ? makeEdge(points[0], points[points.length - 1])
+        : makeEdge(points[points.length - 1], points[0])
+    );
+  }
+
+  return edges;
 }
 
 export function makeAccelerator(

@@ -5,6 +5,7 @@ import {
   makeLevelTarget,
   makeEdge,
   makeAccelerator,
+  makeEdgesFromPoints,
 } from "../level-objects";
 import { vv2, ViewportUnits } from "../viewport";
 
@@ -13,16 +14,12 @@ export function level03(): LevelDesc {
   const ball = makeBall(vv2(-30, -40), 0.5 as ViewportUnits, vv2(0, 1));
   const target = makeLevelTarget(vv2(30, -40));
 
-  const edges = [
-    // top
-    makeEdge(vv2(50, 50), vv2(-50, 50)),
-    // left
-    makeEdge(vv2(-50, 50), vv2(-50, -50)),
-    // bottom
-    makeEdge(vv2(-50, -50), vv2(50, -50)),
-    // right
-    makeEdge(vv2(50, -50), vv2(50, 50)),
-  ];
+  const edges = makeEdgesFromPoints([
+    vv2(-50, 50),
+    vv2(50, 50),
+    vv2(50, -50),
+    vv2(-50, -50),
+  ]);
 
   return {
     ball,

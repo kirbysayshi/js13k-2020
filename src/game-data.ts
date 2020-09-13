@@ -5,11 +5,14 @@ import { Edge } from "./edge";
 import { UpdateTimeDelta } from "./components";
 import { DirectionalAccelerator } from "./directional-accelerator";
 import { LevelDesc } from "./level-objects";
-import { level01 } from "./levels/level01";
+import { level010 } from "./levels/level010";
 import { level02 } from "./levels/level02";
 import { level03 } from "./levels/level03";
 import { levelKitchenSink } from "./levels/level0kitchensink";
 import { ViewportUnitVector2 } from "./viewport";
+import { level011 } from "./levels/level011";
+import { level012 } from "./levels/level012";
+import { level013 } from "./levels/level013";
 
 type GameStates =
   | "boot"
@@ -49,7 +52,10 @@ export const game: GameData = {
 
   levels: [
     // levelKitchenSink,
-    level01,
+    // level010,
+    // level011,
+    // level012,
+    // level013,
     level02,
     level03,
   ],
