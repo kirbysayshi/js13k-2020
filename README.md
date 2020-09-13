@@ -111,7 +111,7 @@ MIT
 - [ ] BUG: signal can tunnel through paddle and get stuck in the middle...
 - [ ] DESIGN: how to give minor signal corrections at speed???
 - [ ] Directional Accelerator: Only trigger once until clear
-- [ ] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
+- [x] Directional Accelerator: camera follows signal with paddle in opposite direction of trajectory (or not drawn / not collidable) and input disabled (timed)
 - [ ] Visual Feedback that the boost button is pressed
 - [ ] Does the target need to be labeled?
 - [ ] Should the paddle be smaller, given enclosed levels?
@@ -245,3 +245,7 @@ The final day.
 A few hours to get the touch controls in DOM and wired up. One problem with the game architecture right now is there's no specific place for persistent state. I could use CES, but the overhead of defining a component and using it is high (in terms of cognitive complexity: it really makes me overthink everythin).
 
 Used some CSS Vars to sync font sizes and colors between the canvas world and CSS world. Probably overkill, as I'll likely have to make the font size independently larger for the UI anyway!
+
+Added a "tweet this" button like it's 2010, and finished up the end game / complete screen. The structure of the game is complete, aside from levels now.
+
+I guess I need more levels?

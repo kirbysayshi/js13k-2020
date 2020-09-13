@@ -9,6 +9,7 @@ import { level01 } from "./levels/level01";
 import { level02 } from "./levels/level02";
 import { level03 } from "./levels/level03";
 import { levelKitchenSink } from "./levels/level0kitchensink";
+import { ViewportUnitVector2 } from "./viewport";
 
 type GameStates =
   | "boot"
@@ -27,6 +28,10 @@ export type GameData = {
   readonly levelObjects: LevelDesc | null;
   readonly levelTicks: number[];
   readonly levels: (() => LevelDesc)[];
+
+  readonly trackOther: null | { cpos: ViewportUnitVector2 };
+  readonly trackOtherFinished: boolean;
+  readonly trackOtherRemaining: number;
 };
 
 export const game: GameData = {
@@ -38,12 +43,11 @@ export const game: GameData = {
   levelObjects: null,
   levelTicks: [],
 
-  levels: [
-    // levelKitchenSink,
-    level01,
-    level02,
-    level03,
-  ],
+  trackOther: null,
+  trackOtherFinished: false,
+  trackOtherRemaining: -1,
+
+  levels: [levelKitchenSink, level01, level02, level03],
 };
 
 export function toState(next: typeof game["state"]) {

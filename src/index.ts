@@ -1,4 +1,11 @@
-import { accelerate, inertia, solveDrag, set, copy } from "pocket-physics";
+import {
+  accelerate,
+  inertia,
+  solveDrag,
+  set,
+  copy,
+  translate,
+} from "pocket-physics";
 import ScienceHalt from "science-halt";
 import { loadAssets } from "./asset-map";
 import { drawBall, moveAndMaybeBounceBall } from "./ball";
@@ -452,19 +459,32 @@ async function boot() {
         }
 
         const shouldAcceptPaddleMove =
-          angle !== 0 ||
-          (angle === 0 && keyInputs.KeyD) ||
-          paddleMoveStickisActive;
+          (angle !== 0 ||
+            (angle === 0 && keyInputs.KeyD) ||
+            paddleMoveStickisActive) &&
+          !game.trackOther;
 
         if (shouldAcceptPaddleMove) movePaddle(paddle!, paddleMoveAcel);
 
         solveDrag(paddle.int, 0.8);
         accelerate(paddle.int, dt);
         moveAndMaybeBounceBall(ball, paddle, screen, dt);
-        maybeCollideWithAccelerators(ball, das);
-        processEdges(edges, ball);
+        maybeCollideWithAccelerators(game, ball, das);
+        processEdges(edges, ball, game);
         inertia(paddle.int);
+
+        if (game.trackOther) {
+          copy(paddle.int.cpos, game.trackOther.cpos);
+          copy(paddle.int.ppos, game.trackOther.cpos);
+        }
+
         moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
+
+        if (game.trackOtherFinished) {
+          const g: Mutable<typeof game> = game;
+          g.trackOther = null;
+          g.trackOtherFinished = false;
+        }
 
         if (testWinCondition(target!, ball!)) {
           // Stash level time now, since ticks are reset on state change.
@@ -473,6 +493,9 @@ async function boot() {
 
           // Destroy objects
           g.levelObjects = null;
+          g.trackOther = null;
+          g.trackOtherRemaining = -1;
+          g.trackOtherFinished = false;
 
           unwireUI();
           moveViewportCamera(vv2(0, 0));

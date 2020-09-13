@@ -22,11 +22,13 @@ import {
   makePointEdgeProjectionResult,
 } from "./phys-utils";
 import { YellowRGBA } from "./theme";
+import { GameData } from "./game-data";
 
 export type Edge = {
   e0: ViewportUnitVector2;
   e1: ViewportUnitVector2;
   oneWay: boolean;
+  deactivatesTrackOther: boolean;
 };
 
 export function drawEdges(edges: Edge[]) {
@@ -63,10 +65,10 @@ export function drawEdges(edges: Edge[]) {
   ctx.restore();
 }
 
-export function processEdges(edges: Edge[], ball: Ball) {
+export function processEdges(edges: Edge[], ball: Ball, game: GameData) {
   for (let i = 0; i < edges.length; i++) {
     const edge = edges[i];
-    maybePassThroughOneWay(ball, (ball.width / 2) as ViewportUnits, edge);
+    maybePassThroughOneWay(ball, (ball.width / 2) as ViewportUnits, edge, game);
     maybeBounceOffEdge(ball, (ball.width / 2) as ViewportUnits, edge);
   }
 }
@@ -74,7 +76,8 @@ export function processEdges(edges: Edge[], ball: Ball) {
 function maybePassThroughOneWay(
   int: IntegratableVU,
   radius: ViewportUnits,
-  edge: Edge
+  edge: Edge,
+  game: GameData
 ) {
   if (!edge.oneWay) return;
 
@@ -94,6 +97,12 @@ function maybePassThroughOneWay(
     // ppos was behind edge, cpos is in front: crossed!
     // Turn it into a normal Edge!
     edge.oneWay = false;
+
+    // Passing through a one-way deactivates camera tracking mode
+    if (game.trackOther && edge.deactivatesTrackOther) {
+      const g: Mutable<typeof game> = game;
+      g.trackOtherFinished = true;
+    }
   }
 }
 

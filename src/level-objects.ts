@@ -75,23 +75,27 @@ export function makeEdge(
     e0: endpoint0,
     e1: endpoint1,
     oneWay: false,
+    deactivatesTrackOther: false,
   };
 }
 
 export function makeOneWayEdge(
   endpoint0: ViewportUnitVector2,
-  endpoint1: ViewportUnitVector2
+  endpoint1: ViewportUnitVector2,
+  deactivatesTrackOther: boolean = false
 ): Edge {
   return {
     e0: endpoint0,
     e1: endpoint1,
     oneWay: true,
+    deactivatesTrackOther,
   };
 }
 
 export function makeAccelerator(
   start: ViewportUnitVector2,
-  dir: ViewportUnitVector2
+  dir: ViewportUnitVector2,
+  tracksBall: boolean = false
 ): DirectionalAccelerator {
   return {
     int: {
@@ -101,5 +105,6 @@ export function makeAccelerator(
     },
     dims: vv2(10, 10),
     enter: copy(vv2(), dir) as ViewportUnitVector2,
+    tracksBall,
   };
 }

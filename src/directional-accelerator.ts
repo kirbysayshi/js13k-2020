@@ -24,11 +24,14 @@ import {
   translate,
 } from "pocket-physics";
 import { YellowRGBA } from "./theme";
+import { GameData } from "./game-data";
+import { schedule } from "./time";
 
 export type DirectionalAccelerator = {
   int: IntegratableVU;
   enter: ViewportUnitVector2;
   dims: ViewportUnitVector2;
+  tracksBall?: boolean;
 };
 
 export function drawAccelerators(das: DirectionalAccelerator[]) {
@@ -135,15 +138,20 @@ function drawHalfChevron(
 }
 
 export function maybeCollideWithAccelerators(
+  game: GameData,
   ball: Ball,
   das: DirectionalAccelerator[]
 ) {
   for (let i = 0; i < das.length; i++) {
-    maybeCollideWithAccelerator(ball, das[i]);
+    maybeCollideWithAccelerator(game, ball, das[i]);
   }
 }
 
-function maybeCollideWithAccelerator(ball: Ball, da: DirectionalAccelerator) {
+function maybeCollideWithAccelerator(
+  game: GameData,
+  ball: Ball,
+  da: DirectionalAccelerator
+) {
   const center = da.int.cpos;
   const halfHeight = (da.dims.y / 2) as ViewportUnits;
   const halfWidth = (da.dims.x / 2) as ViewportUnits;
@@ -186,5 +194,10 @@ function maybeCollideWithAccelerator(ball: Ball, da: DirectionalAccelerator) {
 
     // And Go!
     set(ball.acel, 5 * da.enter.x, 5 * da.enter.y);
+
+    if (da.tracksBall) {
+      const g: Mutable<typeof game> = game;
+      g.trackOther = ball;
+    }
   }
 }
