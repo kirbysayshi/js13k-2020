@@ -399,6 +399,9 @@ async function boot() {
         break;
       }
       case "level": {
+        const ui = getUIState();
+        const keyInputs = useKeyInputs();
+
         if (game.ticks === 0) {
           // initialize on first tick
 
@@ -408,8 +411,7 @@ async function boot() {
           }
           (game as Mutable<typeof game>).levelObjects = level();
 
-          if (isLikelyTouchDevice()) showUIControls();
-          else hideUIControls();
+          showUIControls();
           wireUI();
           setOnReset(() => {
             // On reset, just rebuild everything!!?!? Is it really that easy. IT IS!
@@ -419,12 +421,18 @@ async function boot() {
           });
         }
 
+        if (keyInputs.Enter) {
+          // Reset, just like hiting the button.
+          // TODO: make this the same function!
+          const level = game.levels[game.level];
+          const g: Mutable<typeof game> = game;
+          g.levelObjects = level();
+          resetTracking();
+        }
+
         if (!game.levelObjects) break;
 
         const { target, paddle, ball, das, edges } = game.levelObjects;
-
-        const ui = getUIState();
-        const keyInputs = useKeyInputs();
 
         // Keyboard input
         if (keyInputs.ArrowLeft) rotatePaddleLeft(paddle!);

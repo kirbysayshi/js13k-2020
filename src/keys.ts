@@ -1,7 +1,6 @@
 // These keys must be quoted to force terser to keep these keys as is. It
 // doesn't know they come from the DOM Keyboard API. Prettier wants to remove
 
-import { Key } from "ts-key-enum";
 import { listen } from "./dom";
 
 // Represent the physical key on the keyboard (position) instead of the character itself.
@@ -14,7 +13,8 @@ type Codes =
   | "ArrowRight"
   | "ArrowLeft"
   | "ShiftLeft"
-  | "ShiftRight";
+  | "ShiftRight"
+  | "Enter";
 
 // the quotes, so disable it.
 const keyInputs: {
@@ -36,6 +36,8 @@ const keyInputs: {
   'ShiftLeft': false,
   // prettier-ignore
   'ShiftRight': false,
+  // prettier-ignore
+  'Enter': false,
 };
 
 listen(window, "keydown", (ev) => {

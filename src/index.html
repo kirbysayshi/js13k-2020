@@ -107,6 +107,11 @@
         height: var(--height);
         margin-left: calc(var(--width) / 2 * -1);
         margin-top: calc(var(--height) / 2 * -1);
+
+        text-align: center;
+        color: var(--blackRGBA);
+        font-size: var(--bodyFontSize);
+        padding-top: 18%;
       }
 
       .ui-btn {
@@ -138,12 +143,12 @@
       <canvas id="c"></canvas>
       <div id="u"></div>
       <div id="ctrl">
-        <div id="stick-move" class="ui-stick"><div class="ui-nub"></div></div>
-        <button id="btn-boost" class="ui-btn" style="top: 10%; padding: 1%;">Boost</button>
+        <div id="stick-move" class="ui-stick"><div class="ui-nub">WASD</div></div>
+        <button id="btn-boost" class="ui-btn" style="top: 10%; padding: 1%;">Boost (Shift)</button>
         <button id="btn-reset" class="ui-btn" style="bottom: 0px">
-          Reset Signal
+          Reset Signal (Enter)
         </button>
-        <div id="stick-rotate" class="ui-stick"><div class="ui-nub"></div></div>
+        <div id="stick-rotate" class="ui-stick"><div class="ui-nub">← →</div></div>
       </div>
       <div id="thanks">
         <p><a id="btn-tweet" href="" target="_blank" class="ui-btn">Tweet Your Score</a></p>
