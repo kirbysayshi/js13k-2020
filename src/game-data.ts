@@ -1,12 +1,7 @@
-import { Paddle } from "./paddle";
-import { Ball } from "./ball";
-import { LevelTarget } from "./target";
-import { Edge } from "./edge";
 import { UpdateTimeDelta } from "./components";
-import { DirectionalAccelerator } from "./directional-accelerator";
 import { LevelDesc } from "./level-objects";
 import { level010 } from "./levels/level010";
-import { level02 } from "./levels/level02";
+import { level020 } from "./levels/level020";
 import { level030 } from "./levels/level030";
 import { levelKitchenSink } from "./levels/level0kitchensink";
 import { ViewportUnitVector2 } from "./viewport";
@@ -62,7 +57,7 @@ export const game: GameData = {
     level012,
     level013,
 
-    level02,
+    level020,
 
     level030,
     level031,

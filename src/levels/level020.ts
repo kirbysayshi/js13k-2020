@@ -9,7 +9,7 @@ import {
 } from "../level-objects";
 import { vv2, ViewportUnits } from "../viewport";
 
-export function level02(): LevelDesc {
+export function level020(): LevelDesc {
   return {
     ball: makeBall(vv2(0, -10), 0.5 as ViewportUnits, vv2(0, 1)),
     paddle: makePaddle(Math.PI),
