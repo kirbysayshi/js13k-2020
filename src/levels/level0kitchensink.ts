@@ -9,6 +9,11 @@ import {
   makeOneWayEdge,
 } from "../level-objects";
 
+// level to introduce moving
+// level to introduce arrows better
+// level to introduce arrows that track
+// level to introduce one-way edges
+
 export function levelKitchenSink(): LevelDesc {
   const paddle = makePaddle();
   const ball = makeBall(vv2(0, 0), 0.1 as ViewportUnits, vv2(1, 0));

@@ -12,7 +12,7 @@ import { vv2, ViewportUnits } from "../viewport";
 export function level02(): LevelDesc {
   return {
     ball: makeBall(vv2(0, -10), 0.5 as ViewportUnits, vv2(0, 1)),
-    paddle: makePaddle(),
+    paddle: makePaddle(Math.PI),
     target: makeLevelTarget(vv2(30, 10)),
     edges: [
       makeEdge(vv2(20, 15), vv2(-20, 15)), // normal is downwards
