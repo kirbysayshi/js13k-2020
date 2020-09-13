@@ -73,3 +73,7 @@ export function listen<
     target.removeEventListener(type, callback as EventListener, options);
   };
 }
+
+export function isLikelyTouchDevice() {
+  return matchMedia("(hover: none)").matches;
+}

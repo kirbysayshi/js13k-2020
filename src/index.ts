@@ -63,7 +63,7 @@ import {
   BodyTextFont,
 } from "./theme";
 import { LevelDesc } from "./level-objects";
-import { listen } from "./dom";
+import { listen, isLikelyTouchDevice } from "./dom";
 import {
   syncCss,
   wireUI,
@@ -150,6 +150,7 @@ async function boot() {
 
         let y = 50;
         const x = -45;
+        const touch = isLikelyTouchDevice();
 
         y -= 5;
         y -= drawTextLinesInWorld(
@@ -157,7 +158,8 @@ async function boot() {
             "Be the best signalmancer in the galaxy!",
             "",
             "Help messages from deep space colonies bounce their",
-            "way to their targets as quickly as possible.",
+            "way home as quickly as possible.",
+            "Only you can prevent 404s.",
           ].join("\n"),
           vv2(x, y),
           "left",
@@ -165,66 +167,70 @@ async function boot() {
           YellowRGBA
         );
 
-        y -= 5;
-        y -= drawTextLinesInWorld(
-          "CONTROLS (KEYBOARD)",
-          vv2(x, y),
-          "left",
-          BodyTextLines,
-          YellowRGBA,
-          Transparent,
-          TitleTextFont
-        );
+        if (!touch) {
+          y -= 5;
+          y -= drawTextLinesInWorld(
+            "CONTROLS (KEYBOARD)",
+            vv2(x, y),
+            "left",
+            BodyTextLines,
+            YellowRGBA,
+            Transparent,
+            TitleTextFont
+          );
 
-        y -= 5;
-        y -= drawTextLinesInWorld(
-          [
-            "WASD:  move",
-            "Hold any SHIFT to boost",
-            "",
-            "Arrow Left / Arrow Right: rotate the Deflector",
-          ].join("\n"),
-          vv2(x, y),
-          "left",
-          BodyTextLines,
-          YellowRGBA
-        );
+          y -= 5;
+          y -= drawTextLinesInWorld(
+            [
+              "WASD: move",
+              "Hold any SHIFT to boost",
+              "",
+              "Arrow Left / Arrow Right: rotate the Deflector",
+            ].join("\n"),
+            vv2(x, y),
+            "left",
+            BodyTextLines,
+            YellowRGBA
+          );
+        }
 
-        y -= 5;
-        y -= drawTextLinesInWorld(
-          "CONTROLS (TOUCH)",
-          vv2(x, y),
-          "left",
-          BodyTextLines,
-          YellowRGBA,
-          Transparent,
-          TitleTextFont
-        );
+        if (touch) {
+          y -= 5;
+          y -= drawTextLinesInWorld(
+            "CONTROLS (TOUCH)",
+            vv2(x, y),
+            "left",
+            BodyTextLines,
+            YellowRGBA,
+            Transparent,
+            TitleTextFont
+          );
 
-        y -= 5;
-        y -= drawTextLinesInWorld(
-          [
-            "Left Stick:  move",
-            "Move stick and hold BOOST to boost",
-            "",
-            "Right Stick: rotate the Deflector",
-          ].join("\n"),
-          vv2(x, y),
-          "left",
-          BodyTextLines,
-          YellowRGBA
-        );
+          y -= 5;
+          y -= drawTextLinesInWorld(
+            [
+              "Left Stick:  move",
+              "Move stick and hold BOOST to boost",
+              "",
+              "Right Stick: rotate the Deflector",
+            ].join("\n"),
+            vv2(x, y),
+            "left",
+            BodyTextLines,
+            YellowRGBA
+          );
 
-        y -= 5;
-        y -= drawTextLinesInWorld(
-          "TAP OR CLICK TO CONTINUE",
-          vv2(0, y),
-          "center",
-          BodyTextLines,
-          YellowRGBA,
-          Transparent,
-          TitleTextFont
-        );
+          y -= 5;
+          y -= drawTextLinesInWorld(
+            "TAP OR CLICK TO CONTINUE",
+            vv2(0, y),
+            "center",
+            BodyTextLines,
+            YellowRGBA,
+            Transparent,
+            TitleTextFont
+          );
+        }
 
         fillBeyondCamera();
 
@@ -402,7 +408,8 @@ async function boot() {
           }
           (game as Mutable<typeof game>).levelObjects = level();
 
-          showUIControls();
+          if (isLikelyTouchDevice()) showUIControls();
+          else hideUIControls();
           wireUI();
           setOnReset(() => {
             // On reset, just rebuild everything!!?!? Is it really that easy. IT IS!
