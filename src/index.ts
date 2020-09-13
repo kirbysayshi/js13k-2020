@@ -122,7 +122,7 @@ async function boot() {
 
         y -= 5;
         drawTextLinesInWorld(
-          "a js13k entry",
+          "a js13k 2020 entry",
           vv2(0, y),
           "center",
           BodyTextLines,
@@ -157,8 +157,9 @@ async function boot() {
           [
             "Be the best signalmancer in the galaxy!",
             "",
-            "Help messages from deep space colonies bounce their",
-            "way home as quickly as possible.",
+            "Help messages from deep space colonies bounce",
+            "their way home as quickly as possible.",
+            "",
             "Only you can prevent 404s.",
           ].join("\n"),
           vv2(x, y),

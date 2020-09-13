@@ -251,3 +251,5 @@ Added a "tweet this" button like it's 2010, and finished up the end game / compl
 I guess I need more levels?
 
 Really hard to design levels under time pressure, especially without tools.
+
+Time to submit. So much polish, yet so many things to do! And really not enough levels. I only used the one-way edge once! Dang. Perhaps I'll make a level booster pack.
