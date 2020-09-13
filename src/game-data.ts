@@ -57,9 +57,11 @@ export const game: GameData = {
     level011,
     level012,
     level013,
-    level031,
+
     level02,
+
     level030,
+    level031,
   ],
 };
 
