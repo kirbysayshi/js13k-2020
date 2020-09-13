@@ -47,7 +47,12 @@ export const game: GameData = {
   trackOtherFinished: false,
   trackOtherRemaining: -1,
 
-  levels: [levelKitchenSink, level01, level02, level03],
+  levels: [
+    // levelKitchenSink,
+    level01,
+    level02,
+    level03,
+  ],
 };
 
 export function toState(next: typeof game["state"]) {
