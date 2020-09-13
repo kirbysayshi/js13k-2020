@@ -32,5 +32,6 @@ export function levelKitchenSink(): LevelDesc {
     das: [
       // makeAccelerator(vv2(-20, 10), vv2(1, -1))
     ],
+    flavorText: "It's basically everything",
   };
 }

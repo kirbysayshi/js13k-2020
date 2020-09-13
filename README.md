@@ -90,7 +90,8 @@ MIT
 - [x] Mission Completed screen: themed
 - [x] End Game Screen: themed
 - [x] End Game screen has list of all times per level (+par?)
-- [ ] Font: themed
+- [x] Font: themed
+- [x] Tweet your total time
 - [ ] Directional Accelerator trigger point legibility
 - [ ] Level 01
 - [ ] Level 02
@@ -125,8 +126,6 @@ MIT
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner
 - [ ] "Play Again" button on end screen?
-- [x] Tweet your total time
-
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
 - [ ] ~~A lose condition? Or just best time~~
 - [ ] ~~Should the paddle be able to collide with edges? Or maybe just some edges?~~
