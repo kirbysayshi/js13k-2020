@@ -1,8 +1,14 @@
-# js13k-2020
+# js13k-2020: SIGNAL DECAY
 
-## Usage
+This was submitted for JS13K 2020! Find it here: https://js13kgames.com/entries/signal-decay
 
-Fork this repo, then add / change code in src/index.js as you see fit! There are dependencies included, but you can remove those. Rollup ensures that only code you `import` is included!
+The source that was submitted is available here: https://github.com/kirbysayshi/js13k-2020/tree/submitted-js13k-2020
+
+You can play the latest version (features! bug fixes!) at https://kirbysayshi.com/js13k-2020.
+
+[A devlog is below](#devlog)
+
+## Dev
 
 - Static files can be configured for copying in [rollup.config.js](./rollup.config.js). Default is just [`src/index.html`](src/index.html)
 - Static files that are `import`ed are automatically copied into the `dist/` folder by rollup.
@@ -122,6 +128,7 @@ MIT
 - [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner
+- [ ] IDEA: each bounce decays the signal... if nothing left, forced level reset!
 - [ ] Level / Goal Ideas: you have to get the signal to the destination in as few bounces as possible and as quickly as possible. When you reach the goal, you see a drawing of where the signal went and where you bounced it. You (camera) follow the signal as it bounces around?
 - [ ] ~~"Play Again" button on end screen?~~
 - [ ] ~~Does the target need to be labeled?~~
