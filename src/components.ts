@@ -1,8 +1,9 @@
-import { CES, AssuredEntityId, NarrowComponent } from "./ces";
+// import { CES, AssuredEntityId, NarrowComponent } from "./ces";
 import { ViewportCmp, ViewportUnitVector2, ViewportUnits } from "./viewport";
-import { PointerTargetCmp, DragStateCmp } from "./drag";
+// import { PointerTargetCmp, DragStateCmp } from "./drag.ts.disabled";
 import { useAsset } from "./asset-map";
 import { v2 } from "pocket-physics";
+import { AssuredEntityId, NarrowComponent, CES3 } from "./ces3";
 
 export type FPSCmp = {
   k: "fps";
@@ -95,9 +96,9 @@ export function drawableAssetDef(
 export type Component =
   | FPSCmp
   | AssetCmp
-  | DragStateCmp
+  // | DragStateCmp
   | SpringConstraintCmp
-  | PointerTargetCmp
+  // | PointerTargetCmp
   | CircleCmp
   | ViewportCmp
   | UIEventBindingCmp
@@ -135,10 +136,10 @@ export const UpdateTimeDelta = 33.3333333 as const; // 1000 / UpdateTimeHz;
 // A system of an entity-component-system framework is simply a function that
 // is repeatedly called. We separate them into two types based on how often
 // they are invoked: every frame or once every update step (10fps by default).
-export type DrawStepSystem = (ces: CES<Component>, interp: number) => void;
-export type UpdateStepSystem = (ces: CES<Component>, dt: number) => void;
+export type DrawStepSystem = (ces: CES3<Component>, interp: number) => void;
+export type UpdateStepSystem = (ces: CES3<Component>, dt: number) => void;
 
-const ces = new CES<Component>();
+const ces = new CES3<Component>();
 
 export function useCES() {
   return ces;
