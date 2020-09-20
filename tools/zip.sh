@@ -22,6 +22,10 @@ NODE_SCRIPT=$(cat <<-END
     .replace(/"v-movement"/g, "\"mv\"")
     .replace(/"draw-console"/g, "\"dc\"")
     .replace(/"viewport"/g, "\"vp\"")
+    .replace(/"boot"/g, "\"b\"")
+    .replace(/"tutorial"/g, "\"t\"")
+    .replace(/"nextlevel"/g, "\"n\"")
+    .replace(/"thanks"/g, "\"x\"")
 
   fs.writeFileSync("dist/bundle.js", replaced);
 END

@@ -15,13 +15,14 @@ type EntityData = {
 
 export class CES3<ED extends EntityData> {
   private lastId = -1;
-  private maxDataCount = 100;
 
   private ids = new Set<number>();
   private destroyed = new Set<number>();
 
   // the index of each array is the entity id
   private cmpToIdArr = new Map<ED["k"], (ED | undefined)[]>();
+
+  constructor(private maxDataCount = 100) {}
 
   private nextId(): EntityId {
     while (true) {
@@ -94,9 +95,7 @@ export class CES3<ED extends EntityData> {
 
     for (let i = 0; i < initData.length; i++) {
       const data = initData[i];
-      const datas = this.cmpToIdArr.get(data.k) ?? Array(this.maxDataCount);
-      datas[eid.id] = data;
-      this.cmpToIdArr.set(data.k, datas);
+      this.add(eid as AssuredEntityId<NarrowComponent<ED, T["k"]>>, data);
     }
 
     return eid as AssuredEntityId<
@@ -104,10 +103,40 @@ export class CES3<ED extends EntityData> {
     >;
   }
 
+  // There is actually no guarantee the id is still valid, so this should return optional undefined...
   data<T extends ED, K extends T["k"]>(eid: AssuredEntityId<T>, kind: K) {
     const datas = this.cmpToIdArr.get(kind);
-    if (!datas) throw new Error("No component datas!");
-    return datas[eid.id] as NarrowComponent<T, K>;
+    if (process.env.NODE_ENV !== "production") {
+      if (!datas) throw new Error("No component datas!");
+    }
+    return datas![eid.id] as NarrowComponent<T, K>;
+  }
+
+  add<T extends ED, Existing extends ED>(
+    eid: AssuredEntityId<Existing>,
+    initData: T
+  ) {
+    const datas = this.cmpToIdArr.get(initData.k) ?? Array(this.maxDataCount);
+    // TODO: what if data already exists? Destroy?
+    datas[eid.id] = initData;
+    this.cmpToIdArr.set(initData.k, datas);
+    // the id is now UPGRADED
+    // return eid as AssuredEntityId<T>;
+    return (eid as EntityId) as AssuredEntityId<
+      NarrowComponent<ED, Existing["k"] | typeof initData["k"]>
+    >;
+  }
+
+  remove<ExistingComponents extends ED>(
+    eid: AssuredEntityId<ExistingComponents>,
+    kind: ExistingComponents["k"]
+  ) {
+    const datas = this.cmpToIdArr.get(kind);
+    if (!datas) return;
+    datas[eid.id] = undefined;
+    return eid as AssuredEntityId<
+      Exclude<ExistingComponents["k"], typeof kind>
+    >;
   }
 
   select<T extends ED["k"]>(kinds: T[]) {
@@ -140,33 +169,12 @@ export class CES3<ED extends EntityData> {
 
   selectFirstData<T extends ED["k"]>(kind: T) {
     const datas = this.cmpToIdArr.get(kind);
-    if (!datas) throw new Error("No component datas!");
-    for (let i = 0; i < datas.length; i++) {
-      const data = datas[i];
+    if (process.env.NODE_ENV !== "production") {
+      if (!datas) throw new Error("No component datas!");
+    }
+    for (let i = 0; i < datas!.length; i++) {
+      const data = datas![i];
       if (data !== undefined) return data as NarrowComponent<ED, T>;
     }
   }
 }
-
-// type C1 = {
-//   k: "c1";
-//   p1: number;
-// };
-
-// type C2 = {
-//   k: "c2";
-//   p2: string;
-// };
-
-// const ces = new CES3<C1 | C2>();
-
-// const id = ces.entity([
-//   { k: "c1", p1: 23 },
-//   { k: "c2", p2: "hello" },
-// ]);
-
-// const c1s = ces.select(["c1"]).forEach((result) => {
-//   result.id;
-// });
-
-// const firstC1 = ces.selectFirstData("c1");
