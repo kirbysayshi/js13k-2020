@@ -1,109 +1,37 @@
-// import { CES, AssuredEntityId, NarrowComponent } from "./ces";
-import { ViewportCmp, ViewportUnitVector2, ViewportUnits } from "./viewport";
+import { ViewportCmp, ViewportUnitVector2, vv2 } from "./viewport";
 // import { PointerTargetCmp, DragStateCmp } from "./drag.ts.disabled";
-import { useAsset } from "./asset-map";
-import { v2 } from "pocket-physics";
 import { AssuredEntityId, NarrowComponent, CES3 } from "./ces3";
+import { copy } from "pocket-physics";
+import { ParticleCmp } from "./particles";
 
 export type FPSCmp = {
   k: "fps";
   v: number;
 };
 
-export type CircleCmp = {
-  k: "circle";
-  center: { x: number; y: number };
-  radius: number;
-};
-
-export type SpringConstraintCmp = {
-  k: "spring-constraint";
-  v1: AssuredEntityId<MovementCmp>;
-  v1Mass: number;
-  v2: AssuredEntityId<MovementCmp>;
-  v2Mass: number;
-  goal: number;
-  stiffness: number;
-};
-
-export function destroySpringConstraint(
-  id: AssuredEntityId<SpringConstraintCmp>
-) {
-  const ces = useCES();
-  const data = ces.data(id, "spring-constraint");
-  ces.destroy(id);
-  ces.destroy(data.v1);
-  ces.destroy(data.v2);
-}
-
 export type MovementCmp = {
   k: "v-movement";
-  // v1: Integratable;
   cpos: ViewportUnitVector2;
   ppos: ViewportUnitVector2;
   acel: ViewportUnitVector2;
 };
 
-export type DrawConsoleCmp = {
-  k: "draw-console";
-};
-
-export type UIEventBindingCmp = {
-  k: "ui-bind";
-  el: HTMLElement;
-  // TODO: this might be a nice lifecycle thing. like this fn gets called, if
-  // it exists, when the component itself is destroyed. Would need a different
-  // name then. willDestroy?
-  destroy: () => void;
-};
-
-export type AssetCmp = {
-  k: "asset";
-  asset: ReturnType<typeof useAsset>;
-  width: ViewportUnits;
-  height: ViewportUnits;
-};
-
-export type DrawableAssetDef = [MovementCmp, AssetCmp];
-export const drawableAssetSelector: EntityDefSelector<DrawableAssetDef> = [
-  "v-movement",
-  "asset",
-] as const;
-
-export function drawableAssetDef(
-  x: ViewportUnits,
-  y: ViewportUnits,
-  width: AssetCmp["width"],
-  height: AssetCmp["height"],
-  asset: AssetCmp["asset"]
-): DrawableAssetDef {
-  return [
-    {
-      k: "v-movement",
-      cpos: v2(x, y) as ViewportUnitVector2,
-      ppos: v2(x, y) as ViewportUnitVector2,
-      acel: v2() as ViewportUnitVector2,
-    },
-    {
-      k: "asset",
-      asset: asset,
-      width,
-      height,
-    },
-  ];
+export function makeMovementCmp(pos: ViewportUnitVector2): MovementCmp {
+  return {
+    k: "v-movement",
+    cpos: copy(vv2(), pos) as ViewportUnitVector2,
+    ppos: copy(vv2(), pos) as ViewportUnitVector2,
+    acel: vv2(),
+  };
 }
 
 export type Component =
   | FPSCmp
-  | AssetCmp
   // | DragStateCmp
-  | SpringConstraintCmp
   // | PointerTargetCmp
-  | CircleCmp
   | ViewportCmp
-  | UIEventBindingCmp
   | MovementCmp
-  | DrawConsoleCmp;
+  | ParticleCmp;
 
 // Mapped types are bonkers! The syntax... Without the second
 // `extends Component` it would not allow indexing by `"k"`.
@@ -138,9 +66,3 @@ export const UpdateTimeDelta = 33.3333333 as const; // 1000 / UpdateTimeHz;
 // they are invoked: every frame or once every update step (10fps by default).
 export type DrawStepSystem = (ces: CES3<Component>, interp: number) => void;
 export type UpdateStepSystem = (ces: CES3<Component>, dt: number) => void;
-
-const ces = new CES3<Component>();
-
-export function useCES() {
-  return ces;
-}

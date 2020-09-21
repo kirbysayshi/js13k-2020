@@ -8,7 +8,7 @@ import {
   vv2,
 } from "./viewport";
 import { Ball } from "./ball";
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import {
   angleOf,
   rotate2d,

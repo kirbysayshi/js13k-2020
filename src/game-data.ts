@@ -33,7 +33,10 @@ export type GameData = {
 
   // Whether to track another object with the camera temporarily. To stop, set
   // trackOtherFinished to true and allow a tick.
-  readonly trackOther: null | { cpos: ViewportUnitVector2 };
+  readonly trackOther: null | {
+    cpos: ViewportUnitVector2;
+    ppos: ViewportUnitVector2;
+  };
   readonly trackOtherFinished: boolean;
 };
 
@@ -84,7 +87,10 @@ export function formatSeconds(s: number) {
   return s.toFixed(3);
 }
 
-export function trackOther(other: { cpos: ViewportUnitVector2 }) {
+export function trackOther(other: {
+  cpos: ViewportUnitVector2;
+  ppos: ViewportUnitVector2;
+}) {
   const g: Mutable<typeof game> = game;
   g.trackOther = other;
   g.trackOtherFinished = false;

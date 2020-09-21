@@ -6,7 +6,7 @@ import {
   IntegratableVU,
   vv2,
 } from "./viewport";
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import {
   segmentIntersection,
   rewindToCollisionPoint,
@@ -20,9 +20,11 @@ import { Ball } from "./ball";
 import {
   projectCposWithRadius,
   makePointEdgeProjectionResult,
+  rotate2d,
 } from "./phys-utils";
 import { YellowRGBA } from "./theme";
 import { GameData, markTrackingFinished } from "./game-data";
+import { spawnParticles, spawnCollisionParticles } from "./particles";
 
 export type Edge = {
   e0: ViewportUnitVector2;
@@ -177,5 +179,10 @@ function maybeBounceOffEdge(
 
     // if (mass2 < 10000000)
     // sub(box2.ppos, box2.cpos, box2v);
+    spawnCollisionParticles(
+      int.ppos,
+      projectedResult.similarity,
+      projectedResult.edgeNormal as ViewportUnitVector2
+    );
   }
 }

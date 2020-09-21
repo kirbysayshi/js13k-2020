@@ -1,4 +1,4 @@
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import { ViewportUnits, toProjectedPixels, toPixelUnits } from "./viewport";
 import { DPRCanvas, makeDPRCanvas } from "./canvas";
 import { useRandom } from "./rng";

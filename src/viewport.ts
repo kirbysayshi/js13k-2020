@@ -1,22 +1,7 @@
-import {
-  useCES,
-  MovementCmp,
-  SpringConstraintCmp,
-  EntityDefSelector,
-} from "./components";
+import { useCES } from "./use-ces";
 import { DPRCanvas, makeDPRCanvas } from "./canvas";
 import { usePrimaryCanvas, useRootElement } from "./dom";
-import {
-  Vector2,
-  Integratable,
-  v2,
-  translate,
-  sub,
-  copy,
-  scale,
-  add,
-} from "pocket-physics";
-import { AssuredEntityId } from "./ces";
+import { Vector2, v2, copy, scale, add } from "pocket-physics";
 import { YellowRGBA, BlackRGBA, BodyTextFont, TitleTextFont } from "./theme";
 
 type Pixels = number & { _isPixels: true };

@@ -5,6 +5,8 @@ import {
   set,
   copy,
   translate,
+  sub,
+  normalize,
 } from "pocket-physics";
 import ScienceHalt from "science-halt";
 import { loadAssets } from "./asset-map";
@@ -15,8 +17,8 @@ import {
   DrawTimeDelta,
   UpdateStepSystem,
   UpdateTimeDelta,
-  useCES,
 } from "./components";
+import { useCES } from "./use-ces";
 import { drawEdges, processEdges } from "./edge";
 import {
   game,
@@ -75,6 +77,12 @@ import {
   setTwitterIntent,
   showThanksUI,
 } from "./ui";
+import {
+  particleUpdateSystem,
+  particleDrawSystem,
+  spawnParticles,
+} from "./particles";
+import { updateMovementSystem } from "./movement";
 
 async function boot() {
   await loadAssets();
@@ -247,6 +255,7 @@ async function boot() {
         drawBall(ball, interp);
         drawAccelerators(das);
         drawEdges(edges);
+        particleDrawSystem(ces, interp);
         fillBeyondCamera();
         drawLevelUI(game, interp);
         break;
@@ -495,11 +504,29 @@ async function boot() {
         moveAndMaybeBounceBall(ball, paddle, screen, dt);
         maybeCollideWithAccelerators(game, ball, das);
         processEdges(edges, ball, game);
+        updateMovementSystem(ces, dt);
         inertia(paddle.int);
 
         if (game.trackOther) {
           copy(paddle.int.cpos, game.trackOther.cpos);
           copy(paddle.int.ppos, game.trackOther.cpos);
+          if (game.ticks % 3 === 0) {
+            const vel = sub(
+              vv2(),
+              game.trackOther.cpos,
+              game.trackOther.ppos
+            ) as ViewportUnitVector2;
+            const norm = normalize(vv2(), vel) as ViewportUnitVector2;
+            spawnParticles(
+              game.trackOther.ppos,
+              25,
+              1000,
+              norm,
+              0.6 as ViewportUnits,
+              3,
+              Math.PI / 8
+            );
+          }
         }
 
         moveViewportCamera(paddle.int.cpos as ViewportUnitVector2);
@@ -559,6 +586,8 @@ async function boot() {
 
     (game as Mutable<typeof game>).ticks += 1;
   });
+
+  updateStepSystems.push(particleUpdateSystem);
 
   drawStepSystems.push(drawFps);
 

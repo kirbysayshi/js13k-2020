@@ -1,5 +1,5 @@
 import { Vector2, Integratable, scale, add } from "pocket-physics";
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import {
   ViewportUnits,
   toViewportUnits,

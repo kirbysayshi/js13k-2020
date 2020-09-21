@@ -8,7 +8,7 @@ import {
   IntegratableVU,
 } from "./viewport";
 import { Ball } from "./ball";
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import { YellowRGBA } from "./theme";
 
 export type LevelTarget = {

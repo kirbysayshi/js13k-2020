@@ -1,4 +1,4 @@
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import {
   drawTextLinesInViewport,
   vv2,

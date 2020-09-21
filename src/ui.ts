@@ -1,5 +1,5 @@
 import { YellowRGBA, BlackRGBA, BodyTextLines, BodyTextFont } from "./theme";
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import {
   predictTextHeight,
   ViewportUnits,

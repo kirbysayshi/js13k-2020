@@ -27,14 +27,16 @@ import {
   toProjectedPixels,
   vv2,
 } from "./viewport";
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import { Paddle, getOffsetForPaddlePosition } from "./paddle";
 import {
   projectCposWithRadius,
   makePointEdgeProjectionResult,
   setVelocity,
+  rotate2d,
 } from "./phys-utils";
 import { YellowRGBA, YellowRGBA01, YellowRGBA05 } from "./theme";
+import { spawnParticles, spawnCollisionParticles } from "./particles";
 
 export type Ball = {
   cpos: ViewportUnitVector2;
@@ -222,6 +224,12 @@ export function moveAndMaybeBounceBall(
     );
     translate(resolve, int.cpos, int.ppos);
     // console.log('resolve', resolve);
+
+    spawnCollisionParticles(
+      int.ppos,
+      projectedResult.similarity,
+      projectedResult.edgeNormal as ViewportUnitVector2
+    );
   }
 
   inertia(ball);

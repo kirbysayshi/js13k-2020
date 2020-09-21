@@ -4,7 +4,7 @@ import { Ball } from "./ball";
 import { LevelTarget } from "./target";
 import { Edge } from "./edge";
 import { DirectionalAccelerator } from "./directional-accelerator";
-import { useCES } from "./components";
+import { useCES } from "./use-ces";
 import { copy, sub, scale } from "pocket-physics";
 
 export type LevelDesc = {

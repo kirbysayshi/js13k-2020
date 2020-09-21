@@ -146,7 +146,7 @@ export class CES3<ED extends EntityData> {
       const kind = kinds[i];
       const datas = this.cmpToIdArr.get(kind);
       if (!datas) return [];
-      if (matching.size !== 0) {
+      if (matching.size === 0) {
         for (let k = 0; k < datas.length; k++) {
           const data = datas[k];
           if (data !== undefined) matching.add(k);
