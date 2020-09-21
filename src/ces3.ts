@@ -16,28 +16,40 @@ type EntityData = {
 export class CES3<ED extends EntityData> {
   private lastId = -1;
 
-  private ids = new Set<number>();
+  private ids: (EntityId | undefined)[];
   private destroyed = new Set<number>();
 
   // the index of each array is the entity id
   private cmpToIdArr = new Map<ED["k"], (ED | undefined)[]>();
 
-  constructor(private maxDataCount = 100) {}
+  constructor(private maxDataCount = 100) {
+    this.ids = new Array(maxDataCount);
+  }
 
   private nextId(): EntityId {
     while (true) {
       let test = ++this.lastId;
       if (test < this.maxDataCount) {
-        if (this.ids.has(test)) {
-          continue;
-        } else {
-          this.ids.add(test);
-          return { id: test };
+        if (this.ids[test]) continue;
+        else {
+          return (this.ids[test] = { id: test });
         }
       } else {
         // expand and reset
         this.lastId = -1;
         const max = (this.maxDataCount = this.maxDataCount * 10);
+
+        if (process.env.NODE_ENV !== "production") {
+          console.log(`expanding CES to ${max}`, this);
+        }
+
+        // Expand ID Array
+        const nextIds = new Array(max);
+        for (let i = 0; i < this.ids.length; i++) {
+          nextIds[i] = this.ids[i];
+        }
+
+        // Expand each data array
         for (const [kind, datas] of this.cmpToIdArr) {
           const next = new Array(max);
           for (let i = 0; i < datas.length; i++) {
@@ -76,7 +88,7 @@ export class CES3<ED extends EntityData> {
 
     this.destroyed.forEach((id) => {
       this.destroyed.delete(id);
-      this.ids.delete(id);
+      this.ids[id] = undefined;
 
       for (const [, datas] of this.cmpToIdArr) {
         const data = datas[id];
@@ -140,7 +152,7 @@ export class CES3<ED extends EntityData> {
   }
 
   select<T extends ED["k"]>(kinds: T[]) {
-    const matching = new Set<EntityId["id"]>();
+    const matching = new Set<EntityId>();
 
     for (let i = 0; i < kinds.length; i++) {
       const kind = kinds[i];
@@ -149,20 +161,16 @@ export class CES3<ED extends EntityData> {
       if (matching.size === 0) {
         for (let k = 0; k < datas.length; k++) {
           const data = datas[k];
-          if (data !== undefined) matching.add(k);
+          if (data !== undefined) matching.add(this.ids[k] as EntityId);
         }
       } else {
-        for (const id of matching.values()) {
-          if (datas[id] === undefined) matching.delete(id);
+        for (const eid of matching.values()) {
+          if (datas[eid.id] === undefined) matching.delete(eid);
         }
       }
     }
 
-    // TODO: store the entity IDs in a separate mapping to avoid creating and destroying so many each frame
-
-    return [...matching].map((v) => ({ id: v })) as AssuredEntityId<
-      NarrowComponent<ED, T>
-    >[];
+    return [...matching] as AssuredEntityId<NarrowComponent<ED, T>>[];
   }
 
   selectData<T extends ED["k"]>(kind: T) {
