@@ -158,9 +158,17 @@ export class CES3<ED extends EntityData> {
       }
     }
 
+    // TODO: store the entity IDs in a separate mapping to avoid creating and destroying so many each frame
+
     return [...matching].map((v) => ({ id: v })) as AssuredEntityId<
       NarrowComponent<ED, T>
     >[];
+  }
+
+  selectData<T extends ED["k"]>(kind: T) {
+    const datas = this.cmpToIdArr.get(kind);
+    if (!datas) return [];
+    return datas as Readonly<(NarrowComponent<ED, T> | undefined)[]>;
   }
 
   selectFirst(kinds: ED["k"][]) {

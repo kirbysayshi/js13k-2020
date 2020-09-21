@@ -110,6 +110,8 @@ MIT
 - [x] Level 08
 - [x] Level 09
 - [x] Level 10
+- [x] CES .selectFirst creates the majority of allocations (iterators), and GC is a cause of noticeable pauses.
+- [x] Particle Effects to test new CES system
 - [ ] Target & Signal pointers should have distances
 - [ ] Paddle Crosshairs: themed
 - [ ] Touch Rotation Controls: make an integratable so it's not 1:1 direct (momentum?)
@@ -124,7 +126,6 @@ MIT
 - [ ] Audio: some looping ambient chords
 - [ ] Max Velocity for signal
 - [ ] Paddle Boost should be a metered resource?
-- [ ] CES .selectFirst creates the majority of allocations (iterators), and GC is a cause of noticeable pauses.
 - [ ] Prevent ball tunneling when colliding with paddle (is this an issue? probably not if the paddle is large enough)
 - [ ] Shorten radius of paddle?
 - [ ] BUG: labels are hidden when transitioning from edge to corner

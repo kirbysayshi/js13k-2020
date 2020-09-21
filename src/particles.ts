@@ -91,13 +91,14 @@ export const particleUpdateSystem: UpdateStepSystem = (ces, dt) => {
 };
 
 export const particleDrawSystem: DrawStepSystem = (ces, interp) => {
-  const ids = ces.select(["particle"]);
+  // const ids = ces.select(["particle"]);
+  const particles = ces.selectData("particle");
   const vp = ces.selectFirstData("viewport")!;
   const { ctx } = vp.dprCanvas;
   ctx.save();
-  for (let i = 0; i < ids.length; i++) {
-    const id = ids[i];
-    const particle = ces.data(id, "particle");
+  for (let i = 0; i < particles.length; i++) {
+    const particle = particles[i];
+    if (!particle) continue;
     const move = ces.data(particle.move, "v-movement");
     const opacity = particle.age / particle.startAge;
     ctx.fillStyle = YellowRGBA.replace(",1)", `,${opacity.toFixed(5)})`);
